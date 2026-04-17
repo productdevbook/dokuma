@@ -16,13 +16,13 @@ function Demo({ onState }) {
     h(
       "div",
       { className: "avatar" },
-      h("img", { ...a.getImageProps("Mehmet"), alt: "Mehmet" }),
-      h("span", { ...a.getFallbackProps(), className: "avatar-fb" }, "MK"),
+      h("img", { ...a.getImageProps("Ada"), alt: "Ada" }),
+      h("span", { ...a.getFallbackProps(), className: "avatar-fb" }, "AL"),
     ),
     h(
       "div",
       null,
-      h("div", { style: { fontWeight: 600 } }, "Mehmet Kahya"),
+      h("div", { style: { fontWeight: 600 } }, "Ada Lovelace"),
       h("div", { style: { color: "var(--muted)", fontSize: 13 } }, `Status: ${a.status.get()}`),
     ),
   )

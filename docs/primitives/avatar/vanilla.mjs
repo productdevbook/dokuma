@@ -5,10 +5,10 @@ export function mount(root, ctx) {
     <div class="avatar-row">
       <div class="avatar">
         <img id="av-img" alt="" />
-        <span id="av-fb" class="avatar-fb">MK</span>
+        <span id="av-fb" class="avatar-fb">AL</span>
       </div>
       <div>
-        <div style="font-weight:600;">Mehmet Kahya</div>
+        <div style="font-weight:600;">Ada Lovelace</div>
         <div style="color:var(--muted); font-size:13px;" id="av-state">Status: …</div>
       </div>
     </div>

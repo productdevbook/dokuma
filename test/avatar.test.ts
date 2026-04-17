@@ -19,8 +19,8 @@ describe("createAvatar", () => {
   it("status is loading with src; getImageProps reflects src", () => {
     const a = createAvatar({ src: "https://example.com/x.png" })
     expect(a.status.get()).toBe("loading")
-    expect(a.getImageProps("Mehmet").src).toBe("https://example.com/x.png")
-    expect(a.getImageProps("Mehmet").alt).toBe("Mehmet")
+    expect(a.getImageProps("Ada").src).toBe("https://example.com/x.png")
+    expect(a.getImageProps("Ada").alt).toBe("Ada")
   })
 
   it("setting status to loaded toggles hidden flags", () => {

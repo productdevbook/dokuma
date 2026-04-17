@@ -8,7 +8,7 @@ export function mount(root, ctx) {
     setup() {
       const a = useAvatar({
         src: "https://github.com/productdevbook.png?size=64",
-        alt: "Mehmet",
+        alt: "Ada",
         onStatusChange: ctx.onState,
       })
       ctx.onState(a.status.get())
@@ -17,11 +17,11 @@ export function mount(root, ctx) {
     template: `
       <div class="avatar-row">
         <div class="avatar">
-          <img v-bind="imageProps" alt="Mehmet" />
-          <span v-bind="fallbackProps" class="avatar-fb">MK</span>
+          <img v-bind="imageProps" alt="Ada" />
+          <span v-bind="fallbackProps" class="avatar-fb">AL</span>
         </div>
         <div>
-          <div style="font-weight:600;">Mehmet Kahya</div>
+          <div style="font-weight:600;">Ada Lovelace</div>
           <div style="color:var(--muted); font-size:13px;">Status: {{ status.get() }}</div>
         </div>
       </div>
