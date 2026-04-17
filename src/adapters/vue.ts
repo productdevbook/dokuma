@@ -23,6 +23,20 @@ import {
   type SwitchThumbProps,
 } from "../primitives/switch.ts"
 import {
+  createToggleGroup,
+  type RegisterItemOptions as ToggleGroupRegisterItemOptions,
+  type ToggleGroup,
+  type ToggleGroupItemProps,
+  type ToggleGroupOptions,
+  type ToggleGroupRootProps,
+} from "../primitives/toggle-group.ts"
+import {
+  createToggle,
+  type Toggle,
+  type ToggleOptions,
+  type ToggleRootProps,
+} from "../primitives/toggle.ts"
+import {
   createTabs,
   type RegisterTabOptions,
   type TabPanelProps,
@@ -237,5 +251,91 @@ export function createUseSwitch(Vue: VueLike) {
     })
 
     return { ...sw, rootProps, thumbProps, hiddenInputProps, isChecked }
+  }
+}
+
+export interface VueToggle extends Toggle {
+  rootProps: Ref<ToggleRootProps>
+  isPressed: Ref<boolean>
+}
+
+export function createUseToggle(Vue: VueLike) {
+  return function useToggle(opts: ToggleOptions = {}): VueToggle {
+    const tick = Vue.ref(0)
+    const tg = createToggle(opts)
+    const unsub = tg.pressed.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return tg.getRootProps()
+    })
+    const isPressed = Vue.computed(() => {
+      void tick.value
+      return tg.pressed.get()
+    })
+
+    return { ...tg, rootProps, isPressed }
+  }
+}
+
+export interface VueToggleGroup extends ToggleGroup {
+  rootProps: Ref<ToggleGroupRootProps>
+  tick: Ref<number>
+}
+
+export type VueToggleGroupItemProps = Omit<ToggleGroupItemProps, "onKeyDown"> & {
+  onKeydown: ToggleGroupItemProps["onKeyDown"]
+}
+
+export interface VueToggleGroupItem {
+  itemProps: Ref<VueToggleGroupItemProps>
+  isPressed: Ref<boolean>
+  isDisabled: Ref<boolean>
+}
+
+export function createUseToggleGroup(Vue: VueLike) {
+  return function useToggleGroup(opts: ToggleGroupOptions = {}): VueToggleGroup {
+    const tick = Vue.ref(0)
+    const group = createToggleGroup(opts)
+    const unsub = group.values.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return group.getRootProps()
+    })
+
+    return { ...group, rootProps, tick }
+  }
+}
+
+export function createUseToggleGroupItem(Vue: VueLike) {
+  return function useToggleGroupItem(
+    group: VueToggleGroup,
+    value: string,
+    opts: ToggleGroupRegisterItemOptions = {},
+  ): VueToggleGroupItem {
+    group.registerItem(value, opts)
+
+    const itemProps = Vue.computed(() => {
+      void group.tick.value
+      const { onClick, onKeyDown, ...rest } = group.getItemProps(value)
+      return { ...rest, onClick, onKeydown: onKeyDown }
+    })
+    const isPressed = Vue.computed(() => {
+      void group.tick.value
+      return group.isPressed(value)
+    })
+    const isDisabled = Vue.computed(() => {
+      void group.tick.value
+      return group.isItemDisabled(value)
+    })
+
+    return { itemProps, isPressed, isDisabled }
   }
 }

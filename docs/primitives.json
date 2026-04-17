@@ -23,6 +23,18 @@
       "title": "Switch",
       "summary": "A two-state on/off control. role=\"switch\", aria-checked, optional hidden checkbox companion for form submission. Space and Enter toggle natively.",
       "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "toggle",
+      "title": "Toggle",
+      "summary": "A two-state button (aria-pressed). Use for Bold/Italic/Mute — actions that have an applied state. For form-submitted settings, use Switch.",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "toggle-group",
+      "title": "Toggle Group",
+      "summary": "A coordinated set of Toggle buttons. Single (alignment) or multiple (formatting). Roving tabindex, arrow-key navigation, optional collapsible.",
+      "adapters": ["vanilla", "react", "vue"]
     }
   ]
 }

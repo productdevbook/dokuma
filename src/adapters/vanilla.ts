@@ -6,6 +6,12 @@ import {
 } from "../primitives/disclosure.ts"
 import { createSwitch, type Switch, type SwitchOptions } from "../primitives/switch.ts"
 import { createTabs, type Tabs, type TabsOptions } from "../primitives/tabs.ts"
+import {
+  createToggleGroup,
+  type ToggleGroup,
+  type ToggleGroupOptions,
+} from "../primitives/toggle-group.ts"
+import { createToggle, type Toggle, type ToggleOptions } from "../primitives/toggle.ts"
 
 export interface MountDisclosureOptions extends DisclosureOptions {
   trigger: HTMLElement | string
@@ -90,4 +96,40 @@ export function mountSwitch(opts: MountSwitchOptions): MountedSwitch {
   const sw = createSwitch(opts)
   const destroy = sw.mount({ root, hiddenInput })
   return { switch: sw, destroy }
+}
+
+export interface MountToggleOptions extends ToggleOptions {
+  root: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedToggle {
+  toggle: Toggle
+  destroy: () => void
+}
+
+export function mountToggle(opts: MountToggleOptions): MountedToggle {
+  const parent = opts.parent ?? document
+  const root = resolve(opts.root, parent)
+  const tg = createToggle(opts)
+  const destroy = tg.mount(root)
+  return { toggle: tg, destroy }
+}
+
+export interface MountToggleGroupOptions extends ToggleGroupOptions {
+  root: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedToggleGroup {
+  toggleGroup: ToggleGroup
+  destroy: () => void
+}
+
+export function mountToggleGroup(opts: MountToggleGroupOptions): MountedToggleGroup {
+  const parent = opts.parent ?? document
+  const root = resolve(opts.root, parent)
+  const tg = createToggleGroup(opts)
+  const destroy = tg.mount(root)
+  return { toggleGroup: tg, destroy }
 }

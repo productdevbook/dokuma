@@ -14,6 +14,14 @@ import {
 } from "../primitives/disclosure.ts"
 import { createSwitch, type Switch, type SwitchOptions } from "../primitives/switch.ts"
 import {
+  createToggleGroup,
+  type RegisterItemOptions as ToggleGroupRegisterItemOptions,
+  type ToggleGroup,
+  type ToggleGroupItemProps,
+  type ToggleGroupOptions,
+} from "../primitives/toggle-group.ts"
+import { createToggle, type Toggle, type ToggleOptions } from "../primitives/toggle.ts"
+import {
   createTabs,
   type RegisterTabOptions,
   type TabPanelProps,
@@ -267,5 +275,124 @@ export function createUseSwitch(React: ReactLike) {
     }, [isControlled, opts.checked])
 
     return sw
+  }
+}
+
+export interface UseToggleOptions extends Omit<ToggleOptions, "pressed"> {
+  pressed?: boolean
+}
+
+export function createUseToggle(React: ReactLike) {
+  return function useToggle(opts: UseToggleOptions = {}): Toggle {
+    const isControlled = opts.pressed !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    const toggle = React.useMemo(
+      () =>
+        createToggle({
+          ...opts,
+          pressed: isControlled ? () => optsRef.current.pressed as boolean : undefined,
+          onPressedChange: (next) => {
+            optsRef.current.onPressedChange?.(next)
+          },
+        }),
+      [isControlled],
+    )
+
+    React.useEffect(() => {
+      const unsub = toggle.pressed.subscribe(() => setTick((n) => n + 1))
+      return unsub
+    }, [toggle])
+
+    React.useEffect(() => {
+      if (isControlled) {
+        setTick((n) => n + 1)
+        toggle.notify()
+      }
+    }, [isControlled, opts.pressed])
+
+    return toggle
+  }
+}
+
+export interface UseToggleGroupOptions extends Omit<ToggleGroupOptions, "value"> {
+  value?: string | string[]
+}
+
+export interface UseToggleGroupItemResult {
+  itemProps: ToggleGroupItemProps
+  isPressed: boolean
+  isDisabled: boolean
+}
+
+export function createUseToggleGroup(React: ReactLike) {
+  return function useToggleGroup(opts: UseToggleGroupOptions = {}): ToggleGroup {
+    const isControlled = opts.value !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    const group = React.useMemo(
+      () =>
+        createToggleGroup({
+          ...opts,
+          value: isControlled ? () => optsRef.current.value as string | string[] : undefined,
+          onValueChange: (next) => {
+            optsRef.current.onValueChange?.(next)
+          },
+        }),
+      [isControlled],
+    )
+
+    React.useEffect(() => {
+      const unsub = group.values.subscribe(() => setTick((n) => n + 1))
+      return unsub
+    }, [group])
+
+    React.useEffect(() => {
+      if (isControlled) {
+        setTick((n) => n + 1)
+        group.notify()
+      }
+    }, [isControlled, opts.value])
+
+    return group
+  }
+}
+
+export function createUseToggleGroupItem(React: ReactLike) {
+  return function useToggleGroupItem(
+    group: ToggleGroup,
+    value: string,
+    opts: ToggleGroupRegisterItemOptions = {},
+  ): UseToggleGroupItemResult {
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    React.useEffect(() => {
+      const handle = group.registerItem(value, {
+        disabled: optsRef.current.disabled
+          ? () => optsRef.current.disabled?.() ?? false
+          : undefined,
+      })
+      const unsub = group.values.subscribe(() => setTick((n) => n + 1))
+      return () => {
+        unsub()
+        handle.unregister()
+      }
+    }, [group, value])
+
+    if (!group.hasItem(value)) {
+      group.registerItem(value, optsRef.current)
+    }
+
+    return {
+      itemProps: group.getItemProps(value),
+      isPressed: group.isPressed(value),
+      isDisabled: group.isItemDisabled(value),
+    }
   }
 }

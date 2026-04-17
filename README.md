@@ -10,9 +10,9 @@
 - **SSR-safe.** No top-level DOM access.
 - **Accessibility-first.** WAI-ARIA, keyboard, focus management baked in.
 - **Tree-shakeable.** Each primitive is a separate sub-path export.
-- **Tiny.** Whole package under 50 KB raw.
+- **Tiny.** Whole package under 75 KB raw, gzip ≈ 1/3 of that.
 
-> **Status:** very early. APIs may change. Three primitives shipped: `Disclosure`, `Accordion`, `Tabs`.
+> **Status:** very early. APIs may change. Six primitives shipped: `Disclosure`, `Accordion`, `Tabs`, `Switch`, `Toggle`, `Toggle Group`.
 
 ## Install
 
@@ -91,19 +91,22 @@ const d = useDisclosure({ defaultOpen: false })
 
 ## Primitives
 
-| Primitive  | Path                | What it does                                                        |
-| ---------- | ------------------- | ------------------------------------------------------------------- |
-| Disclosure | `dokuma/disclosure` | Show/hide a panel via a button. The foundation primitive.           |
-| Accordion  | `dokuma/accordion`  | Stack of collapsible items. Single or multiple open. Arrow-key nav. |
-| Tabs       | `dokuma/tabs`       | Tablist with roving focus, automatic or manual activation.          |
+| Primitive    | Path                  | What it does                                                             |
+| ------------ | --------------------- | ------------------------------------------------------------------------ |
+| Disclosure   | `dokuma/disclosure`   | Show/hide a panel via a button. The foundation primitive.                |
+| Accordion    | `dokuma/accordion`    | Stack of collapsible items. Single or multiple open. Arrow-key nav.      |
+| Tabs         | `dokuma/tabs`         | Tablist with roving focus, automatic or manual activation.               |
+| Switch       | `dokuma/switch`       | On/off control. `role="switch"`, optional hidden checkbox for forms.     |
+| Toggle       | `dokuma/toggle`       | Single pressed-state button (`aria-pressed`).                            |
+| Toggle Group | `dokuma/toggle-group` | Coordinated set of Toggles. Single (alignment) or multiple (formatting). |
 
 ## Adapters
 
-| Adapter | Path             | Use                                                                 |
-| ------- | ---------------- | ------------------------------------------------------------------- |
-| Vanilla | `dokuma/vanilla` | `mountDisclosure / mountAccordion / mountTabs`                      |
-| React   | `dokuma/react`   | `createUseDisclosure(React)`, `createUseAccordion`, `createUseTabs` |
-| Vue     | `dokuma/vue`     | Vue 3 composables, mirror of the React API                          |
+| Adapter | Path             | Use                                                     |
+| ------- | ---------------- | ------------------------------------------------------- |
+| Vanilla | `dokuma/vanilla` | `mount*` helpers for every primitive.                   |
+| React   | `dokuma/react`   | `createUse*(React)` factories per primitive.            |
+| Vue     | `dokuma/vue`     | `createUse*(Vue)` composables, mirror of the React API. |
 
 Svelte, Solid, Angular, Lit adapters: planned.
 
