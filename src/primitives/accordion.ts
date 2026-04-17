@@ -76,8 +76,6 @@ export interface Accordion {
   isItemDisabled: (value: string) => boolean
   hasItem: (value: string) => boolean
   isOpen: (value: string) => boolean
-  /** Notify subscribers without changing state. Used by adapters when controlled `value` prop changes externally. */
-  notify: () => void
   open: (value: string) => void
   close: (value: string) => void
   toggle: (value: string) => void
@@ -154,10 +152,6 @@ export function createAccordion(options: AccordionOptions = {}): Accordion {
 
   const hasItem = (value: string): boolean => items.has(value)
   const isOpen = (value: string): boolean => readValues().includes(value)
-  const notify = (): void => {
-    const v = readValues()
-    for (const fn of subscribers) fn(v)
-  }
 
   const setOpen = (value: string, open: boolean): void => {
     if (isItemDisabled(value)) return
@@ -367,7 +361,6 @@ export function createAccordion(options: AccordionOptions = {}): Accordion {
     isItemDisabled,
     hasItem,
     isOpen,
-    notify,
     open,
     close,
     toggle,

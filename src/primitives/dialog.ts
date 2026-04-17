@@ -81,7 +81,6 @@ export interface Dialog {
     content: HTMLElement
     overlay?: HTMLElement
   }) => Unsubscribe
-  notify: () => void
 }
 
 export function createDialog(options: DialogOptions = {}): Dialog {
@@ -132,11 +131,6 @@ export function createDialog(options: DialogOptions = {}): Dialog {
     open.set(false)
   }
   const toggle = (): void => (readOpen() ? hide() : show())
-
-  const notify = (): void => {
-    const v = readOpen()
-    for (const fn of subscribers) fn(v)
-  }
 
   const handleTriggerClick = (event?: { preventDefault?: () => void }): void => {
     event?.preventDefault?.()
@@ -319,6 +313,5 @@ export function createDialog(options: DialogOptions = {}): Dialog {
     getDescriptionProps,
     getCloseProps,
     mount,
-    notify,
   }
 }

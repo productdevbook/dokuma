@@ -59,7 +59,6 @@ export interface Checkbox {
   getIndicatorProps: () => CheckboxIndicatorProps
   getHiddenInputProps: () => CheckboxHiddenInputProps | null
   mount: (els: { root: HTMLElement; hiddenInput?: HTMLInputElement }) => Unsubscribe
-  notify: () => void
 }
 
 const VISUALLY_HIDDEN: Record<string, string | number> = {
@@ -131,11 +130,6 @@ export function createCheckbox(options: CheckboxOptions = {}): Checkbox {
   const setIndeterminate = (): void => {
     if (isDisabled()) return
     checked.set("indeterminate")
-  }
-
-  const notify = (): void => {
-    const v = readChecked()
-    for (const fn of subscribers) fn(v)
   }
 
   const handleClick = (event?: { preventDefault?: () => void }): void => {
@@ -240,6 +234,5 @@ export function createCheckbox(options: CheckboxOptions = {}): Checkbox {
     getIndicatorProps,
     getHiddenInputProps,
     mount,
-    notify,
   }
 }

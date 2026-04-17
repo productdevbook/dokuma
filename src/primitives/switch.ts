@@ -58,8 +58,6 @@ export interface Switch {
   getHiddenInputProps: () => SwitchHiddenInputProps | null
   /** Imperative DOM wiring. Returns cleanup. */
   mount: (els: { root: HTMLElement; hiddenInput?: HTMLInputElement }) => Unsubscribe
-  /** Notify subscribers without changing state — used by adapters when controlled `checked` changes. */
-  notify: () => void
 }
 
 // Hoisted so framework adapters get a stable reference (no per-render re-application).
@@ -114,11 +112,6 @@ export function createSwitch(options: SwitchOptions = {}): Switch {
   const uncheck = (): void => {
     if (isDisabled()) return
     checked.set(false)
-  }
-
-  const notify = (): void => {
-    const v = readChecked()
-    for (const fn of subscribers) fn(v)
   }
 
   const handleClick = (event?: { preventDefault?: () => void }): void => {
@@ -222,6 +215,5 @@ export function createSwitch(options: SwitchOptions = {}): Switch {
     getThumbProps,
     getHiddenInputProps,
     mount,
-    notify,
   }
 }

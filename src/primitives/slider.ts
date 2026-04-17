@@ -101,7 +101,6 @@ export interface Slider {
     range?: HTMLElement
     thumbs: HTMLElement[]
   }) => Unsubscribe
-  notify: () => void
 }
 
 const isTuple = (v: SliderValue): v is [number, number] => Array.isArray(v)
@@ -192,11 +191,6 @@ export function createSlider(options: SliderOptions = {}): Slider {
     } else {
       value.set(v)
     }
-  }
-
-  const notify = (): void => {
-    const v = readValue()
-    for (const fn of subscribers) fn(v)
   }
 
   // --- positioning math ---------------------------------------------------
@@ -587,6 +581,5 @@ export function createSlider(options: SliderOptions = {}): Slider {
     getThumbProps,
     getHiddenInputProps,
     mount,
-    notify,
   }
 }

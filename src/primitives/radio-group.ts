@@ -77,7 +77,6 @@ export interface RadioGroup {
   /** When `name` is set, returns a hidden radio input for form submission. */
   getHiddenInputProps: (value: string) => RadioHiddenInputProps | null
   mount: (root: HTMLElement) => Unsubscribe
-  notify: () => void
 }
 
 interface InternalItem {
@@ -137,10 +136,6 @@ export function createRadioGroup(options: RadioGroupOptions = {}): RadioGroup {
   const select = (v: string): void => {
     if (isItemDisabled(v)) return
     value.set(v)
-  }
-  const notify = (): void => {
-    const v = readValue()
-    for (const fn of subscribers) fn(v)
   }
 
   const registerItem = (v: string, opts: RegisterRadioOptions = {}): RadioHandle => {
@@ -326,6 +321,5 @@ export function createRadioGroup(options: RadioGroupOptions = {}): RadioGroup {
     getItemProps,
     getHiddenInputProps,
     mount,
-    notify,
   }
 }

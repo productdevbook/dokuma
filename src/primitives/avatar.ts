@@ -37,7 +37,6 @@ export interface Avatar {
   getFallbackProps: () => AvatarFallbackProps
   /** Imperatively wire image preload + fallback toggling. Returns cleanup. */
   mount: (els: { image: HTMLImageElement; fallback?: HTMLElement }) => Unsubscribe
-  notify: () => void
 }
 
 export function createAvatar(options: AvatarOptions = {}): Avatar {
@@ -72,11 +71,6 @@ export function createAvatar(options: AvatarOptions = {}): Avatar {
     img.onload = (): void => status.set("loaded")
     img.onerror = (): void => status.set("error")
     img.src = options.src
-  }
-
-  const notify = (): void => {
-    const v = internal.get()
-    for (const fn of subscribers) fn(v)
   }
 
   const getImageProps = (alt = ""): AvatarImageProps => {
@@ -129,6 +123,5 @@ export function createAvatar(options: AvatarOptions = {}): Avatar {
     getImageProps,
     getFallbackProps,
     mount,
-    notify,
   }
 }

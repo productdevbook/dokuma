@@ -75,7 +75,6 @@ export interface ToggleGroup {
   getItemProps: (value: string) => ToggleGroupItemProps
   /** Imperative DOM wiring. Auto-discovers `[data-dokuma-toggle-group-item="<value>"]` descendants. Returns cleanup. */
   mount: (root: HTMLElement) => Unsubscribe
-  notify: () => void
 }
 
 interface InternalItem {
@@ -162,10 +161,6 @@ export function createToggleGroup(options: ToggleGroupOptions = {}): ToggleGroup
     if (!items.has(value)) return
     focusedValue = value
     // tabindex changes — notify subscribers so adapters re-render
-    for (const fn of subscribers) fn(readValues())
-  }
-
-  const notify = (): void => {
     for (const fn of subscribers) fn(readValues())
   }
 
@@ -362,6 +357,5 @@ export function createToggleGroup(options: ToggleGroupOptions = {}): ToggleGroup
     getRootProps,
     getItemProps,
     mount,
-    notify,
   }
 }

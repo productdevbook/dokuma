@@ -28,7 +28,6 @@ export interface Toggle {
   unpress: () => void
   getRootProps: () => ToggleRootProps
   mount: (root: HTMLElement) => Unsubscribe
-  notify: () => void
 }
 
 export function createToggle(options: ToggleOptions = {}): Toggle {
@@ -69,11 +68,6 @@ export function createToggle(options: ToggleOptions = {}): Toggle {
   const unpress = (): void => {
     if (isDisabled()) return
     pressed.set(false)
-  }
-
-  const notify = (): void => {
-    const v = readPressed()
-    for (const fn of subscribers) fn(v)
   }
 
   const handleClick = (event?: { preventDefault?: () => void }): void => {
@@ -134,6 +128,5 @@ export function createToggle(options: ToggleOptions = {}): Toggle {
     unpress,
     getRootProps,
     mount,
-    notify,
   }
 }

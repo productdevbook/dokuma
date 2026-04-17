@@ -61,6 +61,7 @@ export function createDisclosure(options: DisclosureOptions = {}): Disclosure {
 
   const internal = createSignal(options.defaultOpen ?? false)
   const isControlled = typeof options.open === "function"
+  const subscribers = new Set<(v: boolean) => void>()
 
   const readOpen = (): boolean =>
     isControlled ? (options.open as () => boolean)() : internal.get()
@@ -75,8 +76,12 @@ export function createDisclosure(options: DisclosureOptions = {}): Disclosure {
       if (resolved === readOpen()) return
       if (!isControlled) internal.set(resolved)
       options.onOpenChange?.(resolved)
+      for (const fn of subscribers) fn(resolved)
     },
-    subscribe: internal.subscribe,
+    subscribe: (fn) => {
+      subscribers.add(fn)
+      return () => subscribers.delete(fn)
+    },
   }
 
   const toggle = (): void => {

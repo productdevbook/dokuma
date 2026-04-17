@@ -41,7 +41,6 @@ export interface Progress {
   fraction: () => number | null
   /** Imperative DOM wiring. Returns cleanup. */
   mount: (els: { root: HTMLElement; indicator?: HTMLElement }) => Unsubscribe
-  notify: () => void
 }
 
 const defaultLabel = (v: number, m: number): string => `${Math.round((v / m) * 100)}%`
@@ -73,11 +72,6 @@ export function createProgress(options: ProgressOptions = {}): Progress {
       subscribers.add(fn)
       return () => subscribers.delete(fn)
     },
-  }
-
-  const notify = (): void => {
-    const v = readValue()
-    for (const fn of subscribers) fn(v)
   }
 
   const stateFor = (v: number | null): ProgressState => {
@@ -166,6 +160,5 @@ export function createProgress(options: ProgressOptions = {}): Progress {
     getIndicatorProps,
     fraction,
     mount,
-    notify,
   }
 }

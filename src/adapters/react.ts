@@ -136,10 +136,7 @@ export function createUseAccordion(React: ReactLike) {
     }, [accordion])
 
     React.useEffect(() => {
-      if (isControlled) {
-        setTick((n) => n + 1)
-        accordion.notify()
-      }
+      if (isControlled) setTick((n) => n + 1)
     }, [isControlled, opts.value])
 
     return accordion
@@ -221,10 +218,7 @@ export function createUseTabs(React: ReactLike) {
     }, [tabs])
 
     React.useEffect(() => {
-      if (isControlled) {
-        setTick((n) => n + 1)
-        tabs.notify()
-      }
+      if (isControlled) setTick((n) => n + 1)
     }, [isControlled, opts.value])
 
     return tabs
@@ -292,10 +286,7 @@ export function createUseSwitch(React: ReactLike) {
     }, [sw])
 
     React.useEffect(() => {
-      if (isControlled) {
-        setTick((n) => n + 1)
-        sw.notify()
-      }
+      if (isControlled) setTick((n) => n + 1)
     }, [isControlled, opts.checked])
 
     return sw
@@ -331,10 +322,7 @@ export function createUseToggle(React: ReactLike) {
     }, [toggle])
 
     React.useEffect(() => {
-      if (isControlled) {
-        setTick((n) => n + 1)
-        toggle.notify()
-      }
+      if (isControlled) setTick((n) => n + 1)
     }, [isControlled, opts.pressed])
 
     return toggle
@@ -376,10 +364,7 @@ export function createUseToggleGroup(React: ReactLike) {
     }, [group])
 
     React.useEffect(() => {
-      if (isControlled) {
-        setTick((n) => n + 1)
-        group.notify()
-      }
+      if (isControlled) setTick((n) => n + 1)
     }, [isControlled, opts.value])
 
     return group
@@ -450,10 +435,7 @@ export function createUseDialog(React: ReactLike) {
     }, [dialog])
 
     React.useEffect(() => {
-      if (isControlled) {
-        setTick((n) => n + 1)
-        dialog.notify()
-      }
+      if (isControlled) setTick((n) => n + 1)
     }, [isControlled, opts.open])
 
     return dialog
@@ -489,10 +471,7 @@ export function createUseTooltip(React: ReactLike) {
     }, [tooltip])
 
     React.useEffect(() => {
-      if (isControlled) {
-        setTick((n) => n + 1)
-        tooltip.notify()
-      }
+      if (isControlled) setTick((n) => n + 1)
     }, [isControlled, opts.open])
 
     return tooltip
@@ -528,10 +507,7 @@ export function createUsePopover(React: ReactLike) {
     }, [popover])
 
     React.useEffect(() => {
-      if (isControlled) {
-        setTick((n) => n + 1)
-        popover.notify()
-      }
+      if (isControlled) setTick((n) => n + 1)
     }, [isControlled, opts.open])
 
     return popover
@@ -585,10 +561,7 @@ export function createUseProgress(React: ReactLike) {
     }, [progress])
 
     React.useEffect(() => {
-      if (isControlled) {
-        setTick((n) => n + 1)
-        progress.notify()
-      }
+      if (isControlled) setTick((n) => n + 1)
     }, [isControlled, opts.value])
 
     return progress
@@ -628,10 +601,7 @@ export function createUseMenu(React: ReactLike) {
     }, [menu])
 
     React.useEffect(() => {
-      if (isControlled) {
-        setTick((n) => n + 1)
-        menu.notify()
-      }
+      if (isControlled) setTick((n) => n + 1)
     }, [isControlled, opts.open])
 
     return menu
@@ -703,10 +673,7 @@ export function createUseSlider(React: ReactLike) {
     }, [slider])
 
     React.useEffect(() => {
-      if (isControlled) {
-        setTick((n) => n + 1)
-        slider.notify()
-      }
+      if (isControlled) setTick((n) => n + 1)
     }, [isControlled, opts.value])
 
     return slider
@@ -740,10 +707,7 @@ export function createUseRadioGroup(React: ReactLike) {
     }, [group])
 
     React.useEffect(() => {
-      if (isControlled) {
-        setTick((n) => n + 1)
-        group.notify()
-      }
+      if (isControlled) setTick((n) => n + 1)
     }, [isControlled, opts.value])
 
     return group
@@ -822,10 +786,7 @@ export function createUseCheckbox(React: ReactLike) {
     }, [checkbox])
 
     React.useEffect(() => {
-      if (isControlled) {
-        setTick((n) => n + 1)
-        checkbox.notify()
-      }
+      if (isControlled) setTick((n) => n + 1)
     }, [isControlled, opts.checked])
 
     return checkbox

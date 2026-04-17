@@ -40,7 +40,6 @@ export interface Tooltip {
    * Caller must place `content` in the DOM (visibility: hidden initially is fine).
    */
   mount: (els: { trigger: HTMLElement; content: HTMLElement }) => Unsubscribe
-  notify: () => void
 }
 
 export function createTooltip(options: TooltipOptions = {}): Tooltip {
@@ -81,11 +80,6 @@ export function createTooltip(options: TooltipOptions = {}): Tooltip {
     open.set(true)
   }
   const hide = (): void => open.set(false)
-
-  const notify = (): void => {
-    const v = readOpen()
-    for (const fn of subscribers) fn(v)
-  }
 
   const getTriggerProps = (): TooltipTriggerProps => {
     const isOpen = readOpen()
@@ -255,6 +249,5 @@ export function createTooltip(options: TooltipOptions = {}): Tooltip {
     getTriggerProps,
     getContentProps,
     mount,
-    notify,
   }
 }

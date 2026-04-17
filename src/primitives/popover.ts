@@ -53,7 +53,6 @@ export interface Popover {
   getContentProps: () => PopoverContentProps
   getCloseProps: (label?: string) => PopoverCloseProps
   mount: (els: { trigger: HTMLElement; content: HTMLElement }) => Unsubscribe
-  notify: () => void
 }
 
 export function createPopover(options: PopoverOptions = {}): Popover {
@@ -102,11 +101,6 @@ export function createPopover(options: PopoverOptions = {}): Popover {
     open.set(false)
   }
   const toggle = (): void => (readOpen() ? hide() : show())
-
-  const notify = (): void => {
-    const v = readOpen()
-    for (const fn of subscribers) fn(v)
-  }
 
   const handleTriggerClick = (event?: { preventDefault?: () => void }): void => {
     event?.preventDefault?.()
@@ -266,6 +260,5 @@ export function createPopover(options: PopoverOptions = {}): Popover {
     getContentProps,
     getCloseProps,
     mount,
-    notify,
   }
 }

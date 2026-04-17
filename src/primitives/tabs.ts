@@ -85,8 +85,6 @@ export interface Tabs {
    * `[data-dokuma-tabs-panel="<value>"]` descendants of the root. Returns cleanup.
    */
   mount: (root: HTMLElement) => Unsubscribe
-  /** Notify subscribers without changing state — used by adapters when `value` prop changes externally. */
-  notify: () => void
 }
 
 interface InternalTab {
@@ -138,11 +136,6 @@ export function createTabs(options: TabsOptions = {}): Tabs {
   const select = (v: string): void => {
     if (isTabDisabled(v)) return
     value.set(v)
-  }
-
-  const notify = (): void => {
-    const v = readValue()
-    for (const fn of subscribers) fn(v)
   }
 
   const registerTab = (v: string, opts: RegisterTabOptions = {}): TabHandle => {
@@ -371,6 +364,5 @@ export function createTabs(options: TabsOptions = {}): Tabs {
     getTabProps,
     getPanelProps,
     mount,
-    notify,
   }
 }

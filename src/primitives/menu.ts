@@ -90,7 +90,6 @@ export interface Menu {
    * @remarks Submenus are not yet supported — track in a follow-up.
    */
   mount: (els: { trigger: HTMLElement; content: HTMLElement }) => Unsubscribe
-  notify: () => void
 }
 
 interface InternalItem {
@@ -174,11 +173,6 @@ export function createMenu(options: MenuOptions = {}): Menu {
     open.set(false)
   }
   const toggle = (): void => (readOpen() ? hide() : show())
-
-  const notify = (): void => {
-    const v = readOpen()
-    for (const fn of subscribers) fn(v)
-  }
 
   const isItemDisabled = (v: string): boolean => items.get(v)?.disabled?.() ?? false
   const hasItem = (v: string): boolean => items.has(v)
@@ -562,6 +556,5 @@ export function createMenu(options: MenuOptions = {}): Menu {
     getContentProps,
     getItemProps,
     mount,
-    notify,
   }
 }
