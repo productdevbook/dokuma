@@ -593,3 +593,98 @@ ul.tabs li a.active {
   background: var(--accent);
   color: #0b0d10;
 }
+
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 50;
+  animation: dokuma-fade-in 120ms ease;
+}
+
+.dialog-overlay[data-state="closed"] {
+  display: none;
+}
+
+.dialog-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  width: min(420px, calc(100vw - 32px));
+  z-index: 60;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  animation: dokuma-pop-in 120ms ease;
+}
+
+.dialog-content[data-state="closed"] {
+  display: none;
+}
+
+.dialog-content:focus {
+  outline: none;
+}
+
+.dialog-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+
+.dialog-desc {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.dialog-button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+
+.dialog-button:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dialog-button.dialog-primary {
+  background: var(--accent);
+  color: #0b0d10;
+  border-color: var(--accent);
+}
+
+@keyframes dokuma-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dokuma-pop-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}

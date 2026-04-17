@@ -35,6 +35,12 @@
       "title": "Toggle Group",
       "summary": "A coordinated set of Toggle buttons. Single (alignment) or multiple (formatting). Roving tabindex, arrow-key navigation, optional collapsible.",
       "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "dialog",
+      "title": "Dialog",
+      "summary": "Modal or non-modal dialog. Focus trap, scroll lock, escape-to-close, click-outside-to-close, focus restore. Adapter handles portal mounting.",
+      "adapters": ["vanilla", "react", "vue"]
     }
   ]
 }

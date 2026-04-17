@@ -1,0 +1,84 @@
+import * as React from "react"
+import { createRoot } from "react-dom/client"
+import { createUseDialog } from "/dist/adapters/react.mjs"
+
+const { createElement: h, useEffect, useRef, useState } = React
+const useDialog = createUseDialog(React)
+
+function Demo({ onState }) {
+  const [open, setOpen] = useState(false)
+  const triggerRef = useRef(null)
+  const contentRef = useRef(null)
+  const overlayRef = useRef(null)
+
+  const dialog = useDialog({
+    open,
+    onOpenChange: (v) => {
+      setOpen(v)
+      onState(v ? "open" : "closed")
+    },
+  })
+
+  useEffect(() => {
+    if (!open) return
+    if (!contentRef.current) return
+    const destroy = dialog.mount({
+      trigger: triggerRef.current,
+      content: contentRef.current,
+      overlay: overlayRef.current,
+    })
+    return destroy
+  }, [open, dialog])
+
+  return h(
+    "div",
+    null,
+    h(
+      "button",
+      { ref: triggerRef, ...dialog.getTriggerProps(), className: "demo-trigger" },
+      "Open dialog",
+    ),
+    open
+      ? h(
+          "div",
+          null,
+          h("div", {
+            ref: overlayRef,
+            ...dialog.getOverlayProps(),
+            className: "dialog-overlay",
+          }),
+          h(
+            "div",
+            { ref: contentRef, ...dialog.getContentProps(), className: "dialog-content" },
+            h("h2", { ...dialog.getTitleProps(), className: "dialog-title" }, "Confirm"),
+            h(
+              "p",
+              { ...dialog.getDescriptionProps(), className: "dialog-desc" },
+              "React-driven Dialog. Escape, click outside, or Cancel closes it.",
+            ),
+            h(
+              "div",
+              { className: "dialog-actions" },
+              h(
+                "button",
+                { ...dialog.getCloseProps("Cancel"), className: "dialog-button" },
+                "Cancel",
+              ),
+              h(
+                "button",
+                { className: "dialog-button dialog-primary", onClick: () => dialog.hide() },
+                "Confirm",
+              ),
+            ),
+          ),
+        )
+      : null,
+  )
+}
+
+export function mount(root, ctx) {
+  ctx.onState("closed")
+  const reactRoot = createRoot(root)
+  reactRoot.render(h(Demo, { onState: ctx.onState }))
+  return () => reactRoot.unmount()
+}

@@ -8,6 +8,14 @@ import {
   type RegisterItemOptions,
 } from "../primitives/accordion.ts"
 import {
+  createDialog,
+  type Dialog,
+  type DialogContentProps,
+  type DialogOptions,
+  type DialogOverlayProps,
+  type DialogTriggerProps,
+} from "../primitives/dialog.ts"
+import {
   createDisclosure,
   type Disclosure,
   type DisclosureOptions,
@@ -337,5 +345,42 @@ export function createUseToggleGroupItem(Vue: VueLike) {
     })
 
     return { itemProps, isPressed, isDisabled }
+  }
+}
+
+export interface VueDialog extends Dialog {
+  triggerProps: Ref<DialogTriggerProps>
+  overlayProps: Ref<DialogOverlayProps>
+  contentProps: Ref<DialogContentProps>
+  isOpen: Ref<boolean>
+}
+
+export function createUseDialog(Vue: VueLike) {
+  return function useDialog(opts: DialogOptions = {}): VueDialog {
+    const tick = Vue.ref(0)
+    const dialog = createDialog(opts)
+    const unsub = dialog.open.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+
+    const triggerProps = Vue.computed(() => {
+      void tick.value
+      return dialog.getTriggerProps()
+    })
+    const overlayProps = Vue.computed(() => {
+      void tick.value
+      return dialog.getOverlayProps()
+    })
+    const contentProps = Vue.computed(() => {
+      void tick.value
+      return dialog.getContentProps()
+    })
+    const isOpen = Vue.computed(() => {
+      void tick.value
+      return dialog.open.get()
+    })
+
+    return { ...dialog, triggerProps, overlayProps, contentProps, isOpen }
   }
 }

@@ -1,4 +1,5 @@
 import { createAccordion, type Accordion, type AccordionOptions } from "../primitives/accordion.ts"
+import { createDialog, type Dialog, type DialogOptions } from "../primitives/dialog.ts"
 import {
   createDisclosure,
   type Disclosure,
@@ -132,4 +133,26 @@ export function mountToggleGroup(opts: MountToggleGroupOptions): MountedToggleGr
   const tg = createToggleGroup(opts)
   const destroy = tg.mount(root)
   return { toggleGroup: tg, destroy }
+}
+
+export interface MountDialogOptions extends DialogOptions {
+  trigger?: HTMLElement | string
+  content: HTMLElement | string
+  overlay?: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedDialog {
+  dialog: Dialog
+  destroy: () => void
+}
+
+export function mountDialog(opts: MountDialogOptions): MountedDialog {
+  const parent = opts.parent ?? document
+  const trigger = opts.trigger ? resolve(opts.trigger, parent) : undefined
+  const content = resolve(opts.content, parent)
+  const overlay = opts.overlay ? resolve(opts.overlay, parent) : undefined
+  const dialog = createDialog(opts)
+  const destroy = dialog.mount({ trigger, content, overlay })
+  return { dialog, destroy }
 }

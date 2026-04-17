@@ -7,6 +7,7 @@ import {
   type AccordionTriggerProps,
   type RegisterItemOptions,
 } from "../primitives/accordion.ts"
+import { createDialog, type Dialog, type DialogOptions } from "../primitives/dialog.ts"
 import {
   createDisclosure,
   type Disclosure,
@@ -394,5 +395,44 @@ export function createUseToggleGroupItem(React: ReactLike) {
       isPressed: group.isPressed(value),
       isDisabled: group.isItemDisabled(value),
     }
+  }
+}
+
+export interface UseDialogOptions extends Omit<DialogOptions, "open"> {
+  open?: boolean
+}
+
+export function createUseDialog(React: ReactLike) {
+  return function useDialog(opts: UseDialogOptions = {}): Dialog {
+    const isControlled = opts.open !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    const dialog = React.useMemo(
+      () =>
+        createDialog({
+          ...opts,
+          open: isControlled ? () => optsRef.current.open as boolean : undefined,
+          onOpenChange: (next) => {
+            optsRef.current.onOpenChange?.(next)
+          },
+        }),
+      [isControlled],
+    )
+
+    React.useEffect(() => {
+      const unsub = dialog.open.subscribe(() => setTick((n) => n + 1))
+      return unsub
+    }, [dialog])
+
+    React.useEffect(() => {
+      if (isControlled) {
+        setTick((n) => n + 1)
+        dialog.notify()
+      }
+    }, [isControlled, opts.open])
+
+    return dialog
   }
 }

@@ -80,6 +80,10 @@
       "types": "./dist/primitives/toggle-group.d.mts",
       "default": "./dist/primitives/toggle-group.mjs"
     },
+    "./dialog": {
+      "types": "./dist/primitives/dialog.d.mts",
+      "default": "./dist/primitives/dialog.mjs"
+    },
     "./vanilla": {
       "types": "./dist/adapters/vanilla.d.mts",
       "default": "./dist/adapters/vanilla.mjs"
