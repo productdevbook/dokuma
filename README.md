@@ -12,7 +12,7 @@
 - **Tree-shakeable.** Each primitive is a separate sub-path export.
 - **Tiny.** Whole package under 75 KB raw, gzip ≈ 1/3 of that.
 
-> **Status:** very early. APIs may change. Twelve primitives shipped: `Disclosure`, `Accordion`, `Tabs`, `Switch`, `Toggle`, `Toggle Group`, `Dialog`, `Tooltip`, `Popover`, `Avatar`, `Progress`, `Menu`.
+> **Status:** very early. APIs may change. Fifteen primitives shipped: `Disclosure`, `Accordion`, `Tabs`, `Switch`, `Toggle`, `Toggle Group`, `Dialog`, `Tooltip`, `Popover`, `Avatar`, `Progress`, `Menu`, `Slider`, `Radio Group`, `Checkbox`.
 
 ## Install
 
@@ -105,6 +105,9 @@ const d = useDisclosure({ defaultOpen: false })
 | Avatar       | `dokuma/avatar`       | Image with fallback. Status state machine, eager preload.                |
 | Progress     | `dokuma/progress`     | ARIA progressbar with indeterminate, loading, complete states.           |
 | Menu         | `dokuma/menu`         | Click-triggered actions menu. Typeahead, focus-based navigation.         |
+| Slider       | `dokuma/slider`       | Range input. Single value or two-thumb range. Pointer + full keyboard.   |
+| Radio Group  | `dokuma/radio-group`  | Single-selection radio group. Roving tabindex, arrows navigate + select. |
+| Checkbox     | `dokuma/checkbox`     | Three-state: true / false / indeterminate. ARIA mixed.                   |
 
 ## Adapters
 
