@@ -45,6 +45,29 @@ describe("createNumberInput — value + clamp", () => {
     ni.setValue(7)
     expect(onValueChange).toHaveBeenLastCalledWith(7)
   })
+
+  it("formats integer values verbatim (regression: 10 must not become 1)", () => {
+    // Regex `/\.?0+$/` used to munch trailing zeros from the integer part.
+    const ni = createNumberInput({ defaultValue: 10 })
+    expect(ni.inputValue.get()).toBe("10")
+    ni.setValue(100)
+    expect(ni.inputValue.get()).toBe("100")
+    ni.setValue(20)
+    expect(ni.inputValue.get()).toBe("20")
+    ni.setValue(0)
+    expect(ni.inputValue.get()).toBe("0")
+  })
+
+  it("strips trailing zeros only after the decimal point", () => {
+    const ni = createNumberInput({ precision: 3, defaultValue: 1.5 })
+    expect(ni.inputValue.get()).toBe("1.5")
+    ni.setValue(1.1)
+    expect(ni.inputValue.get()).toBe("1.1")
+    ni.setValue(1)
+    expect(ni.inputValue.get()).toBe("1")
+    ni.setValue(10)
+    expect(ni.inputValue.get()).toBe("10")
+  })
 })
 
 describe("createNumberInput — increment / decrement", () => {

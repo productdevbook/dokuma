@@ -125,6 +125,14 @@ export function createOtpInput(options: OtpInputOptions = {}): OtpInput {
   }
 
   const setCharAt = (index: number, char: string): void => {
+    // Treat space as the empty-cell sentinel: clearing a cell drops it AND
+    // every cell to its right, so `value` never carries internal spaces.
+    // (Otherwise consumers see strings like " bc" which mis-report length and
+    // break isComplete.)
+    if (char === " ") {
+      value.set(readValue().slice(0, index))
+      return
+    }
     const cur = readValue().padEnd(length, " ")
     const next = cur.slice(0, index) + char + cur.slice(index + 1)
     value.set(next.replace(/ +$/, ""))

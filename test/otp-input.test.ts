@@ -118,6 +118,46 @@ describe("createOtpInput — input event", () => {
   })
 })
 
+describe("createOtpInput — backspace semantics", () => {
+  it("backspace on a filled cell drops that cell AND every cell to its right", () => {
+    // Regression: previous implementation kept tail cells, leaving an internal
+    // space in `value` (e.g. "abc" → backspace@0 → " bc"). That mis-reported
+    // length and could fire onComplete with a hole inside.
+    const o = createOtpInput({ length: 4, defaultValue: "abc", pattern: "a-z" })
+    o.getCellProps(0).onKeyDown({ key: "Backspace", preventDefault: () => {} })
+    expect(o.value.get()).toBe("")
+  })
+
+  it("backspace on the middle filled cell truncates from there", () => {
+    const o = createOtpInput({ length: 4, defaultValue: "abcd", pattern: "a-z" })
+    o.getCellProps(2).onKeyDown({ key: "Backspace", preventDefault: () => {} })
+    expect(o.value.get()).toBe("ab")
+    expect(o.isComplete.get()).toBe(false)
+  })
+
+  it("backspace on an empty cell moves back and clears the previous cell", () => {
+    const o = createOtpInput({ length: 4, defaultValue: "ab", pattern: "a-z" })
+    o.getCellProps(2).onKeyDown({ key: "Backspace", preventDefault: () => {} })
+    expect(o.value.get()).toBe("a")
+  })
+
+  it("value never contains internal spaces after any backspace sequence", () => {
+    const o = createOtpInput({ length: 5, defaultValue: "12345" })
+    o.getCellProps(1).onKeyDown({ key: "Backspace", preventDefault: () => {} })
+    expect(o.value.get()).not.toContain(" ")
+    o.getCellProps(0).onKeyDown({ key: "Backspace", preventDefault: () => {} })
+    expect(o.value.get()).not.toContain(" ")
+  })
+
+  it("isComplete cannot be true with a hole — implied by the no-spaces invariant", () => {
+    const o = createOtpInput({ length: 3, defaultValue: "123" })
+    expect(o.isComplete.get()).toBe(true)
+    o.getCellProps(0).onKeyDown({ key: "Backspace", preventDefault: () => {} })
+    expect(o.isComplete.get()).toBe(false)
+    expect(o.value.get()).toBe("")
+  })
+})
+
 describe("createOtpInput — hidden input", () => {
   it("returns hidden input props when name is set", () => {
     const o = createOtpInput({ length: 4, defaultValue: "1234", name: "code" })

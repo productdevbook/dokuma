@@ -2,6 +2,20 @@
 
 All notable changes to `dokuma` are documented here.
 
+## 0.2.1 — 2026-04-17
+
+Bug-fix patch focused on edge cases in the new 0.2 primitives. No API changes; safe upgrade from 0.2.0.
+
+### Fixes
+
+- **NumberInput** — `formatValue` was using the regex `/\.?0+$/` to strip trailing zeros, which munched zeros from the integer part too: `10` rendered as `1`, `100` as `1`, `0` as `""`. Now strips trailing zeros only when there is a decimal point.
+- **OtpInput** — Backspacing a filled cell padded the gap with a space, leaking strings like `" bc"` into `value` and breaking `isComplete`'s "all cells filled" check. Backspace now truncates from that cell to the right, so `value` never carries internal spaces and `isComplete` is exact.
+
+### Tests
+
+- +12 unit tests covering the regression cases above and additional alias-primitive edge cases (AlertDialog mount-level outside-click + Escape behavior, HoverCard hover-delay debouncing, Label `for` + `id` combinations, AspectRatio fresh-style invariant).
+- **414 tests** across 29 vitest suites (was 396 in 0.2.0).
+
 ## 0.2.0 — 2026-04-17
 
 Closes the radix-ui parity gap to the extent it makes sense for a headless library. **29 primitives total.**

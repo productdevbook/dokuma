@@ -109,7 +109,11 @@ export function createNumberInput(options: NumberInputOptions = {}): NumberInput
   const readOnlySubs = new Set<(v: boolean) => void>()
 
   function formatValue(n: number): string {
-    return options.format ? options.format(n) : n.toFixed(precision).replace(/\.?0+$/, "")
+    if (options.format) return options.format(n)
+    const s = n.toFixed(precision)
+    // Strip trailing zeros only after the decimal point — never inside the
+    // integer part (`10.toFixed(0) === "10"` must not become "1").
+    return s.indexOf(".") < 0 ? s : s.replace(/\.?0+$/, "")
   }
 
   function parseValue(s: string): number | null {
