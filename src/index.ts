@@ -1,4 +1,4 @@
-export { ZeminError } from "./errors.ts"
+export { DokumaError } from "./errors.ts"
 export { createSignal } from "./_signal.ts"
 export type { Signal, Subscriber, Unsubscribe } from "./_signal.ts"
 export { createDisclosure } from "./primitives/disclosure.ts"

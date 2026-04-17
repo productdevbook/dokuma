@@ -1,3 +1,3 @@
-export class ZeminError extends Error {
-  override name = "ZeminError"
+export class DokumaError extends Error {
+  override name = "DokumaError"
 }

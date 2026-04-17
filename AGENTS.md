@@ -11,7 +11,7 @@ Framework-agnostic, zero-dependency headless UI primitives. The weave (Turkish: 
 src/
   index.ts                 # Main entry — re-exports public API
   env.d.ts                 # Runtime DOM type declarations
-  errors.ts                # ZeminError, primitive-specific errors
+  errors.ts                # DokumaError, primitive-specific errors
   _types.ts                # Shared types (Orientation, Direction, Disabled, Id, …)
   _id.ts                   # createId — SSR-safe, collision-free id generator
   _signal.ts               # createSignal / createComputed — tiny reactive core
@@ -66,4 +66,8 @@ pnpm release        # pnpm test && build && bundle-budget && bumpp --commit --ta
 
 ## Status
 
-- 🚧 Skeleton in place. No primitives implemented yet.
+- ✅ 15 primitives shipped: Disclosure, Accordion, Tabs, Switch, Toggle, ToggleGroup, Dialog, Tooltip, Popover, Avatar, Progress, Menu, Slider, RadioGroup, Checkbox.
+- ✅ 3 adapters: vanilla, react, vue.
+- ✅ Published to npm as `dokuma`.
+- 🚧 Adapters: Svelte, Solid, Angular, Lit planned.
+- 🚧 Missing architectural primitives: Presence (animate-out), Portal, FocusScope (nested-modal stack), DismissibleLayer stack, Slot/asChild.
