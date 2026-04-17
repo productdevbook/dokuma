@@ -19,7 +19,6 @@ import {
   type TabPanelProps,
   type TabProps,
   type Tabs,
-  type TabsListProps,
   type TabsOptions,
 } from "../primitives/tabs.ts"
 
