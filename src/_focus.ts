@@ -1,5 +1,3 @@
-import { on } from "./_dom.ts"
-
 /**
  * Returns elements inside `root` that can receive focus, in document order.
  * Excludes elements that are disabled, inert, or visually hidden.
@@ -24,50 +22,6 @@ export function getFocusable(root: HTMLElement): HTMLElement[] {
     list.push(el)
   }
   return list
-}
-
-export interface TrapFocusOptions {
-  initialFocus?: HTMLElement | null
-}
-
-/**
- * Confines tab navigation inside `root`. On open, focus jumps to the first
- * focusable child (or the explicit `initialFocus`); if none exist, the root
- * itself gets focus (root must have `tabindex="-1"` to be focusable).
- *
- * Returns a release function that removes listeners.
- */
-export function trapFocus(root: HTMLElement, options: TrapFocusOptions = {}): () => void {
-  const focusable = getFocusable(root)
-  const initial = options.initialFocus ?? focusable[0] ?? root
-  initial.focus()
-
-  const handler = (event: KeyboardEvent): void => {
-    if (event.key !== "Tab") return
-    const list = getFocusable(root)
-    if (!list.length) {
-      event.preventDefault()
-      root.focus()
-      return
-    }
-    const first = list[0]!
-    const last = list[list.length - 1]!
-    const active = document.activeElement as HTMLElement | null
-
-    if (event.shiftKey) {
-      if (active === first || !root.contains(active)) {
-        event.preventDefault()
-        last.focus()
-      }
-    } else {
-      if (active === last || !root.contains(active)) {
-        event.preventDefault()
-        first.focus()
-      }
-    }
-  }
-
-  return on(document, "keydown", handler as EventListener, true)
 }
 
 // --- scroll lock (ref-counted, per-document) -------------------------------

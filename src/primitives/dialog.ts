@@ -1,6 +1,7 @@
 import { isBrowser, on } from "../_dom.ts"
-import { lockScroll, trapFocus } from "../_focus.ts"
+import { lockScroll } from "../_focus.ts"
 import { createId } from "../_id.ts"
+import { pushDismissibleLayer, pushFocusScope } from "../_layers.ts"
 import { createSignal, type Signal, type Unsubscribe } from "../_signal.ts"
 
 export interface DialogOptions {
@@ -228,7 +229,7 @@ export function createDialog(options: DialogOptions = {}): Dialog {
       teardownOpenSideEffects()
 
       if (modal) {
-        releaseTrap = trapFocus(content, {
+        releaseTrap = pushFocusScope(content, {
           initialFocus: options.initialFocus?.() ?? null,
         })
         releaseScroll = lockScroll()
@@ -238,18 +239,7 @@ export function createDialog(options: DialogOptions = {}): Dialog {
       }
 
       if (closeOnEscape) {
-        releaseEscape = on(
-          document,
-          "keydown",
-          (e) => {
-            const ev = e as KeyboardEvent
-            if (ev.key === "Escape") {
-              ev.preventDefault()
-              hide()
-            }
-          },
-          true,
-        )
+        releaseEscape = pushDismissibleLayer(() => hide())
       }
 
       if (closeOnOutsideClick) {

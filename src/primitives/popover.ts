@@ -1,6 +1,6 @@
 import { isBrowser, on } from "../_dom.ts"
-import { trapFocus } from "../_focus.ts"
 import { createId } from "../_id.ts"
+import { pushDismissibleLayer, pushFocusScope } from "../_layers.ts"
 import { autoPosition, type Align, type PositionOptions, type Side } from "../_position.ts"
 import { createSignal, type Signal, type Unsubscribe } from "../_signal.ts"
 
@@ -194,23 +194,13 @@ export function createPopover(options: PopoverOptions = {}): Popover {
       )
 
       if (shouldTrap) {
-        releaseTrap = trapFocus(content, {
+        releaseTrap = pushFocusScope(content, {
           initialFocus: options.initialFocus?.() ?? null,
         })
       }
 
       if (closeOnEscape) {
-        releaseEscape = on(
-          document,
-          "keydown",
-          (e) => {
-            if ((e as KeyboardEvent).key === "Escape") {
-              ;(e as KeyboardEvent).preventDefault()
-              hide()
-            }
-          },
-          true,
-        )
+        releaseEscape = pushDismissibleLayer(() => hide())
       }
 
       if (closeOnOutsideClick) {

@@ -211,3 +211,99 @@ describe("createDialog.mount (DOM)", () => {
     destroy()
   })
 })
+
+describe("createDialog (nested layers)", () => {
+  it("inner Escape closes only the inner dialog, then outer", () => {
+    const outerContent = document.createElement("div")
+    const outerBtn = document.createElement("button")
+    outerBtn.textContent = "outer"
+    outerContent.append(outerBtn)
+    document.body.append(outerContent)
+
+    const innerContent = document.createElement("div")
+    const innerBtn = document.createElement("button")
+    innerBtn.textContent = "inner"
+    innerContent.append(innerBtn)
+    document.body.append(innerContent)
+
+    const outer = createDialog({ defaultOpen: true })
+    const destroyOuter = outer.mount({ content: outerContent })
+    const inner = createDialog({ defaultOpen: true })
+    const destroyInner = inner.mount({ content: innerContent })
+
+    const escape = (): KeyboardEvent => {
+      const ev = new KeyboardEvent("keydown", { key: "Escape", cancelable: true })
+      document.dispatchEvent(ev)
+      return ev
+    }
+
+    escape()
+    expect(inner.open.get()).toBe(false)
+    expect(outer.open.get()).toBe(true)
+
+    escape()
+    expect(outer.open.get()).toBe(false)
+
+    destroyInner()
+    destroyOuter()
+  })
+
+  it("Tab inside inner dialog stays within inner content", () => {
+    const outerContent = document.createElement("div")
+    const outerA = document.createElement("button")
+    const outerB = document.createElement("button")
+    outerA.textContent = "outerA"
+    outerB.textContent = "outerB"
+    outerContent.append(outerA, outerB)
+    document.body.append(outerContent)
+
+    const innerContent = document.createElement("div")
+    const innerA = document.createElement("button")
+    const innerB = document.createElement("button")
+    innerA.textContent = "innerA"
+    innerB.textContent = "innerB"
+    innerContent.append(innerA, innerB)
+    document.body.append(innerContent)
+
+    const outer = createDialog({ defaultOpen: true })
+    const destroyOuter = outer.mount({ content: outerContent })
+    const inner = createDialog({ defaultOpen: true })
+    const destroyInner = inner.mount({ content: innerContent })
+
+    innerB.focus()
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab" }))
+    expect(document.activeElement).toBe(innerA)
+    expect(document.activeElement).not.toBe(outerA)
+
+    destroyInner()
+    destroyOuter()
+  })
+
+  it("after inner closes, outer's Tab trap is restored", () => {
+    const outerContent = document.createElement("div")
+    const outerA = document.createElement("button")
+    const outerB = document.createElement("button")
+    outerA.textContent = "a"
+    outerB.textContent = "b"
+    outerContent.append(outerA, outerB)
+    document.body.append(outerContent)
+
+    const innerContent = document.createElement("div")
+    innerContent.append(document.createElement("button"))
+    document.body.append(innerContent)
+
+    const outer = createDialog({ defaultOpen: true })
+    const destroyOuter = outer.mount({ content: outerContent })
+    const inner = createDialog({ defaultOpen: true })
+    const destroyInner = inner.mount({ content: innerContent })
+
+    inner.hide()
+
+    outerB.focus()
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab" }))
+    expect(document.activeElement).toBe(outerA)
+
+    destroyInner()
+    destroyOuter()
+  })
+})

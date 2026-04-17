@@ -1,5 +1,6 @@
 import { on } from "../_dom.ts"
 import { createId } from "../_id.ts"
+import { pushDismissibleLayer } from "../_layers.ts"
 import { autoPosition, type Align, type PositionOptions, type Side } from "../_position.ts"
 import { createSignal, type Signal, type Unsubscribe } from "../_signal.ts"
 
@@ -155,17 +156,10 @@ export function createTooltip(options: TooltipOptions = {}): Tooltip {
         options,
       )
 
-      releaseEscape = on(
-        document,
-        "keydown",
-        (e) => {
-          if ((e as KeyboardEvent).key === "Escape") {
-            clearTimers()
-            hide()
-          }
-        },
-        true,
-      )
+      releaseEscape = pushDismissibleLayer(() => {
+        clearTimers()
+        hide()
+      })
 
       // On touch devices, dismiss the tooltip on the next touchstart.
       releaseTouch = on(

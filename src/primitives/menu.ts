@@ -1,5 +1,6 @@
 import { isBrowser, on } from "../_dom.ts"
 import { createId } from "../_id.ts"
+import { pushDismissibleLayer } from "../_layers.ts"
 import { autoPosition, type Align, type PositionOptions, type Side } from "../_position.ts"
 import { createSignal, type Signal, type Unsubscribe } from "../_signal.ts"
 
@@ -462,19 +463,10 @@ export function createMenu(options: MenuOptions = {}): Menu {
       )
 
       if (closeOnEscape) {
-        releaseEscape = on(
-          document,
-          "keydown",
-          (e) => {
-            if ((e as KeyboardEvent).key === "Escape") {
-              ;(e as KeyboardEvent).preventDefault()
-              hide()
-              // restore focus to trigger after escape
-              queueMicrotask(() => trigger.focus())
-            }
-          },
-          true,
-        )
+        releaseEscape = pushDismissibleLayer(() => {
+          hide()
+          queueMicrotask(() => trigger.focus())
+        })
       }
 
       if (closeOnOutsideClick) {
