@@ -23,6 +23,20 @@ import {
   type PopoverTriggerProps,
 } from "../primitives/popover.ts"
 import {
+  createAvatar,
+  type Avatar,
+  type AvatarFallbackProps,
+  type AvatarImageProps,
+  type AvatarOptions,
+} from "../primitives/avatar.ts"
+import {
+  createProgress,
+  type Progress,
+  type ProgressIndicatorProps,
+  type ProgressOptions,
+  type ProgressRootProps,
+} from "../primitives/progress.ts"
+import {
   createTooltip,
   type Tooltip,
   type TooltipContentProps,
@@ -460,5 +474,59 @@ export function createUsePopover(Vue: VueLike) {
     })
 
     return { ...popover, triggerProps, contentProps, isOpen }
+  }
+}
+
+export interface VueAvatar extends Avatar {
+  imageProps: Ref<AvatarImageProps>
+  fallbackProps: Ref<AvatarFallbackProps>
+}
+
+export function createUseAvatar(Vue: VueLike) {
+  return function useAvatar(opts: AvatarOptions & { alt?: string } = {}): VueAvatar {
+    const tick = Vue.ref(0)
+    const avatar = createAvatar(opts)
+    const unsub = avatar.status.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+
+    const imageProps = Vue.computed(() => {
+      void tick.value
+      return avatar.getImageProps(opts.alt ?? "")
+    })
+    const fallbackProps = Vue.computed(() => {
+      void tick.value
+      return avatar.getFallbackProps()
+    })
+
+    return { ...avatar, imageProps, fallbackProps }
+  }
+}
+
+export interface VueProgress extends Progress {
+  rootProps: Ref<ProgressRootProps>
+  indicatorProps: Ref<ProgressIndicatorProps>
+}
+
+export function createUseProgress(Vue: VueLike) {
+  return function useProgress(opts: ProgressOptions = {}): VueProgress {
+    const tick = Vue.ref(0)
+    const progress = createProgress(opts)
+    const unsub = progress.value.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return progress.getRootProps()
+    })
+    const indicatorProps = Vue.computed(() => {
+      void tick.value
+      return progress.getIndicatorProps()
+    })
+
+    return { ...progress, rootProps, indicatorProps }
   }
 }

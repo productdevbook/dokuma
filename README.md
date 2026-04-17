@@ -12,7 +12,7 @@
 - **Tree-shakeable.** Each primitive is a separate sub-path export.
 - **Tiny.** Whole package under 75 KB raw, gzip ≈ 1/3 of that.
 
-> **Status:** very early. APIs may change. Nine primitives shipped: `Disclosure`, `Accordion`, `Tabs`, `Switch`, `Toggle`, `Toggle Group`, `Dialog`, `Tooltip`, `Popover`.
+> **Status:** very early. APIs may change. Eleven primitives shipped: `Disclosure`, `Accordion`, `Tabs`, `Switch`, `Toggle`, `Toggle Group`, `Dialog`, `Tooltip`, `Popover`, `Avatar`, `Progress`.
 
 ## Install
 
@@ -102,6 +102,8 @@ const d = useDisclosure({ defaultOpen: false })
 | Dialog       | `dokuma/dialog`       | Modal/non-modal dialog. Focus trap, scroll lock, escape, click-outside.  |
 | Tooltip      | `dokuma/tooltip`      | Hover/focus floating label. Viewport-aware positioning.                  |
 | Popover      | `dokuma/popover`      | Click-triggered floating panel. Focus trap, escape, click-outside.       |
+| Avatar       | `dokuma/avatar`       | Image with fallback. Status state machine, eager preload.                |
+| Progress     | `dokuma/progress`     | ARIA progressbar with indeterminate, loading, complete states.           |
 
 ## Adapters
 

@@ -1,6 +1,8 @@
 import { createAccordion, type Accordion, type AccordionOptions } from "../primitives/accordion.ts"
+import { createAvatar, type Avatar, type AvatarOptions } from "../primitives/avatar.ts"
 import { createDialog, type Dialog, type DialogOptions } from "../primitives/dialog.ts"
 import { createPopover, type Popover, type PopoverOptions } from "../primitives/popover.ts"
+import { createProgress, type Progress, type ProgressOptions } from "../primitives/progress.ts"
 import { createTooltip, type Tooltip, type TooltipOptions } from "../primitives/tooltip.ts"
 import {
   createDisclosure,
@@ -197,4 +199,44 @@ export function mountPopover(opts: MountPopoverOptions): MountedPopover {
   const popover = createPopover(opts)
   const destroy = popover.mount({ trigger, content })
   return { popover, destroy }
+}
+
+export interface MountAvatarOptions extends AvatarOptions {
+  image: HTMLImageElement | string
+  fallback?: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedAvatar {
+  avatar: Avatar
+  destroy: () => void
+}
+
+export function mountAvatar(opts: MountAvatarOptions): MountedAvatar {
+  const parent = opts.parent ?? document
+  const image = resolve(opts.image as HTMLElement | string, parent) as HTMLImageElement
+  const fallback = opts.fallback ? resolve(opts.fallback, parent) : undefined
+  const avatar = createAvatar(opts)
+  const destroy = avatar.mount({ image, fallback })
+  return { avatar, destroy }
+}
+
+export interface MountProgressOptions extends ProgressOptions {
+  root: HTMLElement | string
+  indicator?: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedProgress {
+  progress: Progress
+  destroy: () => void
+}
+
+export function mountProgress(opts: MountProgressOptions): MountedProgress {
+  const parent = opts.parent ?? document
+  const root = resolve(opts.root, parent)
+  const indicator = opts.indicator ? resolve(opts.indicator, parent) : undefined
+  const progress = createProgress(opts)
+  const destroy = progress.mount({ root, indicator })
+  return { progress, destroy }
 }

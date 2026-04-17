@@ -53,6 +53,18 @@
       "title": "Popover",
       "summary": "Click-triggered floating panel. role=dialog without aria-modal. Focus trap, escape, click-outside, restore focus. Same positioning as Tooltip.",
       "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "avatar",
+      "title": "Avatar",
+      "summary": "Image with fallback. Status state machine (idle/loading/loaded/error) with eager preload. Fallback shows during fetch and on error.",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "progress",
+      "title": "Progress",
+      "summary": "ARIA progressbar with indeterminate, loading, and complete states. value:number|null. Indicator gets a CSS-friendly width style.",
+      "adapters": ["vanilla", "react", "vue"]
     }
   ]
 }

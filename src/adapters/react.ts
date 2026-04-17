@@ -7,8 +7,10 @@ import {
   type AccordionTriggerProps,
   type RegisterItemOptions,
 } from "../primitives/accordion.ts"
+import { createAvatar, type Avatar, type AvatarOptions } from "../primitives/avatar.ts"
 import { createDialog, type Dialog, type DialogOptions } from "../primitives/dialog.ts"
 import { createPopover, type Popover, type PopoverOptions } from "../primitives/popover.ts"
+import { createProgress, type Progress, type ProgressOptions } from "../primitives/progress.ts"
 import { createTooltip, type Tooltip, type TooltipOptions } from "../primitives/tooltip.ts"
 import {
   createDisclosure,
@@ -514,5 +516,62 @@ export function createUsePopover(React: ReactLike) {
     }, [isControlled, opts.open])
 
     return popover
+  }
+}
+
+export function createUseAvatar(React: ReactLike) {
+  return function useAvatar(opts: AvatarOptions = {}): Avatar {
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    // Avatar's status is internal; recreate when src changes.
+    const avatar = React.useMemo(() => createAvatar(opts), [opts.src])
+
+    React.useEffect(() => {
+      const unsub = avatar.status.subscribe(() => setTick((n) => n + 1))
+      return unsub
+    }, [avatar])
+
+    return avatar
+  }
+}
+
+export interface UseProgressOptions extends Omit<ProgressOptions, "value"> {
+  value?: number | null
+}
+
+export function createUseProgress(React: ReactLike) {
+  return function useProgress(opts: UseProgressOptions = {}): Progress {
+    const isControlled = opts.value !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    const progress = React.useMemo(
+      () =>
+        createProgress({
+          ...opts,
+          value: isControlled ? () => optsRef.current.value as number | null : undefined,
+          onValueChange: (next) => {
+            optsRef.current.onValueChange?.(next)
+          },
+        }),
+      [isControlled, opts.max],
+    )
+
+    React.useEffect(() => {
+      const unsub = progress.value.subscribe(() => setTick((n) => n + 1))
+      return unsub
+    }, [progress])
+
+    React.useEffect(() => {
+      if (isControlled) {
+        setTick((n) => n + 1)
+        progress.notify()
+      }
+    }, [isControlled, opts.value])
+
+    return progress
   }
 }
