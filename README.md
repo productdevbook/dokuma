@@ -12,7 +12,7 @@
 - **Tree-shakeable.** Each primitive is a separate sub-path export.
 - **Tiny.** Whole package under 75 KB raw, gzip ≈ 1/3 of that.
 
-> **Status:** very early. APIs may change. Six primitives shipped: `Disclosure`, `Accordion`, `Tabs`, `Switch`, `Toggle`, `Toggle Group`.
+> **Status:** very early. APIs may change. Nine primitives shipped: `Disclosure`, `Accordion`, `Tabs`, `Switch`, `Toggle`, `Toggle Group`, `Dialog`, `Tooltip`, `Popover`.
 
 ## Install
 
@@ -99,6 +99,9 @@ const d = useDisclosure({ defaultOpen: false })
 | Switch       | `dokuma/switch`       | On/off control. `role="switch"`, optional hidden checkbox for forms.     |
 | Toggle       | `dokuma/toggle`       | Single pressed-state button (`aria-pressed`).                            |
 | Toggle Group | `dokuma/toggle-group` | Coordinated set of Toggles. Single (alignment) or multiple (formatting). |
+| Dialog       | `dokuma/dialog`       | Modal/non-modal dialog. Focus trap, scroll lock, escape, click-outside.  |
+| Tooltip      | `dokuma/tooltip`      | Hover/focus floating label. Viewport-aware positioning.                  |
+| Popover      | `dokuma/popover`      | Click-triggered floating panel. Focus trap, escape, click-outside.       |
 
 ## Adapters
 

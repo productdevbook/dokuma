@@ -16,6 +16,20 @@ import {
   type DialogTriggerProps,
 } from "../primitives/dialog.ts"
 import {
+  createPopover,
+  type Popover,
+  type PopoverContentProps,
+  type PopoverOptions,
+  type PopoverTriggerProps,
+} from "../primitives/popover.ts"
+import {
+  createTooltip,
+  type Tooltip,
+  type TooltipContentProps,
+  type TooltipOptions,
+  type TooltipTriggerProps,
+} from "../primitives/tooltip.ts"
+import {
   createDisclosure,
   type Disclosure,
   type DisclosureOptions,
@@ -382,5 +396,69 @@ export function createUseDialog(Vue: VueLike) {
     })
 
     return { ...dialog, triggerProps, overlayProps, contentProps, isOpen }
+  }
+}
+
+export interface VueTooltip extends Tooltip {
+  triggerProps: Ref<TooltipTriggerProps>
+  contentProps: Ref<TooltipContentProps>
+  isOpen: Ref<boolean>
+}
+
+export function createUseTooltip(Vue: VueLike) {
+  return function useTooltip(opts: TooltipOptions = {}): VueTooltip {
+    const tick = Vue.ref(0)
+    const tooltip = createTooltip(opts)
+    const unsub = tooltip.open.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+
+    const triggerProps = Vue.computed(() => {
+      void tick.value
+      return tooltip.getTriggerProps()
+    })
+    const contentProps = Vue.computed(() => {
+      void tick.value
+      return tooltip.getContentProps()
+    })
+    const isOpen = Vue.computed(() => {
+      void tick.value
+      return tooltip.open.get()
+    })
+
+    return { ...tooltip, triggerProps, contentProps, isOpen }
+  }
+}
+
+export interface VuePopover extends Popover {
+  triggerProps: Ref<PopoverTriggerProps>
+  contentProps: Ref<PopoverContentProps>
+  isOpen: Ref<boolean>
+}
+
+export function createUsePopover(Vue: VueLike) {
+  return function usePopover(opts: PopoverOptions = {}): VuePopover {
+    const tick = Vue.ref(0)
+    const popover = createPopover(opts)
+    const unsub = popover.open.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+
+    const triggerProps = Vue.computed(() => {
+      void tick.value
+      return popover.getTriggerProps()
+    })
+    const contentProps = Vue.computed(() => {
+      void tick.value
+      return popover.getContentProps()
+    })
+    const isOpen = Vue.computed(() => {
+      void tick.value
+      return popover.open.get()
+    })
+
+    return { ...popover, triggerProps, contentProps, isOpen }
   }
 }

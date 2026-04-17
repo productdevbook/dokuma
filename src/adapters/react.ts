@@ -8,6 +8,8 @@ import {
   type RegisterItemOptions,
 } from "../primitives/accordion.ts"
 import { createDialog, type Dialog, type DialogOptions } from "../primitives/dialog.ts"
+import { createPopover, type Popover, type PopoverOptions } from "../primitives/popover.ts"
+import { createTooltip, type Tooltip, type TooltipOptions } from "../primitives/tooltip.ts"
 import {
   createDisclosure,
   type Disclosure,
@@ -434,5 +436,83 @@ export function createUseDialog(React: ReactLike) {
     }, [isControlled, opts.open])
 
     return dialog
+  }
+}
+
+export interface UseTooltipOptions extends Omit<TooltipOptions, "open"> {
+  open?: boolean
+}
+
+export function createUseTooltip(React: ReactLike) {
+  return function useTooltip(opts: UseTooltipOptions = {}): Tooltip {
+    const isControlled = opts.open !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    const tooltip = React.useMemo(
+      () =>
+        createTooltip({
+          ...opts,
+          open: isControlled ? () => optsRef.current.open as boolean : undefined,
+          onOpenChange: (next) => {
+            optsRef.current.onOpenChange?.(next)
+          },
+        }),
+      [isControlled],
+    )
+
+    React.useEffect(() => {
+      const unsub = tooltip.open.subscribe(() => setTick((n) => n + 1))
+      return unsub
+    }, [tooltip])
+
+    React.useEffect(() => {
+      if (isControlled) {
+        setTick((n) => n + 1)
+        tooltip.notify()
+      }
+    }, [isControlled, opts.open])
+
+    return tooltip
+  }
+}
+
+export interface UsePopoverOptions extends Omit<PopoverOptions, "open"> {
+  open?: boolean
+}
+
+export function createUsePopover(React: ReactLike) {
+  return function usePopover(opts: UsePopoverOptions = {}): Popover {
+    const isControlled = opts.open !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    const popover = React.useMemo(
+      () =>
+        createPopover({
+          ...opts,
+          open: isControlled ? () => optsRef.current.open as boolean : undefined,
+          onOpenChange: (next) => {
+            optsRef.current.onOpenChange?.(next)
+          },
+        }),
+      [isControlled],
+    )
+
+    React.useEffect(() => {
+      const unsub = popover.open.subscribe(() => setTick((n) => n + 1))
+      return unsub
+    }, [popover])
+
+    React.useEffect(() => {
+      if (isControlled) {
+        setTick((n) => n + 1)
+        popover.notify()
+      }
+    }, [isControlled, opts.open])
+
+    return popover
   }
 }

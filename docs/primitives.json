@@ -41,6 +41,18 @@
       "title": "Dialog",
       "summary": "Modal or non-modal dialog. Focus trap, scroll lock, escape-to-close, click-outside-to-close, focus restore. Adapter handles portal mounting.",
       "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "tooltip",
+      "title": "Tooltip",
+      "summary": "Floating label on hover and focus. role=tooltip, aria-describedby. Viewport-aware positioning with one-axis flip. Touch-aware. Zero deps.",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "popover",
+      "title": "Popover",
+      "summary": "Click-triggered floating panel. role=dialog without aria-modal. Focus trap, escape, click-outside, restore focus. Same positioning as Tooltip.",
+      "adapters": ["vanilla", "react", "vue"]
     }
   ]
 }

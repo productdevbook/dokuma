@@ -688,3 +688,44 @@ ul.tabs li a.active {
     transform: translate(-50%, -50%) scale(1);
   }
 }
+
+.tooltip {
+  background: #14181d;
+  color: var(--fg);
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 70;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.popover {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  width: min(320px, calc(100vw - 32px));
+  z-index: 65;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.popover-title {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.popover-desc {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.popover-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}

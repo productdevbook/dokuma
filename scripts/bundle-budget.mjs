@@ -8,6 +8,11 @@ const BUDGETS = {
   // primitives with coordinator + keyboard + per-item registry are larger
   "primitives/accordion.mjs": 9 * 1024,
   "primitives/tabs.mjs": 9 * 1024,
+  "primitives/toggle-group.mjs": 9 * 1024,
+  // adapters bundle every primitive's hooks; budget grows with primitive count
+  "adapters/react.mjs": 16 * 1024,
+  "adapters/vue.mjs": 16 * 1024,
+  "adapters/vanilla.mjs": 8 * 1024,
 }
 
 let failed = false

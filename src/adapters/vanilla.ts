@@ -1,5 +1,7 @@
 import { createAccordion, type Accordion, type AccordionOptions } from "../primitives/accordion.ts"
 import { createDialog, type Dialog, type DialogOptions } from "../primitives/dialog.ts"
+import { createPopover, type Popover, type PopoverOptions } from "../primitives/popover.ts"
+import { createTooltip, type Tooltip, type TooltipOptions } from "../primitives/tooltip.ts"
 import {
   createDisclosure,
   type Disclosure,
@@ -155,4 +157,44 @@ export function mountDialog(opts: MountDialogOptions): MountedDialog {
   const dialog = createDialog(opts)
   const destroy = dialog.mount({ trigger, content, overlay })
   return { dialog, destroy }
+}
+
+export interface MountTooltipOptions extends TooltipOptions {
+  trigger: HTMLElement | string
+  content: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedTooltip {
+  tooltip: Tooltip
+  destroy: () => void
+}
+
+export function mountTooltip(opts: MountTooltipOptions): MountedTooltip {
+  const parent = opts.parent ?? document
+  const trigger = resolve(opts.trigger, parent)
+  const content = resolve(opts.content, parent)
+  const tooltip = createTooltip(opts)
+  const destroy = tooltip.mount({ trigger, content })
+  return { tooltip, destroy }
+}
+
+export interface MountPopoverOptions extends PopoverOptions {
+  trigger: HTMLElement | string
+  content: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedPopover {
+  popover: Popover
+  destroy: () => void
+}
+
+export function mountPopover(opts: MountPopoverOptions): MountedPopover {
+  const parent = opts.parent ?? document
+  const trigger = resolve(opts.trigger, parent)
+  const content = resolve(opts.content, parent)
+  const popover = createPopover(opts)
+  const destroy = popover.mount({ trigger, content })
+  return { popover, destroy }
 }
