@@ -70,29 +70,46 @@ export function trapFocus(root: HTMLElement, options: TrapFocusOptions = {}): ()
   return on(document, "keydown", handler as EventListener, true)
 }
 
-// --- scroll lock (ref-counted) ----------------------------------------------
+// --- scroll lock (ref-counted, per-document) -------------------------------
 
-let lockCount = 0
-let savedBodyOverflow = ""
-let savedBodyPaddingRight = ""
-let savedHtmlOverflow = ""
+interface ScrollLockState {
+  count: number
+  bodyOverflow: string
+  bodyPaddingRight: string
+  htmlOverflow: string
+}
+
+const SCROLL_LOCK_KEY = Symbol.for("dokuma.scrollLock")
+
+interface DocumentWithLock extends Document {
+  [SCROLL_LOCK_KEY]?: ScrollLockState
+}
 
 /**
  * Locks `<body>` and `<html>` scrolling. Compensates for the disappearing
- * scrollbar by padding `<body>` to prevent layout shift. Ref-counted so nested
- * dialogs can stack without fighting; the lock releases when the count returns
- * to zero. Returns a release function (idempotent — safe to call twice).
+ * scrollbar by padding `<body>` to prevent layout shift. Ref-counted per
+ * document so nested dialogs stack without fighting; the lock releases when
+ * the count returns to zero. State lives on the document itself (not module
+ * scope), keeping SSR safe and surviving module duplication. Returns a
+ * release function (idempotent — safe to call twice).
  */
 export function lockScroll(): () => void {
   if (typeof document === "undefined") return () => {}
 
-  if (lockCount === 0) {
-    const body = document.body
-    const html = document.documentElement
+  const doc = document as DocumentWithLock
+  let state = doc[SCROLL_LOCK_KEY]
+  if (!state) {
+    state = { count: 0, bodyOverflow: "", bodyPaddingRight: "", htmlOverflow: "" }
+    doc[SCROLL_LOCK_KEY] = state
+  }
+
+  if (state.count === 0) {
+    const body = doc.body
+    const html = doc.documentElement
     const scrollbarWidth = window.innerWidth - html.clientWidth
-    savedBodyOverflow = body.style.overflow
-    savedBodyPaddingRight = body.style.paddingRight
-    savedHtmlOverflow = html.style.overflow
+    state.bodyOverflow = body.style.overflow
+    state.bodyPaddingRight = body.style.paddingRight
+    state.htmlOverflow = html.style.overflow
     body.style.overflow = "hidden"
     html.style.overflow = "hidden"
     if (scrollbarWidth > 0) {
@@ -100,22 +117,22 @@ export function lockScroll(): () => void {
       body.style.paddingRight = `${current + scrollbarWidth}px`
     }
   }
-  lockCount++
+  state.count++
 
   let released = false
   return () => {
     if (released) return
     released = true
-    lockCount--
-    if (lockCount === 0) {
-      const body = document.body
-      const html = document.documentElement
-      body.style.overflow = savedBodyOverflow
-      body.style.paddingRight = savedBodyPaddingRight
-      html.style.overflow = savedHtmlOverflow
-      savedBodyOverflow = ""
-      savedBodyPaddingRight = ""
-      savedHtmlOverflow = ""
+    state!.count--
+    if (state!.count === 0) {
+      const body = doc.body
+      const html = doc.documentElement
+      body.style.overflow = state!.bodyOverflow
+      body.style.paddingRight = state!.bodyPaddingRight
+      html.style.overflow = state!.htmlOverflow
+      state!.bodyOverflow = ""
+      state!.bodyPaddingRight = ""
+      state!.htmlOverflow = ""
     }
   }
 }
