@@ -4,7 +4,11 @@ import { join } from "node:path"
 
 const DIST = "dist"
 const DEFAULT_BUDGET = 6 * 1024
-const BUDGETS = {}
+const BUDGETS = {
+  // primitives with coordinator + keyboard + per-item registry are larger
+  "primitives/accordion.mjs": 9 * 1024,
+  "primitives/tabs.mjs": 9 * 1024,
+}
 
 let failed = false
 
