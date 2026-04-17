@@ -27,6 +27,8 @@ jobs:
 
       - run: pnpm typecheck
 
+      - run: pnpm sync-exports --check
+
       - run: pnpm vitest run
 
       - run: pnpm build

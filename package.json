@@ -56,66 +56,6 @@
       "types": "./dist/index.d.mts",
       "default": "./dist/index.mjs"
     },
-    "./disclosure": {
-      "types": "./dist/primitives/disclosure.d.mts",
-      "default": "./dist/primitives/disclosure.mjs"
-    },
-    "./accordion": {
-      "types": "./dist/primitives/accordion.d.mts",
-      "default": "./dist/primitives/accordion.mjs"
-    },
-    "./tabs": {
-      "types": "./dist/primitives/tabs.d.mts",
-      "default": "./dist/primitives/tabs.mjs"
-    },
-    "./switch": {
-      "types": "./dist/primitives/switch.d.mts",
-      "default": "./dist/primitives/switch.mjs"
-    },
-    "./toggle": {
-      "types": "./dist/primitives/toggle.d.mts",
-      "default": "./dist/primitives/toggle.mjs"
-    },
-    "./toggle-group": {
-      "types": "./dist/primitives/toggle-group.d.mts",
-      "default": "./dist/primitives/toggle-group.mjs"
-    },
-    "./dialog": {
-      "types": "./dist/primitives/dialog.d.mts",
-      "default": "./dist/primitives/dialog.mjs"
-    },
-    "./tooltip": {
-      "types": "./dist/primitives/tooltip.d.mts",
-      "default": "./dist/primitives/tooltip.mjs"
-    },
-    "./popover": {
-      "types": "./dist/primitives/popover.d.mts",
-      "default": "./dist/primitives/popover.mjs"
-    },
-    "./avatar": {
-      "types": "./dist/primitives/avatar.d.mts",
-      "default": "./dist/primitives/avatar.mjs"
-    },
-    "./progress": {
-      "types": "./dist/primitives/progress.d.mts",
-      "default": "./dist/primitives/progress.mjs"
-    },
-    "./menu": {
-      "types": "./dist/primitives/menu.d.mts",
-      "default": "./dist/primitives/menu.mjs"
-    },
-    "./slider": {
-      "types": "./dist/primitives/slider.d.mts",
-      "default": "./dist/primitives/slider.mjs"
-    },
-    "./radio-group": {
-      "types": "./dist/primitives/radio-group.d.mts",
-      "default": "./dist/primitives/radio-group.mjs"
-    },
-    "./checkbox": {
-      "types": "./dist/primitives/checkbox.d.mts",
-      "default": "./dist/primitives/checkbox.mjs"
-    },
     "./vanilla": {
       "types": "./dist/adapters/vanilla.d.mts",
       "default": "./dist/adapters/vanilla.mjs"
@@ -127,10 +67,71 @@
     "./vue": {
       "types": "./dist/adapters/vue.d.mts",
       "default": "./dist/adapters/vue.mjs"
+    },
+    "./accordion": {
+      "types": "./dist/primitives/accordion.d.mts",
+      "default": "./dist/primitives/accordion.mjs"
+    },
+    "./avatar": {
+      "types": "./dist/primitives/avatar.d.mts",
+      "default": "./dist/primitives/avatar.mjs"
+    },
+    "./checkbox": {
+      "types": "./dist/primitives/checkbox.d.mts",
+      "default": "./dist/primitives/checkbox.mjs"
+    },
+    "./dialog": {
+      "types": "./dist/primitives/dialog.d.mts",
+      "default": "./dist/primitives/dialog.mjs"
+    },
+    "./disclosure": {
+      "types": "./dist/primitives/disclosure.d.mts",
+      "default": "./dist/primitives/disclosure.mjs"
+    },
+    "./menu": {
+      "types": "./dist/primitives/menu.d.mts",
+      "default": "./dist/primitives/menu.mjs"
+    },
+    "./popover": {
+      "types": "./dist/primitives/popover.d.mts",
+      "default": "./dist/primitives/popover.mjs"
+    },
+    "./progress": {
+      "types": "./dist/primitives/progress.d.mts",
+      "default": "./dist/primitives/progress.mjs"
+    },
+    "./radio-group": {
+      "types": "./dist/primitives/radio-group.d.mts",
+      "default": "./dist/primitives/radio-group.mjs"
+    },
+    "./slider": {
+      "types": "./dist/primitives/slider.d.mts",
+      "default": "./dist/primitives/slider.mjs"
+    },
+    "./switch": {
+      "types": "./dist/primitives/switch.d.mts",
+      "default": "./dist/primitives/switch.mjs"
+    },
+    "./tabs": {
+      "types": "./dist/primitives/tabs.d.mts",
+      "default": "./dist/primitives/tabs.mjs"
+    },
+    "./toggle": {
+      "types": "./dist/primitives/toggle.d.mts",
+      "default": "./dist/primitives/toggle.mjs"
+    },
+    "./toggle-group": {
+      "types": "./dist/primitives/toggle-group.d.mts",
+      "default": "./dist/primitives/toggle-group.mjs"
+    },
+    "./tooltip": {
+      "types": "./dist/primitives/tooltip.d.mts",
+      "default": "./dist/primitives/tooltip.mjs"
     }
   },
   "scripts": {
-    "build": "obuild",
+    "build": "node scripts/sync-exports.mjs && obuild",
+    "sync-exports": "node scripts/sync-exports.mjs",
     "dev": "vitest",
     "lint": "oxlint . && oxfmt --check .",
     "lint:fix": "oxlint . --fix && oxfmt .",
@@ -140,7 +141,7 @@
     "bundle-budget": "node scripts/bundle-budget.mjs",
     "docs": "node docs/serve.mjs",
     "attw": "pnpm dlx @arethetypeswrong/cli --pack . --profile esm-only",
-    "release": "pnpm test && pnpm build && pnpm bundle-budget && bumpp --commit --tag --push --all",
+    "release": "pnpm test && pnpm build && pnpm bundle-budget && pnpm attw && bumpp --commit --tag --push --all",
     "prepack": "pnpm build"
   },
   "devDependencies": {
