@@ -41,6 +41,12 @@ import {
   type PaginationOptions,
 } from "../primitives/pagination.ts"
 import {
+  createNumberInput,
+  type NumberInput,
+  type NumberInputOptions,
+} from "../primitives/number-input.ts"
+import { createOtpInput, type OtpInput, type OtpInputOptions } from "../primitives/otp-input.ts"
+import {
   createRadioGroup,
   type RadioGroup,
   type RadioGroupOptions,
@@ -692,6 +698,207 @@ export function mountVisuallyHidden(opts: MountVisuallyHiddenOptions): MountedVi
     visuallyHidden,
     destroy: () => {
       root.setAttribute("style", previous)
+    },
+  }
+}
+
+export interface MountNumberInputOptions extends NumberInputOptions {
+  input: HTMLInputElement | string
+  increment?: HTMLElement | string
+  decrement?: HTMLElement | string
+  hiddenInput?: HTMLInputElement | string
+  parent?: ParentNode
+}
+
+export interface MountedNumberInput {
+  numberInput: NumberInput
+  destroy: () => void
+}
+
+/**
+ * Wires a number input + optional increment/decrement buttons. Call render
+ * subscribers yourself via `numberInput.value.subscribe(...)` if you need to
+ * react to changes; the props are applied imperatively here, mirroring the
+ * other vanilla mount helpers.
+ */
+export function mountNumberInput(opts: MountNumberInputOptions): MountedNumberInput {
+  const parent = opts.parent ?? document
+  const input = resolve(opts.input as HTMLElement | string, parent) as HTMLInputElement
+  const inc = opts.increment ? resolve(opts.increment, parent) : undefined
+  const dec = opts.decrement ? resolve(opts.decrement, parent) : undefined
+  const hidden = opts.hiddenInput
+    ? (resolve(opts.hiddenInput as HTMLElement | string, parent) as HTMLInputElement)
+    : undefined
+  const numberInput = createNumberInput(opts)
+
+  const apply = (): void => {
+    const p = numberInput.getInputProps()
+    input.type = p.type
+    input.setAttribute("inputmode", p.inputmode)
+    input.setAttribute("autocomplete", p.autocomplete)
+    input.setAttribute("role", p.role)
+    input.value = p.value
+    if (p["aria-valuenow"] != null) input.setAttribute("aria-valuenow", String(p["aria-valuenow"]))
+    if (p["aria-valuemin"] != null) input.setAttribute("aria-valuemin", String(p["aria-valuemin"]))
+    if (p["aria-valuemax"] != null) input.setAttribute("aria-valuemax", String(p["aria-valuemax"]))
+    if (p["aria-valuetext"]) input.setAttribute("aria-valuetext", p["aria-valuetext"])
+    input.disabled = !!p["aria-disabled"]
+    input.readOnly = !!p.readOnly
+    if (inc) {
+      const ip = numberInput.getIncrementProps()
+      ;(inc as HTMLButtonElement).disabled = ip.disabled
+    }
+    if (dec) {
+      const dp = numberInput.getDecrementProps()
+      ;(dec as HTMLButtonElement).disabled = dp.disabled
+    }
+    if (hidden) {
+      const hp = numberInput.getHiddenInputProps()
+      if (hp) {
+        hidden.type = "hidden"
+        hidden.name = hp.name
+        hidden.value = hp.value
+      }
+    }
+  }
+
+  const onInput = (): void => {
+    numberInput.getInputProps().onInput({ currentTarget: { value: input.value } })
+  }
+  const onKeyDown = (e: KeyboardEvent): void => {
+    numberInput.getInputProps().onKeyDown({
+      key: e.key,
+      preventDefault: () => e.preventDefault(),
+    })
+  }
+  const onBlur = (): void => numberInput.getInputProps().onBlur()
+  const onIncDown = (e: PointerEvent): void => {
+    numberInput.getIncrementProps().onPointerDown({ preventDefault: () => e.preventDefault() })
+  }
+  const onIncUp = (): void => numberInput.getIncrementProps().onPointerUp()
+  const onIncLeave = (): void => numberInput.getIncrementProps().onPointerLeave()
+  const onDecDown = (e: PointerEvent): void => {
+    numberInput.getDecrementProps().onPointerDown({ preventDefault: () => e.preventDefault() })
+  }
+  const onDecUp = (): void => numberInput.getDecrementProps().onPointerUp()
+  const onDecLeave = (): void => numberInput.getDecrementProps().onPointerLeave()
+
+  apply()
+  input.addEventListener("input", onInput)
+  input.addEventListener("keydown", onKeyDown)
+  input.addEventListener("blur", onBlur)
+  inc?.addEventListener("pointerdown", onIncDown as EventListener)
+  inc?.addEventListener("pointerup", onIncUp)
+  inc?.addEventListener("pointerleave", onIncLeave)
+  dec?.addEventListener("pointerdown", onDecDown as EventListener)
+  dec?.addEventListener("pointerup", onDecUp)
+  dec?.addEventListener("pointerleave", onDecLeave)
+
+  const unsub = numberInput.value.subscribe(apply)
+  const unsub2 = numberInput.inputValue.subscribe(apply)
+
+  return {
+    numberInput,
+    destroy: () => {
+      unsub()
+      unsub2()
+      input.removeEventListener("input", onInput)
+      input.removeEventListener("keydown", onKeyDown)
+      input.removeEventListener("blur", onBlur)
+      inc?.removeEventListener("pointerdown", onIncDown as EventListener)
+      inc?.removeEventListener("pointerup", onIncUp)
+      inc?.removeEventListener("pointerleave", onIncLeave)
+      dec?.removeEventListener("pointerdown", onDecDown as EventListener)
+      dec?.removeEventListener("pointerup", onDecUp)
+      dec?.removeEventListener("pointerleave", onDecLeave)
+    },
+  }
+}
+
+export interface MountOtpInputOptions extends OtpInputOptions {
+  cells: Array<HTMLInputElement | string>
+  hiddenInput?: HTMLInputElement | string
+  parent?: ParentNode
+}
+
+export interface MountedOtpInput {
+  otpInput: OtpInput
+  destroy: () => void
+}
+
+/**
+ * Wires an array of pre-rendered cell <input>s. Each input gets its props
+ * applied + handlers attached; the primitive's getCellId is overwritten to
+ * point at the actual element id so its internal focusCell can find it.
+ */
+export function mountOtpInput(opts: MountOtpInputOptions): MountedOtpInput {
+  const parent = opts.parent ?? document
+  const cells = opts.cells.map(
+    (c) => resolve(c as HTMLElement | string, parent) as HTMLInputElement,
+  )
+  const hidden = opts.hiddenInput
+    ? (resolve(opts.hiddenInput as HTMLElement | string, parent) as HTMLInputElement)
+    : undefined
+  const otpInput = createOtpInput({ ...opts, length: cells.length })
+
+  // Replace the primitive-generated cell ids with the real DOM ids so that
+  // the internal focusCell(index) can locate the right element.
+  for (let i = 0; i < cells.length; i++) cells[i]!.id = otpInput.getCellId(i)
+
+  const apply = (): void => {
+    for (let i = 0; i < cells.length; i++) {
+      const cell = cells[i]!
+      const p = otpInput.getCellProps(i)
+      cell.type = p.type
+      cell.setAttribute("inputmode", p.inputmode)
+      cell.setAttribute("autocomplete", p.autocomplete)
+      cell.setAttribute("maxlength", String(p.maxlength))
+      cell.setAttribute("pattern", p.pattern)
+      cell.value = p.value
+      cell.setAttribute("aria-label", p["aria-label"])
+      cell.disabled = !!p.disabled
+    }
+    if (hidden) {
+      const hp = otpInput.getHiddenInputProps()
+      if (hp) {
+        hidden.type = "hidden"
+        hidden.name = hp.name
+        hidden.value = hp.value
+      }
+    }
+  }
+
+  const handlers = cells.map((cell, i) => {
+    const p = otpInput.getCellProps(i)
+    const onInput = (): void => p.onInput({ currentTarget: { value: cell.value } })
+    const onKeyDown = (e: KeyboardEvent): void =>
+      p.onKeyDown({ key: e.key, preventDefault: () => e.preventDefault() })
+    const onPaste = (e: ClipboardEvent): void =>
+      p.onPaste({
+        clipboardData: e.clipboardData ?? undefined,
+        preventDefault: () => e.preventDefault(),
+      })
+    const onFocus = (): void => p.onFocus({ currentTarget: cell })
+    cell.addEventListener("input", onInput)
+    cell.addEventListener("keydown", onKeyDown)
+    cell.addEventListener("paste", onPaste)
+    cell.addEventListener("focus", onFocus)
+    return { cell, onInput, onKeyDown, onPaste, onFocus }
+  })
+
+  apply()
+  const unsub = otpInput.value.subscribe(apply)
+
+  return {
+    otpInput,
+    destroy: () => {
+      unsub()
+      for (const h of handlers) {
+        h.cell.removeEventListener("input", h.onInput)
+        h.cell.removeEventListener("keydown", h.onKeyDown)
+        h.cell.removeEventListener("paste", h.onPaste)
+        h.cell.removeEventListener("focus", h.onFocus)
+      }
     },
   }
 }

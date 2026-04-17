@@ -21,7 +21,7 @@ const BUDGETS = {
   // adapters bundle every primitive's hooks; budget grows with primitive count
   "adapters/react.mjs": 28 * 1024,
   "adapters/vue.mjs": 28 * 1024,
-  "adapters/vanilla.mjs": 12 * 1024,
+  "adapters/vanilla.mjs": 20 * 1024,
 }
 
 let failed = false

@@ -119,6 +119,60 @@
       "title": "Visually Hidden",
       "summary": "Screen-reader-only content. Standard .sr-only style block — invisible visually but still in the accessibility tree.",
       "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "collapsible",
+      "title": "Collapsible",
+      "summary": "Disclosure under the Radix-style vocabulary. Behavior + ARIA identical; different name for design-system parity.",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "alert-dialog",
+      "title": "Alert Dialog",
+      "summary": "Dialog with role=alertdialog and outside-click closing forced off. For destructive confirmations.",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "hover-card",
+      "title": "Hover Card",
+      "summary": "Tooltip with longer delays and role=dialog content for interactive children (links, buttons).",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "label",
+      "title": "Label",
+      "summary": "<label> association helper. Emits the DOM `for` attribute (React adapters rename to htmlFor).",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "aspect-ratio",
+      "title": "Aspect Ratio",
+      "summary": "Modern CSS aspect-ratio wrapper for media slots. Stateless one-line style block.",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "breadcrumb",
+      "title": "Breadcrumb",
+      "summary": "Pure ARIA wrapper for a breadcrumb trail. Caller renders items; aria-current on the active page.",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "pagination",
+      "title": "Pagination",
+      "summary": "Page list with the standard ellipsis-collapse algorithm + canGoNext/Prev signals + step button props.",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "number-input",
+      "title": "Number Input",
+      "summary": "Stepper with min/max/step/precision, hold-to-repeat, clampValueOnBlur, hidden form input.",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "otp-input",
+      "title": "OTP Input",
+      "summary": "N-cell pin input with auto-advance, backspace navigation, paste distribution, isComplete signal.",
+      "adapters": ["vanilla", "react", "vue"]
     }
   ]
 }
