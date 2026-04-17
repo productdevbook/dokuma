@@ -1,5 +1,12 @@
 import { createPresence, type PresenceStatus } from "../_presence.ts"
 import type { Signal } from "../_signal.ts"
+import {
+  createCombobox,
+  type Combobox,
+  type ComboboxOptionProps,
+  type ComboboxOptions,
+  type RegisterComboboxItemOptions,
+} from "../primitives/combobox.ts"
 import { createToaster, type Toaster, type ToasterOptions } from "../primitives/toaster.ts"
 import {
   createAccordion,
@@ -847,5 +854,102 @@ export function createUseToaster(React: ReactLike) {
       return unsub
     }, [toaster])
     return toaster
+  }
+}
+
+export interface UseComboboxOptions extends Omit<ComboboxOptions, "open" | "value"> {
+  open?: boolean
+  value?: string
+}
+
+export function createUseCombobox(React: ReactLike) {
+  return function useCombobox(opts: UseComboboxOptions = {}): Combobox {
+    const isControlledOpen = opts.open !== undefined
+    const isControlledValue = opts.value !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    const cb = React.useMemo(
+      () =>
+        createCombobox({
+          ...opts,
+          open: isControlledOpen ? () => optsRef.current.open as boolean : undefined,
+          value: isControlledValue ? () => optsRef.current.value as string : undefined,
+          onOpenChange: (next) => optsRef.current.onOpenChange?.(next),
+          onValueChange: (next) => optsRef.current.onValueChange?.(next),
+        }),
+      [isControlledOpen, isControlledValue],
+    )
+
+    React.useEffect(() => {
+      const unsubs = [
+        cb.open.subscribe(() => setTick((n) => n + 1)),
+        cb.value.subscribe(() => setTick((n) => n + 1)),
+        cb.query.subscribe(() => setTick((n) => n + 1)),
+        cb.highlighted.subscribe(() => setTick((n) => n + 1)),
+        cb.filteredItems.subscribe(() => setTick((n) => n + 1)),
+      ]
+      return () => {
+        for (const u of unsubs) u()
+      }
+    }, [cb])
+
+    React.useEffect(() => {
+      if (isControlledOpen) setTick((n) => n + 1)
+    }, [isControlledOpen, opts.open])
+
+    React.useEffect(() => {
+      if (isControlledValue) setTick((n) => n + 1)
+    }, [isControlledValue, opts.value])
+
+    return cb
+  }
+}
+
+export interface UseComboboxItemResult {
+  optionProps: ComboboxOptionProps
+  isSelected: boolean
+  isHighlighted: boolean
+  isDisabled: boolean
+}
+
+export function createUseComboboxItem(React: ReactLike) {
+  return function useComboboxItem(
+    cb: Combobox,
+    value: string,
+    opts: RegisterComboboxItemOptions = {},
+  ): UseComboboxItemResult {
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    React.useEffect(() => {
+      const handle = cb.registerItem(value, {
+        disabled: optsRef.current.disabled
+          ? () => optsRef.current.disabled?.() ?? false
+          : undefined,
+        label: optsRef.current.label,
+      })
+      const unsubs = [
+        cb.highlighted.subscribe(() => setTick((n) => n + 1)),
+        cb.value.subscribe(() => setTick((n) => n + 1)),
+      ]
+      return () => {
+        for (const u of unsubs) u()
+        handle.unregister()
+      }
+    }, [cb, value])
+
+    if (!cb.hasItem(value)) {
+      cb.registerItem(value, optsRef.current)
+    }
+
+    return {
+      optionProps: cb.getOptionProps(value),
+      isSelected: cb.value.get() === value,
+      isHighlighted: cb.highlighted.get() === value,
+      isDisabled: cb.isItemDisabled(value),
+    }
   }
 }

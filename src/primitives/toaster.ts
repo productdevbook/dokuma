@@ -281,7 +281,8 @@ export function createToaster(options: ToasterOptions = {}): Toaster {
   const dismiss = (id: string): void => dismissInternal(id)
 
   const dismissAll = (): void => {
-    for (const id of [...items.keys()]) dismissInternal(id)
+    const ids = Array.from(items.keys())
+    for (const id of ids) dismissInternal(id)
   }
 
   const update = (

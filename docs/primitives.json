@@ -95,6 +95,12 @@
       "title": "Toaster",
       "summary": "Notification queue with auto-dismiss timer, hover/focus pause, ARIA live region, and per-toast actions. Each toast animates out via Presence.",
       "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "combobox",
+      "title": "Combobox",
+      "summary": "Searchable single-select. WAI-ARIA 1.2 combobox pattern with aria-activedescendant. Type-to-filter, full keyboard nav, optional allowCustomValue.",
+      "adapters": ["vanilla", "react", "vue"]
     }
   ]
 }

@@ -12,6 +12,8 @@ import {
   createUseAccordionItem,
   createUseAvatar,
   createUseCheckbox,
+  createUseCombobox,
+  createUseComboboxItem,
   createUseDialog,
   createUseDisclosure,
   createUseMenu,
@@ -56,3 +58,6 @@ export const useRadioItem: ReturnType<typeof createUseRadioItem> = createUseRadi
 export const useCheckbox: ReturnType<typeof createUseCheckbox> = createUseCheckbox(React)
 export const usePresence: ReturnType<typeof createUsePresence> = createUsePresence(React)
 export const useToaster: ReturnType<typeof createUseToaster> = createUseToaster(React)
+export const useCombobox: ReturnType<typeof createUseCombobox> = createUseCombobox(React)
+export const useComboboxItem: ReturnType<typeof createUseComboboxItem> =
+  createUseComboboxItem(React)

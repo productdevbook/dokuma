@@ -154,6 +154,19 @@ export type {
   CheckedState,
 } from "./primitives/checkbox.ts"
 
+export { createCombobox } from "./primitives/combobox.ts"
+export type {
+  Combobox,
+  ComboboxHiddenInputProps,
+  ComboboxInputProps,
+  ComboboxItemHandle,
+  ComboboxListboxProps,
+  ComboboxOptionProps,
+  ComboboxOptions,
+  ComboboxTriggerProps,
+  RegisterComboboxItemOptions,
+} from "./primitives/combobox.ts"
+
 export { createToaster } from "./primitives/toaster.ts"
 export type {
   Toaster,

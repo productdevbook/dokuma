@@ -1,6 +1,12 @@
 import { createPresence, type PresenceStatus } from "../_presence.ts"
 import type { Signal } from "../_signal.ts"
 import {
+  createCombobox,
+  type Combobox,
+  type ComboboxOptions,
+  type RegisterComboboxItemOptions,
+} from "../primitives/combobox.ts"
+import {
   createToaster,
   type Toaster,
   type ToasterOptions,
@@ -819,5 +825,126 @@ export function createUseToaster(Vue: VueLike) {
       return toaster.getViewportProps() as unknown as Record<string, unknown>
     })
     return { ...toaster, items, viewportProps }
+  }
+}
+
+export interface VueCombobox extends Combobox {
+  inputProps: Ref<Record<string, unknown>>
+  listboxProps: Ref<Record<string, unknown>>
+  triggerProps: Ref<Record<string, unknown>>
+  isOpen: Ref<boolean>
+  currentValue: Ref<string>
+  currentQuery: Ref<string>
+  filtered: Ref<string[]>
+  empty: Ref<boolean>
+  tick: Ref<number>
+}
+
+export function createUseCombobox(Vue: VueLike) {
+  return function useCombobox(opts: ComboboxOptions = {}): VueCombobox {
+    const tick = Vue.ref(0)
+    const cb = createCombobox(opts)
+    const offs = [
+      cb.open.subscribe(() => {
+        tick.value++
+      }),
+      cb.value.subscribe(() => {
+        tick.value++
+      }),
+      cb.query.subscribe(() => {
+        tick.value++
+      }),
+      cb.highlighted.subscribe(() => {
+        tick.value++
+      }),
+      cb.filteredItems.subscribe(() => {
+        tick.value++
+      }),
+    ]
+    Vue.onScopeDispose(() => {
+      for (const u of offs) u()
+    })
+
+    const inputProps = Vue.computed(() => {
+      void tick.value
+      return normalizeVueProps(cb.getInputProps() as unknown as Record<string, unknown>)
+    })
+    const listboxProps = Vue.computed(() => {
+      void tick.value
+      return cb.getListboxProps() as unknown as Record<string, unknown>
+    })
+    const triggerProps = Vue.computed(() => {
+      void tick.value
+      return cb.getTriggerProps() as unknown as Record<string, unknown>
+    })
+    const isOpen = Vue.computed(() => {
+      void tick.value
+      return cb.open.get()
+    })
+    const currentValue = Vue.computed(() => {
+      void tick.value
+      return cb.value.get()
+    })
+    const currentQuery = Vue.computed(() => {
+      void tick.value
+      return cb.query.get()
+    })
+    const filtered = Vue.computed(() => {
+      void tick.value
+      return cb.filteredItems.get()
+    })
+    const empty = Vue.computed(() => {
+      void tick.value
+      return cb.isEmpty.get()
+    })
+
+    return {
+      ...cb,
+      inputProps,
+      listboxProps,
+      triggerProps,
+      isOpen,
+      currentValue,
+      currentQuery,
+      filtered,
+      empty,
+      tick,
+    }
+  }
+}
+
+export interface VueComboboxItem {
+  optionProps: Ref<Record<string, unknown>>
+  isSelected: Ref<boolean>
+  isHighlighted: Ref<boolean>
+  isDisabled: Ref<boolean>
+}
+
+export function createUseComboboxItem(Vue: VueLike) {
+  return function useComboboxItem(
+    cb: VueCombobox,
+    value: string,
+    opts: RegisterComboboxItemOptions = {},
+  ): VueComboboxItem {
+    cb.registerItem(value, opts)
+
+    const optionProps = Vue.computed(() => {
+      void cb.tick.value
+      return normalizeVueProps(cb.getOptionProps(value) as unknown as Record<string, unknown>)
+    })
+    const isSelected = Vue.computed(() => {
+      void cb.tick.value
+      return cb.value.get() === value
+    })
+    const isHighlighted = Vue.computed(() => {
+      void cb.tick.value
+      return cb.highlighted.get() === value
+    })
+    const isDisabled = Vue.computed(() => {
+      void cb.tick.value
+      return cb.isItemDisabled(value)
+    })
+
+    return { optionProps, isSelected, isHighlighted, isDisabled }
   }
 }

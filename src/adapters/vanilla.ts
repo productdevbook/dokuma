@@ -1,10 +1,7 @@
 import { resolvePortalTarget, type PortalTarget } from "../_portal.ts"
 import { createAccordion, type Accordion, type AccordionOptions } from "../primitives/accordion.ts"
-import {
-  createToaster,
-  type Toaster,
-  type ToasterOptions,
-} from "../primitives/toaster.ts"
+import { createCombobox, type Combobox, type ComboboxOptions } from "../primitives/combobox.ts"
+import { createToaster, type Toaster, type ToasterOptions } from "../primitives/toaster.ts"
 import { createAvatar, type Avatar, type AvatarOptions } from "../primitives/avatar.ts"
 import { createCheckbox, type Checkbox, type CheckboxOptions } from "../primitives/checkbox.ts"
 import { createDialog, type Dialog, type DialogOptions } from "../primitives/dialog.ts"
@@ -394,4 +391,26 @@ export function mountToaster(opts: MountToasterOptions): MountedToaster {
   const toaster = createToaster(opts)
   const destroy = toaster.mount(viewport)
   return { toaster, destroy }
+}
+
+export interface MountComboboxOptions extends ComboboxOptions {
+  input: HTMLElement | string
+  listbox: HTMLElement | string
+  trigger?: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedCombobox {
+  combobox: Combobox
+  destroy: () => void
+}
+
+export function mountCombobox(opts: MountComboboxOptions): MountedCombobox {
+  const parent = opts.parent ?? document
+  const input = resolve(opts.input, parent) as HTMLInputElement
+  const listbox = resolve(opts.listbox, parent)
+  const trigger = opts.trigger ? resolve(opts.trigger, parent) : undefined
+  const combobox = createCombobox(opts)
+  const destroy = combobox.mount({ input, listbox, trigger })
+  return { combobox, destroy }
 }

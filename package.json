@@ -88,6 +88,10 @@
       "types": "./dist/primitives/checkbox.d.mts",
       "default": "./dist/primitives/checkbox.mjs"
     },
+    "./combobox": {
+      "types": "./dist/primitives/combobox.d.mts",
+      "default": "./dist/primitives/combobox.mjs"
+    },
     "./dialog": {
       "types": "./dist/primitives/dialog.d.mts",
       "default": "./dist/primitives/dialog.mjs"
