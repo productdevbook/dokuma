@@ -71,6 +71,24 @@
       "title": "Menu",
       "summary": "Click-triggered menu of actions. role=menu, menuitems with focus-based navigation, typeahead, Home/End, Tab to exit, Escape returns focus to trigger.",
       "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "slider",
+      "title": "Slider",
+      "summary": "role=slider with single value or two-thumb range. Pointer drag with capture, full keyboard (arrows, Page Up/Down, Home/End, Shift), touch + cursor lock during drag.",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "radio-group",
+      "title": "Radio Group",
+      "summary": "Single-selection group of radio buttons. role=radiogroup with role=radio items, roving tabindex, arrow keys both navigate AND select.",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "checkbox",
+      "title": "Checkbox",
+      "summary": "Three-state control: true / false / indeterminate. aria-checked=mixed for indeterminate. Optional hidden checkbox for form submit.",
+      "adapters": ["vanilla", "react", "vue"]
     }
   ]
 }

@@ -8,7 +8,20 @@ import {
   type RegisterItemOptions,
 } from "../primitives/accordion.ts"
 import { createAvatar, type Avatar, type AvatarOptions } from "../primitives/avatar.ts"
+import { createCheckbox, type Checkbox, type CheckboxOptions } from "../primitives/checkbox.ts"
 import { createDialog, type Dialog, type DialogOptions } from "../primitives/dialog.ts"
+import {
+  createRadioGroup,
+  type RadioGroup,
+  type RadioGroupOptions,
+  type RegisterRadioOptions,
+} from "../primitives/radio-group.ts"
+import {
+  createSlider,
+  type Slider,
+  type SliderOptions,
+  type SliderValue,
+} from "../primitives/slider.ts"
 import {
   createMenu,
   type Menu,
@@ -659,5 +672,162 @@ export function createUseMenuItem(React: ReactLike) {
       isHighlighted: menu.highlighted.get() === value,
       isDisabled: menu.isItemDisabled(value),
     }
+  }
+}
+
+export interface UseSliderOptions extends Omit<SliderOptions, "value"> {
+  value?: SliderValue
+}
+
+export function createUseSlider(React: ReactLike) {
+  return function useSlider(opts: UseSliderOptions = {}): Slider {
+    const isControlled = opts.value !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    const slider = React.useMemo(
+      () =>
+        createSlider({
+          ...opts,
+          value: isControlled ? () => optsRef.current.value as SliderValue : undefined,
+          onValueChange: (next) => optsRef.current.onValueChange?.(next),
+          onValueCommit: (next) => optsRef.current.onValueCommit?.(next),
+        }),
+      [isControlled, opts.min, opts.max, opts.step, opts.range],
+    )
+
+    React.useEffect(() => {
+      const unsub = slider.value.subscribe(() => setTick((n) => n + 1))
+      return unsub
+    }, [slider])
+
+    React.useEffect(() => {
+      if (isControlled) {
+        setTick((n) => n + 1)
+        slider.notify()
+      }
+    }, [isControlled, opts.value])
+
+    return slider
+  }
+}
+
+export interface UseRadioGroupOptions extends Omit<RadioGroupOptions, "value"> {
+  value?: string
+}
+
+export function createUseRadioGroup(React: ReactLike) {
+  return function useRadioGroup(opts: UseRadioGroupOptions = {}): RadioGroup {
+    const isControlled = opts.value !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    const group = React.useMemo(
+      () =>
+        createRadioGroup({
+          ...opts,
+          value: isControlled ? () => optsRef.current.value as string : undefined,
+          onValueChange: (next) => optsRef.current.onValueChange?.(next),
+        }),
+      [isControlled],
+    )
+
+    React.useEffect(() => {
+      const unsub = group.value.subscribe(() => setTick((n) => n + 1))
+      return unsub
+    }, [group])
+
+    React.useEffect(() => {
+      if (isControlled) {
+        setTick((n) => n + 1)
+        group.notify()
+      }
+    }, [isControlled, opts.value])
+
+    return group
+  }
+}
+
+export function createUseRadioItem(React: ReactLike) {
+  return function useRadioItem(
+    group: RadioGroup,
+    value: string,
+    opts: RegisterRadioOptions = {},
+  ): {
+    itemProps: ReturnType<RadioGroup["getItemProps"]>
+    isChecked: boolean
+    isDisabled: boolean
+  } {
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    React.useEffect(() => {
+      const handle = group.registerItem(value, {
+        disabled: optsRef.current.disabled
+          ? () => optsRef.current.disabled?.() ?? false
+          : undefined,
+      })
+      const unsub = group.value.subscribe(() => setTick((n) => n + 1))
+      return () => {
+        unsub()
+        handle.unregister()
+      }
+    }, [group, value])
+
+    if (!group.hasItem(value)) {
+      group.registerItem(value, optsRef.current)
+    }
+
+    return {
+      itemProps: group.getItemProps(value),
+      isChecked: group.isChecked(value),
+      isDisabled: group.isItemDisabled(value),
+    }
+  }
+}
+
+export interface UseCheckboxOptions extends Omit<CheckboxOptions, "checked"> {
+  checked?: CheckboxOptions extends { checked?: () => infer T } ? T : never
+}
+
+export function createUseCheckbox(React: ReactLike) {
+  return function useCheckbox(
+    opts: Omit<CheckboxOptions, "checked"> & {
+      checked?: ReturnType<NonNullable<CheckboxOptions["checked"]>>
+    } = {},
+  ): Checkbox {
+    const isControlled = opts.checked !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    const checkbox = React.useMemo(
+      () =>
+        createCheckbox({
+          ...opts,
+          checked: isControlled
+            ? () => optsRef.current.checked as ReturnType<NonNullable<CheckboxOptions["checked"]>>
+            : undefined,
+          onCheckedChange: (next) => optsRef.current.onCheckedChange?.(next),
+        }),
+      [isControlled],
+    )
+
+    React.useEffect(() => {
+      const unsub = checkbox.checked.subscribe(() => setTick((n) => n + 1))
+      return unsub
+    }, [checkbox])
+
+    React.useEffect(() => {
+      if (isControlled) {
+        setTick((n) => n + 1)
+        checkbox.notify()
+      }
+    }, [isControlled, opts.checked])
+
+    return checkbox
   }
 }

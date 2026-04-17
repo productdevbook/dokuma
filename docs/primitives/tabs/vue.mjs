@@ -39,8 +39,7 @@ const Panel = {
   },
   template: `
     <div v-bind="panelProps" class="tabs-panel">
-      <strong>Vue</strong>
-      <p style="margin: 8px 0 0; color: var(--muted)">{{ body }}</p>
+      <p style="margin: 0; color: var(--muted)">{{ body }}</p>
     </div>
   `,
 }

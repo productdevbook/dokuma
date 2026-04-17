@@ -34,8 +34,7 @@ function Panel({ tabs, value, body }) {
   return h(
     "div",
     { ...panelProps, className: "tabs-panel" },
-    h("strong", null, "React"),
-    h("p", { style: { margin: "8px 0 0", color: "var(--muted)" } }, body),
+    h("p", { style: { margin: 0, color: "var(--muted)" } }, body),
   )
 }
 

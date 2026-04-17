@@ -22,11 +22,11 @@ function Demo({ onState }) {
     h(
       "div",
       { ...d.getPanelProps(), className: "demo-panel" },
-      h("strong", null, "Hello from React."),
+      h("strong", null, "Hello from the panel."),
       h(
         "p",
         { style: { margin: "8px 0 0", color: "var(--muted)" } },
-        "Controlled by React state. Same primitive, same ARIA wiring.",
+        "The same primitive, the same ARIA wiring.",
       ),
     ),
   )

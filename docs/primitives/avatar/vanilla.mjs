@@ -9,7 +9,7 @@ export function mount(root, ctx) {
       </div>
       <div>
         <div style="font-weight:600;">Mehmet Kahya</div>
-        <div style="color:var(--muted); font-size:13px;" id="av-state">…</div>
+        <div style="color:var(--muted); font-size:13px;" id="av-state">Status: …</div>
       </div>
     </div>
   `
@@ -20,11 +20,11 @@ export function mount(root, ctx) {
     fallback: "#av-fb",
     parent: root,
     onStatusChange: (s) => {
-      stateEl.textContent = s
+      stateEl.textContent = `Status: ${s}`
       ctx.onState(s)
     },
   })
   ctx.onState(avatar.status.get())
-  stateEl.textContent = avatar.status.get()
+  stateEl.textContent = `Status: ${avatar.status.get()}`
   return destroy
 }

@@ -10,10 +10,12 @@ const BUDGETS = {
   "primitives/tabs.mjs": 9 * 1024,
   "primitives/toggle-group.mjs": 9 * 1024,
   "primitives/menu.mjs": 12 * 1024,
+  "primitives/slider.mjs": 12 * 1024,
+  "primitives/radio-group.mjs": 9 * 1024,
   // adapters bundle every primitive's hooks; budget grows with primitive count
-  "adapters/react.mjs": 20 * 1024,
-  "adapters/vue.mjs": 20 * 1024,
-  "adapters/vanilla.mjs": 8 * 1024,
+  "adapters/react.mjs": 28 * 1024,
+  "adapters/vue.mjs": 28 * 1024,
+  "adapters/vanilla.mjs": 12 * 1024,
 }
 
 let failed = false

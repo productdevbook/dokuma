@@ -21,8 +21,8 @@ export function mount(root, ctx) {
           <span v-bind="fallbackProps" class="avatar-fb">MK</span>
         </div>
         <div>
-          <div style="font-weight:600;">Mehmet Kahya (Vue)</div>
-          <div style="color:var(--muted); font-size:13px;">{{ status.get() }}</div>
+          <div style="font-weight:600;">Mehmet Kahya</div>
+          <div style="color:var(--muted); font-size:13px;">Status: {{ status.get() }}</div>
         </div>
       </div>
     `,

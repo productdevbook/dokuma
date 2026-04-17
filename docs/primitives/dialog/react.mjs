@@ -54,7 +54,7 @@ function Demo({ onState }) {
             h(
               "p",
               { ...dialog.getDescriptionProps(), className: "dialog-desc" },
-              "React-driven Dialog. Escape, click outside, or Cancel closes it.",
+              "Press Escape, click outside, or use Cancel to dismiss.",
             ),
             h(
               "div",

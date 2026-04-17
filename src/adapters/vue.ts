@@ -8,6 +8,13 @@ import {
   type RegisterItemOptions,
 } from "../primitives/accordion.ts"
 import {
+  createCheckbox,
+  type Checkbox,
+  type CheckboxIndicatorProps,
+  type CheckboxOptions,
+  type CheckboxRootProps,
+} from "../primitives/checkbox.ts"
+import {
   createDialog,
   type Dialog,
   type DialogContentProps,
@@ -15,6 +22,23 @@ import {
   type DialogOverlayProps,
   type DialogTriggerProps,
 } from "../primitives/dialog.ts"
+import {
+  createRadioGroup,
+  type RadioGroup,
+  type RadioGroupOptions,
+  type RadioGroupRootProps,
+  type RadioItemProps,
+  type RegisterRadioOptions,
+} from "../primitives/radio-group.ts"
+import {
+  createSlider,
+  type Slider,
+  type SliderOptions,
+  type SliderRangeProps,
+  type SliderRootProps,
+  type SliderThumbProps,
+  type SliderTrackProps,
+} from "../primitives/slider.ts"
 import {
   createMenu,
   type Menu,
@@ -622,5 +646,120 @@ export function createUseMenuItem(Vue: VueLike) {
     })
 
     return { itemProps, isHighlighted, isDisabled }
+  }
+}
+
+export type VueSliderThumbProps = Omit<SliderThumbProps, "onKeyDown"> & {
+  onKeydown: SliderThumbProps["onKeyDown"]
+}
+
+export interface VueSlider extends Slider {
+  rootProps: Ref<SliderRootProps>
+  trackProps: Ref<SliderTrackProps>
+  rangeProps: Ref<SliderRangeProps>
+  tick: Ref<number>
+}
+
+export function createUseSlider(Vue: VueLike) {
+  return function useSlider(opts: SliderOptions = {}): VueSlider {
+    const tick = Vue.ref(0)
+    const slider = createSlider(opts)
+    const unsub = slider.value.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return slider.getRootProps()
+    })
+    const trackProps = Vue.computed(() => {
+      void tick.value
+      return slider.getTrackProps()
+    })
+    const rangeProps = Vue.computed(() => {
+      void tick.value
+      return slider.getRangeProps()
+    })
+    return { ...slider, rootProps, trackProps, rangeProps, tick }
+  }
+}
+
+export type VueRadioItemProps = Omit<RadioItemProps, "onKeyDown"> & {
+  onKeydown: RadioItemProps["onKeyDown"]
+}
+
+export interface VueRadioGroup extends RadioGroup {
+  rootProps: Ref<RadioGroupRootProps>
+  tick: Ref<number>
+}
+
+export interface VueRadioItem {
+  itemProps: Ref<VueRadioItemProps>
+  isChecked: Ref<boolean>
+  isDisabled: Ref<boolean>
+}
+
+export function createUseRadioGroup(Vue: VueLike) {
+  return function useRadioGroup(opts: RadioGroupOptions = {}): VueRadioGroup {
+    const tick = Vue.ref(0)
+    const group = createRadioGroup(opts)
+    const unsub = group.value.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return group.getRootProps()
+    })
+    return { ...group, rootProps, tick }
+  }
+}
+
+export function createUseRadioItem(Vue: VueLike) {
+  return function useRadioItem(
+    group: VueRadioGroup,
+    value: string,
+    opts: RegisterRadioOptions = {},
+  ): VueRadioItem {
+    group.registerItem(value, opts)
+    const itemProps = Vue.computed(() => {
+      void group.tick.value
+      const { onClick, onKeyDown, ...rest } = group.getItemProps(value)
+      return { ...rest, onClick, onKeydown: onKeyDown }
+    })
+    const isChecked = Vue.computed(() => {
+      void group.tick.value
+      return group.isChecked(value)
+    })
+    const isDisabled = Vue.computed(() => {
+      void group.tick.value
+      return group.isItemDisabled(value)
+    })
+    return { itemProps, isChecked, isDisabled }
+  }
+}
+
+export interface VueCheckbox extends Checkbox {
+  rootProps: Ref<CheckboxRootProps>
+  indicatorProps: Ref<CheckboxIndicatorProps>
+}
+
+export function createUseCheckbox(Vue: VueLike) {
+  return function useCheckbox(opts: CheckboxOptions = {}): VueCheckbox {
+    const tick = Vue.ref(0)
+    const cb = createCheckbox(opts)
+    const unsub = cb.checked.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return cb.getRootProps()
+    })
+    const indicatorProps = Vue.computed(() => {
+      void tick.value
+      return cb.getIndicatorProps()
+    })
+    return { ...cb, rootProps, indicatorProps }
   }
 }

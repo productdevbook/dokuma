@@ -1,7 +1,14 @@
 import { createAccordion, type Accordion, type AccordionOptions } from "../primitives/accordion.ts"
 import { createAvatar, type Avatar, type AvatarOptions } from "../primitives/avatar.ts"
+import { createCheckbox, type Checkbox, type CheckboxOptions } from "../primitives/checkbox.ts"
 import { createDialog, type Dialog, type DialogOptions } from "../primitives/dialog.ts"
 import { createMenu, type Menu, type MenuOptions } from "../primitives/menu.ts"
+import {
+  createRadioGroup,
+  type RadioGroup,
+  type RadioGroupOptions,
+} from "../primitives/radio-group.ts"
+import { createSlider, type Slider, type SliderOptions } from "../primitives/slider.ts"
 import { createPopover, type Popover, type PopoverOptions } from "../primitives/popover.ts"
 import { createProgress, type Progress, type ProgressOptions } from "../primitives/progress.ts"
 import { createTooltip, type Tooltip, type TooltipOptions } from "../primitives/tooltip.ts"
@@ -260,4 +267,69 @@ export function mountMenu(opts: MountMenuOptions): MountedMenu {
   const menu = createMenu(opts)
   const destroy = menu.mount({ trigger, content })
   return { menu, destroy }
+}
+
+export interface MountSliderOptions extends SliderOptions {
+  root: HTMLElement | string
+  track: HTMLElement | string
+  /** Optional DOM element that visually fills the selected range. */
+  rangeEl?: HTMLElement | string
+  thumbs: Array<HTMLElement | string>
+  parent?: ParentNode
+}
+
+export interface MountedSlider {
+  slider: Slider
+  destroy: () => void
+}
+
+export function mountSlider(opts: MountSliderOptions): MountedSlider {
+  const parent = opts.parent ?? document
+  const root = resolve(opts.root, parent)
+  const track = resolve(opts.track, parent)
+  const rangeEl = opts.rangeEl ? resolve(opts.rangeEl, parent) : undefined
+  const thumbs = opts.thumbs.map((t) => resolve(t, parent))
+  const slider = createSlider(opts)
+  const destroy = slider.mount({ root, track, range: rangeEl, thumbs })
+  return { slider, destroy }
+}
+
+export interface MountRadioGroupOptions extends RadioGroupOptions {
+  root: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedRadioGroup {
+  radioGroup: RadioGroup
+  destroy: () => void
+}
+
+export function mountRadioGroup(opts: MountRadioGroupOptions): MountedRadioGroup {
+  const parent = opts.parent ?? document
+  const root = resolve(opts.root, parent)
+  const radioGroup = createRadioGroup(opts)
+  const destroy = radioGroup.mount(root)
+  return { radioGroup, destroy }
+}
+
+export interface MountCheckboxOptions extends CheckboxOptions {
+  root: HTMLElement | string
+  hiddenInput?: HTMLInputElement | string
+  parent?: ParentNode
+}
+
+export interface MountedCheckbox {
+  checkbox: Checkbox
+  destroy: () => void
+}
+
+export function mountCheckbox(opts: MountCheckboxOptions): MountedCheckbox {
+  const parent = opts.parent ?? document
+  const root = resolve(opts.root, parent)
+  const hiddenInput = opts.hiddenInput
+    ? (resolve(opts.hiddenInput as HTMLElement | string, parent) as HTMLInputElement)
+    : undefined
+  const checkbox = createCheckbox(opts)
+  const destroy = checkbox.mount({ root, hiddenInput })
+  return { checkbox, destroy }
 }

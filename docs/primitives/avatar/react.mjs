@@ -22,8 +22,8 @@ function Demo({ onState }) {
     h(
       "div",
       null,
-      h("div", { style: { fontWeight: 600 } }, "Mehmet Kahya (React)"),
-      h("div", { style: { color: "var(--muted)", fontSize: 13 } }, a.status.get()),
+      h("div", { style: { fontWeight: 600 } }, "Mehmet Kahya"),
+      h("div", { style: { color: "var(--muted)", fontSize: 13 } }, `Status: ${a.status.get()}`),
     ),
   )
 }

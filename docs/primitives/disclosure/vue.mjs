@@ -22,9 +22,9 @@ export function mount(root, ctx) {
           Toggle panel
         </button>
         <div v-bind="panelProps" class="demo-panel">
-          <strong>Hello from Vue.</strong>
+          <strong>Hello from the panel.</strong>
           <p style="margin: 8px 0 0; color: var(--muted)">
-            Composable wraps the same core. Same ARIA wiring.
+            The same primitive, the same ARIA wiring.
           </p>
         </div>
       </div>

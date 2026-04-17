@@ -51,7 +51,7 @@ export function mount(root, ctx) {
           <div ref="contentRef" v-bind="contentProps" class="dialog-content">
             <h2 v-bind="titleProps" class="dialog-title">Confirm</h2>
             <p v-bind="descProps" class="dialog-desc">
-              Vue-driven Dialog. Escape, click outside, or Cancel closes it.
+              Press Escape, click outside, or use Cancel to dismiss.
             </p>
             <div class="dialog-actions">
               <button v-bind="closeProps" class="dialog-button">Cancel</button>
