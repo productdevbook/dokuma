@@ -45,6 +45,35 @@ import {
 } from "../primitives/context-menu.ts"
 import { createSeparator, type Separator, type SeparatorOptions } from "../primitives/separator.ts"
 import { createVisuallyHidden, type VisuallyHidden } from "../primitives/visually-hidden.ts"
+import { createCollapsible, type CollapsibleOptions } from "../primitives/collapsible.ts"
+import {
+  createAlertDialog,
+  type AlertDialog,
+  type AlertDialogOptions,
+} from "../primitives/alert-dialog.ts"
+import { createHoverCard, type HoverCard, type HoverCardOptions } from "../primitives/hover-card.ts"
+import { createLabel, type Label, type LabelOptions } from "../primitives/label.ts"
+import {
+  createAspectRatio,
+  type AspectRatio,
+  type AspectRatioOptions,
+} from "../primitives/aspect-ratio.ts"
+import {
+  createBreadcrumb,
+  type Breadcrumb,
+  type BreadcrumbOptions,
+} from "../primitives/breadcrumb.ts"
+import {
+  createPagination,
+  type Pagination,
+  type PaginationOptions,
+} from "../primitives/pagination.ts"
+import {
+  createNumberInput,
+  type NumberInput,
+  type NumberInputOptions,
+} from "../primitives/number-input.ts"
+import { createOtpInput, type OtpInput, type OtpInputOptions } from "../primitives/otp-input.ts"
 import { createPopover, type Popover, type PopoverOptions } from "../primitives/popover.ts"
 import { createProgress, type Progress, type ProgressOptions } from "../primitives/progress.ts"
 import { createTooltip, type Tooltip, type TooltipOptions } from "../primitives/tooltip.ts"
@@ -1002,6 +1031,198 @@ export function createUseComboboxItem(React: ReactLike) {
       isHighlighted: cb.highlighted.get() === value,
       isDisabled: cb.isItemDisabled(value),
     }
+  }
+}
+
+export interface UseCollapsibleOptions extends Omit<CollapsibleOptions, "open"> {
+  open?: boolean
+}
+
+export function createUseCollapsible(React: ReactLike) {
+  return function useCollapsible(opts: UseCollapsibleOptions = {}): Disclosure {
+    const isControlled = opts.open !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const c = React.useMemo(
+      () =>
+        createCollapsible({
+          ...opts,
+          open: isControlled ? () => optsRef.current.open as boolean : undefined,
+          onOpenChange: (next) => optsRef.current.onOpenChange?.(next),
+        }),
+      [isControlled],
+    )
+    React.useEffect(() => c.open.subscribe(() => setTick((n) => n + 1)), [c])
+    React.useEffect(() => {
+      if (isControlled) setTick((n) => n + 1)
+    }, [isControlled, opts.open])
+    return c
+  }
+}
+
+export interface UseAlertDialogOptions extends Omit<AlertDialogOptions, "open"> {
+  open?: boolean
+}
+
+export function createUseAlertDialog(React: ReactLike) {
+  return function useAlertDialog(opts: UseAlertDialogOptions = {}): AlertDialog {
+    const isControlled = opts.open !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const ad = React.useMemo(
+      () =>
+        createAlertDialog({
+          ...opts,
+          open: isControlled ? () => optsRef.current.open as boolean : undefined,
+          onOpenChange: (next) => optsRef.current.onOpenChange?.(next),
+        }),
+      [isControlled],
+    )
+    React.useEffect(() => ad.open.subscribe(() => setTick((n) => n + 1)), [ad])
+    React.useEffect(() => {
+      if (isControlled) setTick((n) => n + 1)
+    }, [isControlled, opts.open])
+    return ad
+  }
+}
+
+export interface UseHoverCardOptions extends Omit<HoverCardOptions, "open"> {
+  open?: boolean
+}
+
+export function createUseHoverCard(React: ReactLike) {
+  return function useHoverCard(opts: UseHoverCardOptions = {}): HoverCard {
+    const isControlled = opts.open !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const hc = React.useMemo(
+      () =>
+        createHoverCard({
+          ...opts,
+          open: isControlled ? () => optsRef.current.open as boolean : undefined,
+          onOpenChange: (next) => optsRef.current.onOpenChange?.(next),
+        }),
+      [isControlled],
+    )
+    React.useEffect(() => hc.open.subscribe(() => setTick((n) => n + 1)), [hc])
+    React.useEffect(() => {
+      if (isControlled) setTick((n) => n + 1)
+    }, [isControlled, opts.open])
+    return hc
+  }
+}
+
+export function createUseLabel(_React: ReactLike) {
+  return function useLabel(opts: LabelOptions = {}): Label {
+    return createLabel(opts)
+  }
+}
+
+export function createUseAspectRatio(_React: ReactLike) {
+  return function useAspectRatio(opts: AspectRatioOptions = {}): AspectRatio {
+    return createAspectRatio(opts)
+  }
+}
+
+export function createUseBreadcrumb(_React: ReactLike) {
+  return function useBreadcrumb(opts: BreadcrumbOptions = {}): Breadcrumb {
+    return createBreadcrumb(opts)
+  }
+}
+
+export interface UsePaginationOptions extends Omit<PaginationOptions, "page"> {
+  page?: number
+}
+
+export interface UseNumberInputOptions extends Omit<NumberInputOptions, "value"> {
+  value?: number | null
+}
+
+export function createUseNumberInput(React: ReactLike) {
+  return function useNumberInput(opts: UseNumberInputOptions = {}): NumberInput {
+    const isControlled = opts.value !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const ni = React.useMemo(
+      () =>
+        createNumberInput({
+          ...opts,
+          value: isControlled ? () => optsRef.current.value as number | null : undefined,
+          onValueChange: (v) => optsRef.current.onValueChange?.(v),
+          onValueCommit: (v) => optsRef.current.onValueCommit?.(v),
+          disabled: opts.disabled,
+          readOnly: opts.readOnly,
+        }),
+      [isControlled, opts.min, opts.max, opts.step, opts.precision],
+    )
+    React.useEffect(() => {
+      const a = ni.value.subscribe(() => setTick((n) => n + 1))
+      const b = ni.inputValue.subscribe(() => setTick((n) => n + 1))
+      return () => {
+        a()
+        b()
+      }
+    }, [ni])
+    React.useEffect(() => {
+      if (isControlled) setTick((n) => n + 1)
+    }, [isControlled, opts.value])
+    return ni
+  }
+}
+
+export interface UseOtpInputOptions extends Omit<OtpInputOptions, "value"> {
+  value?: string
+}
+
+export function createUseOtpInput(React: ReactLike) {
+  return function useOtpInput(opts: UseOtpInputOptions = {}): OtpInput {
+    const isControlled = opts.value !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const otp = React.useMemo(
+      () =>
+        createOtpInput({
+          ...opts,
+          value: isControlled ? () => optsRef.current.value as string : undefined,
+          onValueChange: (v) => optsRef.current.onValueChange?.(v),
+          onComplete: (v) => optsRef.current.onComplete?.(v),
+          disabled: opts.disabled,
+        }),
+      [isControlled, opts.length, opts.mask, opts.pattern],
+    )
+    React.useEffect(() => otp.value.subscribe(() => setTick((n) => n + 1)), [otp])
+    React.useEffect(() => {
+      if (isControlled) setTick((n) => n + 1)
+    }, [isControlled, opts.value])
+    return otp
+  }
+}
+
+export function createUsePagination(React: ReactLike) {
+  return function usePagination(opts: UsePaginationOptions): Pagination {
+    const isControlled = opts.page !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const p = React.useMemo(
+      () =>
+        createPagination({
+          ...opts,
+          page: isControlled ? () => optsRef.current.page as number : undefined,
+          onPageChange: (n) => optsRef.current.onPageChange?.(n),
+        }),
+      [isControlled, opts.pageCount, opts.siblingCount, opts.boundaryCount],
+    )
+    React.useEffect(() => p.page.subscribe(() => setTick((n) => n + 1)), [p])
+    React.useEffect(() => {
+      if (isControlled) setTick((n) => n + 1)
+    }, [isControlled, opts.page])
+    return p
   }
 }
 

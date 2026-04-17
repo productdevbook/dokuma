@@ -14,6 +14,33 @@ import {
 import { createSeparator, type Separator, type SeparatorOptions } from "../primitives/separator.ts"
 import { createVisuallyHidden, type VisuallyHidden } from "../primitives/visually-hidden.ts"
 import {
+  createCollapsible,
+  type Collapsible,
+  type CollapsibleOptions,
+} from "../primitives/collapsible.ts"
+import {
+  createAlertDialog,
+  type AlertDialog,
+  type AlertDialogOptions,
+} from "../primitives/alert-dialog.ts"
+import { createHoverCard, type HoverCard, type HoverCardOptions } from "../primitives/hover-card.ts"
+import { createLabel, type Label, type LabelOptions } from "../primitives/label.ts"
+import {
+  createAspectRatio,
+  type AspectRatio,
+  type AspectRatioOptions,
+} from "../primitives/aspect-ratio.ts"
+import {
+  createBreadcrumb,
+  type Breadcrumb,
+  type BreadcrumbOptions,
+} from "../primitives/breadcrumb.ts"
+import {
+  createPagination,
+  type Pagination,
+  type PaginationOptions,
+} from "../primitives/pagination.ts"
+import {
   createRadioGroup,
   type RadioGroup,
   type RadioGroupOptions,
@@ -478,6 +505,180 @@ export interface MountVisuallyHiddenOptions {
 export interface MountedVisuallyHidden {
   visuallyHidden: VisuallyHidden
   destroy: () => void
+}
+
+export interface MountCollapsibleOptions extends CollapsibleOptions {
+  trigger: HTMLElement | string
+  panel: HTMLElement | string
+  root?: ParentNode
+}
+
+export interface MountedCollapsible {
+  collapsible: Collapsible
+  destroy: () => void
+}
+
+export function mountCollapsible(opts: MountCollapsibleOptions): MountedCollapsible {
+  const root = opts.root ?? document
+  const trigger = resolve(opts.trigger, root)
+  const panel = resolve(opts.panel, root)
+  const collapsible = createCollapsible(opts)
+  const destroy = collapsible.mount({ trigger, panel })
+  return { collapsible, destroy }
+}
+
+export interface MountAlertDialogOptions extends AlertDialogOptions {
+  trigger?: HTMLElement | string
+  content: HTMLElement | string
+  overlay?: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedAlertDialog {
+  alertDialog: AlertDialog
+  destroy: () => void
+}
+
+export function mountAlertDialog(opts: MountAlertDialogOptions): MountedAlertDialog {
+  const parent = opts.parent ?? document
+  const trigger = opts.trigger ? resolve(opts.trigger, parent) : undefined
+  const content = resolve(opts.content, parent)
+  const overlay = opts.overlay ? resolve(opts.overlay, parent) : undefined
+  const alertDialog = createAlertDialog(opts)
+  const destroy = alertDialog.mount({ trigger, content, overlay })
+  return { alertDialog, destroy }
+}
+
+export interface MountHoverCardOptions extends HoverCardOptions {
+  trigger: HTMLElement | string
+  content: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedHoverCard {
+  hoverCard: HoverCard
+  destroy: () => void
+}
+
+export function mountHoverCard(opts: MountHoverCardOptions): MountedHoverCard {
+  const parent = opts.parent ?? document
+  const trigger = resolve(opts.trigger, parent)
+  const content = resolve(opts.content, parent)
+  const hoverCard = createHoverCard(opts)
+  const destroy = hoverCard.mount({ trigger, content })
+  return { hoverCard, destroy }
+}
+
+export interface MountLabelOptions extends LabelOptions {
+  root: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedLabel {
+  label: Label
+  destroy: () => void
+}
+
+export function mountLabel(opts: MountLabelOptions): MountedLabel {
+  const parent = opts.parent ?? document
+  const root = resolve(opts.root, parent)
+  const label = createLabel(opts)
+  const props = label.getRootProps()
+  if (props.for) root.setAttribute("for", props.for)
+  if (props.id) root.id = props.id
+  return {
+    label,
+    destroy: () => {
+      root.removeAttribute("for")
+    },
+  }
+}
+
+export interface MountAspectRatioOptions extends AspectRatioOptions {
+  root: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedAspectRatio {
+  aspectRatio: AspectRatio
+  destroy: () => void
+}
+
+export interface MountBreadcrumbOptions extends BreadcrumbOptions {
+  root: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedBreadcrumb {
+  breadcrumb: Breadcrumb
+  destroy: () => void
+}
+
+/**
+ * Wires the root `<nav>` element with role + aria-label. The `<ol>` and items
+ * remain the caller's responsibility — call `breadcrumb.getItemProps({ current })`
+ * during render and apply the returned attributes by hand.
+ */
+export interface MountPaginationOptions extends PaginationOptions {
+  root: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedPagination {
+  pagination: Pagination
+  destroy: () => void
+}
+
+/**
+ * Wires the root `<nav>` with the pagination role + label. Caller renders
+ * page buttons themselves and reads `pagination.pages` to discover what to
+ * draw. The primitive is signal-driven so re-render is the caller's job
+ * (subscribe to `pagination.page` for vanilla).
+ */
+export function mountPagination(opts: MountPaginationOptions): MountedPagination {
+  const parent = opts.parent ?? document
+  const root = resolve(opts.root, parent)
+  const pagination = createPagination(opts)
+  const props = pagination.getRootProps()
+  root.setAttribute("role", props.role)
+  root.setAttribute("aria-label", props["aria-label"])
+  return {
+    pagination,
+    destroy: () => {
+      root.removeAttribute("role")
+      root.removeAttribute("aria-label")
+    },
+  }
+}
+
+export function mountBreadcrumb(opts: MountBreadcrumbOptions): MountedBreadcrumb {
+  const parent = opts.parent ?? document
+  const root = resolve(opts.root, parent)
+  const breadcrumb = createBreadcrumb(opts)
+  const props = breadcrumb.getRootProps()
+  root.setAttribute("role", props.role)
+  root.setAttribute("aria-label", props["aria-label"])
+  return {
+    breadcrumb,
+    destroy: () => {
+      root.removeAttribute("role")
+      root.removeAttribute("aria-label")
+    },
+  }
+}
+
+export function mountAspectRatio(opts: MountAspectRatioOptions): MountedAspectRatio {
+  const parent = opts.parent ?? document
+  const root = resolve(opts.root, parent)
+  const aspectRatio = createAspectRatio(opts)
+  const previous = root.getAttribute("style") ?? ""
+  Object.assign(root.style, aspectRatio.getRootProps().style)
+  return {
+    aspectRatio,
+    destroy: () => {
+      root.setAttribute("style", previous)
+    },
+  }
 }
 
 export function mountVisuallyHidden(opts: MountVisuallyHiddenOptions): MountedVisuallyHidden {

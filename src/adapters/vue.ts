@@ -63,6 +63,36 @@ import {
 } from "../primitives/context-menu.ts"
 import { createSeparator, type Separator, type SeparatorOptions } from "../primitives/separator.ts"
 import { createVisuallyHidden, type VisuallyHidden } from "../primitives/visually-hidden.ts"
+import { createCollapsible, type CollapsibleOptions } from "../primitives/collapsible.ts"
+import {
+  createAlertDialog,
+  type AlertDialog,
+  type AlertDialogOptions,
+} from "../primitives/alert-dialog.ts"
+import { createHoverCard, type HoverCard, type HoverCardOptions } from "../primitives/hover-card.ts"
+import { createLabel, type Label, type LabelOptions } from "../primitives/label.ts"
+import {
+  createAspectRatio,
+  type AspectRatio,
+  type AspectRatioOptions,
+} from "../primitives/aspect-ratio.ts"
+import {
+  createBreadcrumb,
+  type Breadcrumb,
+  type BreadcrumbOptions,
+} from "../primitives/breadcrumb.ts"
+import {
+  createPagination,
+  type Pagination,
+  type PaginationItem,
+  type PaginationOptions,
+} from "../primitives/pagination.ts"
+import {
+  createNumberInput,
+  type NumberInput,
+  type NumberInputOptions,
+} from "../primitives/number-input.ts"
+import { createOtpInput, type OtpInput, type OtpInputOptions } from "../primitives/otp-input.ts"
 import {
   createPopover,
   type Popover,
@@ -992,6 +1022,244 @@ export function createUseComboboxItem(Vue: VueLike) {
     })
 
     return { optionProps, isSelected, isHighlighted, isDisabled }
+  }
+}
+
+export function createUseCollapsible(Vue: VueLike) {
+  return function useCollapsible(opts: CollapsibleOptions = {}): VueDisclosure {
+    const tick = Vue.ref(0)
+    const c = createCollapsible(opts)
+    const unsub = c.open.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const triggerProps = Vue.computed(() => {
+      void tick.value
+      return c.getTriggerProps()
+    })
+    const panelProps = Vue.computed(() => {
+      void tick.value
+      return c.getPanelProps()
+    })
+    const isOpen = Vue.computed(() => {
+      void tick.value
+      return c.open.get()
+    })
+    return { ...c, triggerProps, panelProps, isOpen }
+  }
+}
+
+export interface VueAlertDialog extends AlertDialog {
+  triggerProps: Ref<Record<string, unknown>>
+  contentProps: Ref<Record<string, unknown>>
+  overlayProps: Ref<Record<string, unknown>>
+  isOpen: Ref<boolean>
+}
+
+export function createUseAlertDialog(Vue: VueLike) {
+  return function useAlertDialog(opts: AlertDialogOptions = {}): VueAlertDialog {
+    const tick = Vue.ref(0)
+    const ad = createAlertDialog(opts)
+    const unsub = ad.open.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const triggerProps = Vue.computed(() => {
+      void tick.value
+      return normalizeVueProps(ad.getTriggerProps() as unknown as Record<string, unknown>)
+    })
+    const contentProps = Vue.computed(() => {
+      void tick.value
+      return normalizeVueProps(ad.getContentProps() as unknown as Record<string, unknown>)
+    })
+    const overlayProps = Vue.computed(() => {
+      void tick.value
+      return normalizeVueProps(ad.getOverlayProps() as unknown as Record<string, unknown>)
+    })
+    const isOpen = Vue.computed(() => {
+      void tick.value
+      return ad.open.get()
+    })
+    return { ...ad, triggerProps, contentProps, overlayProps, isOpen }
+  }
+}
+
+export interface VueHoverCard extends HoverCard {
+  triggerProps: Ref<Record<string, unknown>>
+  contentProps: Ref<Record<string, unknown>>
+  isOpen: Ref<boolean>
+}
+
+export function createUseHoverCard(Vue: VueLike) {
+  return function useHoverCard(opts: HoverCardOptions = {}): VueHoverCard {
+    const tick = Vue.ref(0)
+    const hc = createHoverCard(opts)
+    const unsub = hc.open.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const triggerProps = Vue.computed(() => {
+      void tick.value
+      return normalizeVueProps(hc.getTriggerProps() as unknown as Record<string, unknown>)
+    })
+    const contentProps = Vue.computed(() => {
+      void tick.value
+      return normalizeVueProps(hc.getContentProps() as unknown as Record<string, unknown>)
+    })
+    const isOpen = Vue.computed(() => {
+      void tick.value
+      return hc.open.get()
+    })
+    return { ...hc, triggerProps, contentProps, isOpen }
+  }
+}
+
+export function createUseLabel(_Vue: VueLike) {
+  return function useLabel(opts: LabelOptions = {}): Label {
+    return createLabel(opts)
+  }
+}
+
+export function createUseAspectRatio(_Vue: VueLike) {
+  return function useAspectRatio(opts: AspectRatioOptions = {}): AspectRatio {
+    return createAspectRatio(opts)
+  }
+}
+
+export function createUseBreadcrumb(_Vue: VueLike) {
+  return function useBreadcrumb(opts: BreadcrumbOptions = {}): Breadcrumb {
+    return createBreadcrumb(opts)
+  }
+}
+
+export interface VuePagination extends Pagination {
+  pageRef: Ref<number>
+  pagesRef: Ref<PaginationItem[]>
+  rootProps: Ref<Record<string, unknown>>
+}
+
+export interface VueNumberInput extends NumberInput {
+  rootProps: Ref<Record<string, unknown>>
+  inputProps: Ref<Record<string, unknown>>
+  incrementProps: Ref<Record<string, unknown>>
+  decrementProps: Ref<Record<string, unknown>>
+  hiddenInputProps: Ref<Record<string, unknown> | null>
+  valueRef: Ref<number | null>
+  inputValueRef: Ref<string>
+}
+
+export function createUseNumberInput(Vue: VueLike) {
+  return function useNumberInput(opts: NumberInputOptions = {}): VueNumberInput {
+    const tick = Vue.ref(0)
+    const ni = createNumberInput(opts)
+    const a = ni.value.subscribe(() => {
+      tick.value++
+    })
+    const b = ni.inputValue.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(() => {
+      a()
+      b()
+    })
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return normalizeVueProps(ni.getRootProps() as unknown as Record<string, unknown>)
+    })
+    const inputProps = Vue.computed(() => {
+      void tick.value
+      return normalizeVueProps(ni.getInputProps() as unknown as Record<string, unknown>)
+    })
+    const incrementProps = Vue.computed(() => {
+      void tick.value
+      return normalizeVueProps(ni.getIncrementProps() as unknown as Record<string, unknown>)
+    })
+    const decrementProps = Vue.computed(() => {
+      void tick.value
+      return normalizeVueProps(ni.getDecrementProps() as unknown as Record<string, unknown>)
+    })
+    const hiddenInputProps = Vue.computed(() => {
+      void tick.value
+      const p = ni.getHiddenInputProps()
+      return p ? (p as unknown as Record<string, unknown>) : null
+    })
+    const valueRef = Vue.computed(() => {
+      void tick.value
+      return ni.value.get()
+    })
+    const inputValueRef = Vue.computed(() => {
+      void tick.value
+      return ni.inputValue.get()
+    })
+    return {
+      ...ni,
+      rootProps,
+      inputProps,
+      incrementProps,
+      decrementProps,
+      hiddenInputProps,
+      valueRef,
+      inputValueRef,
+    }
+  }
+}
+
+export interface VueOtpInput extends OtpInput {
+  valueRef: Ref<string>
+  isCompleteRef: Ref<boolean>
+  cellProps: (index: number) => Record<string, unknown>
+  hiddenInputProps: Ref<Record<string, unknown> | null>
+  tick: Ref<number>
+}
+
+export function createUseOtpInput(Vue: VueLike) {
+  return function useOtpInput(opts: OtpInputOptions = {}): VueOtpInput {
+    const tick = Vue.ref(0)
+    const otp = createOtpInput(opts)
+    const unsub = otp.value.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const valueRef = Vue.computed(() => {
+      void tick.value
+      return otp.value.get()
+    })
+    const isCompleteRef = Vue.computed(() => {
+      void tick.value
+      return otp.isComplete.get()
+    })
+    const hiddenInputProps = Vue.computed(() => {
+      void tick.value
+      const p = otp.getHiddenInputProps()
+      return p ? (p as unknown as Record<string, unknown>) : null
+    })
+    const cellProps = (index: number): Record<string, unknown> =>
+      normalizeVueProps(otp.getCellProps(index) as unknown as Record<string, unknown>)
+    return { ...otp, valueRef, isCompleteRef, cellProps, hiddenInputProps, tick }
+  }
+}
+
+export function createUsePagination(Vue: VueLike) {
+  return function usePagination(opts: PaginationOptions): VuePagination {
+    const tick = Vue.ref(0)
+    const p = createPagination(opts)
+    const unsub = p.page.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const pageRef = Vue.computed(() => {
+      void tick.value
+      return p.page.get()
+    })
+    const pagesRef = Vue.computed(() => {
+      void tick.value
+      return p.pages.get()
+    })
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return p.getRootProps() as unknown as Record<string, unknown>
+    })
+    return { ...p, pageRef, pagesRef, rootProps }
   }
 }
 

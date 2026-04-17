@@ -10,9 +10,9 @@
 - **SSR-safe.** No top-level DOM access.
 - **Accessibility-first.** WAI-ARIA, keyboard, focus management baked in.
 - **Tree-shakeable.** Each primitive is a separate sub-path export.
-- **Tiny.** Whole package under 80 KB raw, gzip ≈ 1/3 of that.
+- **Tiny.** Whole package under 100 KB raw, gzip ≈ 1/3 of that.
 
-> **Status:** v0.1 — 20 primitives shipped. APIs are settling but may still change before 1.0.
+> **Status:** v0.2 — 29 primitives shipped. APIs are settling but may still change before 1.0.
 
 ## Install
 
@@ -115,6 +115,15 @@ const d = useDisclosure({ defaultOpen: false })
 | Toaster         | `dokuma/toaster`         | Notification queue, auto-dismiss, hover/focus pause, ARIA live region.   |
 | Separator       | `dokuma/separator`       | Section divider. `role="separator"` or `role="none"` when decorative.    |
 | Visually Hidden | `dokuma/visually-hidden` | Screen-reader-only content via the standard `.sr-only` style block.      |
+| Collapsible     | `dokuma/collapsible`     | Disclosure under a different name, for design systems that prefer it.    |
+| Alert Dialog    | `dokuma/alert-dialog`    | Dialog with `role="alertdialog"` and outside-click closing forced off.   |
+| Hover Card      | `dokuma/hover-card`      | Tooltip with longer delays + `role="dialog"` for interactive content.    |
+| Label           | `dokuma/label`           | `<label>` association helper. Emits `for` + optional `id`.               |
+| Aspect Ratio    | `dokuma/aspect-ratio`    | Modern `aspect-ratio` CSS wrapper for media slots.                       |
+| Breadcrumb      | `dokuma/breadcrumb`      | Pure ARIA wrapper for a breadcrumb trail. Marks separators decorative.   |
+| Pagination      | `dokuma/pagination`      | Page list with ellipsis algorithm. `aria-current` on the active page.    |
+| Number Input    | `dokuma/number-input`    | Stepper with min/max/step, hold-to-repeat, hidden form input.            |
+| OTP Input       | `dokuma/otp-input`       | N-cell pin input with auto-advance, paste distribution, isComplete.      |
 
 Cross-cutting helpers exported from the package root: `createPresence` (animate-out), `getDefaultPortalTarget` / `resolvePortalTarget` (portal helpers), `DokumaError`, `createSignal`. Internal layer stacks (`FocusScope`, `DismissibleLayer`) are handled automatically by every dismissible primitive — no setup needed for nested modals.
 

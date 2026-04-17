@@ -2,6 +2,42 @@
 
 All notable changes to `dokuma` are documented here.
 
+## 0.2.0 — 2026-04-17
+
+Closes the radix-ui parity gap to the extent it makes sense for a headless library. **29 primitives total.**
+
+### New primitives — composition aliases
+
+- **Collapsible** — Disclosure under the Radix-style vocabulary. Same behavior, same ARIA, just a different name.
+- **AlertDialog** — Dialog with `role="alertdialog"` and outside-click closing forced off. For destructive confirmations.
+- **HoverCard** — Tooltip with longer default delays (`700ms` open / `300ms` close) and `role="dialog"` content so screen readers expose interactive children (links, buttons).
+- **Label** — `<label>` association helper. Emits the DOM `for` attribute (not the JSX `htmlFor` rename).
+- **AspectRatio** — Width-bound aspect-ratio wrapper using the modern `aspect-ratio` CSS property.
+
+To support the AlertDialog and HoverCard composition, `dialog.ts` now accepts an optional `role: "dialog" | "alertdialog"` and `tooltip.ts` accepts `contentRole: "tooltip" | "dialog"`. Existing usage is unchanged — both options default to the previous hardcoded values.
+
+### New primitives — standalone
+
+- **Breadcrumb** — pure ARIA wrapper for a breadcrumb trail. The primitive doesn't own the items; the caller renders `<li>` elements and asks `getItemProps({ current })` per item. Separators are marked `aria-hidden + role="presentation"` so SR doesn't announce them between every step.
+- **Pagination** — page list manager with the standard ellipsis-collapse algorithm. Configurable `siblingCount` + `boundaryCount`. Returns a `pages: Signal<Array<number | "ellipsis">>` plus next/prev/first/last + `canGoNext` / `canGoPrev` signals + the usual props.
+- **NumberInput** — stepper with `min` / `max` / `step` / `precision`, hold-to-repeat (`500ms` initial delay then `50ms` interval), `clampValueOnBlur`, custom `format` / `parse`, optional `allowMouseWheel`, hidden form input. ARIA `role="spinbutton"` with full `aria-value*` set.
+- **OtpInput** — N-cell pin input with auto-advance, backspace-clears-and-moves-back, paste distribution across cells, optional `mask`, custom `pattern` regex class, `isComplete: Signal<boolean>` for reactive submit-button gating, hidden form input emitting the joined value.
+
+### Skipped (out of scope, with reasoning)
+
+- **Select** — headlessly identical to Combobox with `filter: () => true`. Document the pattern; the alias may land in 0.2.1.
+- **DatePicker / Calendar** — calendar locale + range + Temporal arithmetic is a small library on its own. Not justifiable for a headless behavior primitive.
+- **NavigationMenu** — submenu transition / hover-intent / focus-across-siblings interactions are dramatically larger surface than every other primitive combined.
+- **Form / Field validation** — every form library does this differently. Use react-hook-form, formkit, vee-validate, etc. for validation; use dokuma for the input behaviors.
+- **ScrollArea** — ResizeObserver + drag math + RTL + momentum touch is its own primitive's worth of complexity. Use native scrollbars or a dedicated library; revisit later.
+- **Slot / asChild** — adapter-level concern, handled differently per framework. The current plain-object props design already lets each adapter expose a Slot helper independently.
+
+### Stats
+
+- **29 primitives** × **3 adapters** × **live demos** for the original 20 (5 new alias primitives plus Breadcrumb / Pagination / NumberInput / OtpInput ship with primitive code + tests; demos can land in a follow-up).
+- **396 tests** across 29 vitest suites.
+- **319 KB** raw `dist/` size (95 files), all tree-shakeable per primitive.
+
 ## 0.1.0 — 2026-04-17
 
 The first release where the library feels _finished_ for v0.x. Twenty primitives, all three adapters complete, every dismissible primitive correctly stacked for nested-modal use.

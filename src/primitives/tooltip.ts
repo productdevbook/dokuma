@@ -13,6 +13,11 @@ export interface TooltipOptions extends PositionOptions {
   /** Hover-hide delay in ms. Default 300. */
   delayHide?: number
   disabled?: () => boolean
+  /**
+   * Default `"tooltip"`. Set to `"dialog"` for HoverCard-style content that
+   * may contain interactive children (links, buttons).
+   */
+  contentRole?: "tooltip" | "dialog"
 }
 
 export interface TooltipTriggerProps {
@@ -22,7 +27,7 @@ export interface TooltipTriggerProps {
 }
 
 export interface TooltipContentProps {
-  role: "tooltip"
+  role: "tooltip" | "dialog"
   id: string
   "data-state": "open" | "closed"
   "data-side": Side
@@ -47,6 +52,7 @@ export function createTooltip(options: TooltipOptions = {}): Tooltip {
   const contentId = createId("dokuma-tooltip")
   const delayShow = options.delayShow ?? 700
   const delayHide = options.delayHide ?? 300
+  const contentRole: "tooltip" | "dialog" = options.contentRole ?? "tooltip"
   const isControlled = typeof options.open === "function"
 
   const internal = createSignal(options.defaultOpen ?? false)
@@ -92,7 +98,7 @@ export function createTooltip(options: TooltipOptions = {}): Tooltip {
   }
 
   const getContentProps = (): TooltipContentProps => ({
-    role: "tooltip",
+    role: contentRole,
     id: contentId,
     "data-state": readOpen() ? "open" : "closed",
     "data-side": resolvedSide,
@@ -117,7 +123,7 @@ export function createTooltip(options: TooltipOptions = {}): Tooltip {
     const apply = (): void => {
       const isOpen = readOpen()
       content.id = contentId
-      content.setAttribute("role", "tooltip")
+      content.setAttribute("role", contentRole)
       content.setAttribute("data-state", isOpen ? "open" : "closed")
       content.setAttribute("data-side", resolvedSide)
       content.setAttribute("data-align", resolvedAlign)

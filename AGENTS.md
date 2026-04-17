@@ -66,7 +66,7 @@ pnpm release        # pnpm test && build && bundle-budget && bumpp --commit --ta
 
 ## Status
 
-- ✅ 20 primitives shipped: Disclosure, Accordion, Tabs, Switch, Toggle, ToggleGroup, Dialog, Tooltip, Popover, Avatar, Progress, Menu, Slider, RadioGroup, Checkbox, Toaster, Combobox, ContextMenu, Separator, VisuallyHidden.
+- ✅ 29 primitives shipped: Disclosure, Accordion, Tabs, Switch, Toggle, ToggleGroup, Dialog, Tooltip, Popover, Avatar, Progress, Menu, Slider, RadioGroup, Checkbox, Toaster, Combobox, ContextMenu, Separator, VisuallyHidden, Collapsible, AlertDialog, HoverCard, Label, AspectRatio, Breadcrumb, Pagination, NumberInput, OtpInput.
 - ✅ Architectural primitives: Presence (animate-out), Portal helper, FocusScope (nested-modal stack), DismissibleLayer stack.
 - ✅ 3 adapters: vanilla, react, vue. Pre-bound entries: `dokuma/react-hooks`, `dokuma/vue-composables`.
 - ✅ Published to npm as `dokuma`.

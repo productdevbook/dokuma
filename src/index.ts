@@ -174,6 +174,64 @@ export type {
   RegisterComboboxItemOptions,
 } from "./primitives/combobox.ts"
 
+export { createCollapsible } from "./primitives/collapsible.ts"
+export type { Collapsible, CollapsibleOptions } from "./primitives/collapsible.ts"
+
+export { createAlertDialog } from "./primitives/alert-dialog.ts"
+export type { AlertDialog, AlertDialogOptions } from "./primitives/alert-dialog.ts"
+
+export { createHoverCard } from "./primitives/hover-card.ts"
+export type { HoverCard, HoverCardOptions } from "./primitives/hover-card.ts"
+
+export { createLabel } from "./primitives/label.ts"
+export type { Label, LabelOptions, LabelProps } from "./primitives/label.ts"
+
+export { createOtpInput } from "./primitives/otp-input.ts"
+export type {
+  OtpInput,
+  OtpInputCellProps,
+  OtpInputHiddenInputProps,
+  OtpInputOptions,
+} from "./primitives/otp-input.ts"
+
+export { createNumberInput } from "./primitives/number-input.ts"
+export type {
+  NumberInput,
+  NumberInputHiddenInputProps,
+  NumberInputInputProps,
+  NumberInputOptions,
+  NumberInputRootProps,
+  NumberInputStepProps,
+} from "./primitives/number-input.ts"
+
+export { createPagination } from "./primitives/pagination.ts"
+export type {
+  Pagination,
+  PaginationItem,
+  PaginationItemProps,
+  PaginationOptions,
+  PaginationRootProps,
+  PaginationStepProps,
+} from "./primitives/pagination.ts"
+
+export { createBreadcrumb } from "./primitives/breadcrumb.ts"
+export type {
+  Breadcrumb,
+  BreadcrumbItemOptions,
+  BreadcrumbItemProps,
+  BreadcrumbListProps,
+  BreadcrumbOptions,
+  BreadcrumbRootProps,
+  BreadcrumbSeparatorProps,
+} from "./primitives/breadcrumb.ts"
+
+export { createAspectRatio } from "./primitives/aspect-ratio.ts"
+export type {
+  AspectRatio,
+  AspectRatioOptions,
+  AspectRatioProps,
+} from "./primitives/aspect-ratio.ts"
+
 export { createSeparator } from "./primitives/separator.ts"
 export type {
   Orientation as SeparatorOrientation,

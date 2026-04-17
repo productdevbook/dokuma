@@ -10,15 +10,24 @@ import * as React from "react"
 import {
   createUseAccordion,
   createUseAccordionItem,
+  createUseAlertDialog,
+  createUseAspectRatio,
   createUseAvatar,
+  createUseBreadcrumb,
   createUseCheckbox,
+  createUseCollapsible,
   createUseCombobox,
   createUseComboboxItem,
   createUseContextMenu,
   createUseDialog,
   createUseDisclosure,
+  createUseHoverCard,
+  createUseLabel,
   createUseMenu,
   createUseMenuItem,
+  createUseNumberInput,
+  createUseOtpInput,
+  createUsePagination,
   createUsePopover,
   createUsePresence,
   createUseProgress,
@@ -59,6 +68,15 @@ export const useContextMenu: ReturnType<typeof createUseContextMenu> = createUse
 export const useSeparator: ReturnType<typeof createUseSeparator> = createUseSeparator(React)
 export const useVisuallyHidden: ReturnType<typeof createUseVisuallyHidden> =
   createUseVisuallyHidden(React)
+export const useCollapsible: ReturnType<typeof createUseCollapsible> = createUseCollapsible(React)
+export const useAlertDialog: ReturnType<typeof createUseAlertDialog> = createUseAlertDialog(React)
+export const useHoverCard: ReturnType<typeof createUseHoverCard> = createUseHoverCard(React)
+export const useLabel: ReturnType<typeof createUseLabel> = createUseLabel(React)
+export const useAspectRatio: ReturnType<typeof createUseAspectRatio> = createUseAspectRatio(React)
+export const useBreadcrumb: ReturnType<typeof createUseBreadcrumb> = createUseBreadcrumb(React)
+export const usePagination: ReturnType<typeof createUsePagination> = createUsePagination(React)
+export const useNumberInput: ReturnType<typeof createUseNumberInput> = createUseNumberInput(React)
+export const useOtpInput: ReturnType<typeof createUseOtpInput> = createUseOtpInput(React)
 export const useSlider: ReturnType<typeof createUseSlider> = createUseSlider(React)
 export const useRadioGroup: ReturnType<typeof createUseRadioGroup> = createUseRadioGroup(React)
 export const useRadioItem: ReturnType<typeof createUseRadioItem> = createUseRadioItem(React)

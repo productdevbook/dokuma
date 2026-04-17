@@ -10,15 +10,24 @@ import * as Vue from "vue"
 import {
   createUseAccordion,
   createUseAccordionItem,
+  createUseAlertDialog,
+  createUseAspectRatio,
   createUseAvatar,
+  createUseBreadcrumb,
   createUseCheckbox,
+  createUseCollapsible,
   createUseCombobox,
   createUseComboboxItem,
   createUseContextMenu,
   createUseDialog,
   createUseDisclosure,
+  createUseHoverCard,
+  createUseLabel,
   createUseMenu,
   createUseMenuItem,
+  createUseNumberInput,
+  createUseOtpInput,
+  createUsePagination,
   createUsePopover,
   createUsePresence,
   createUseProgress,
@@ -59,6 +68,15 @@ export const useContextMenu: ReturnType<typeof createUseContextMenu> = createUse
 export const useSeparator: ReturnType<typeof createUseSeparator> = createUseSeparator(Vue)
 export const useVisuallyHidden: ReturnType<typeof createUseVisuallyHidden> =
   createUseVisuallyHidden(Vue)
+export const useCollapsible: ReturnType<typeof createUseCollapsible> = createUseCollapsible(Vue)
+export const useAlertDialog: ReturnType<typeof createUseAlertDialog> = createUseAlertDialog(Vue)
+export const useHoverCard: ReturnType<typeof createUseHoverCard> = createUseHoverCard(Vue)
+export const useLabel: ReturnType<typeof createUseLabel> = createUseLabel(Vue)
+export const useAspectRatio: ReturnType<typeof createUseAspectRatio> = createUseAspectRatio(Vue)
+export const useBreadcrumb: ReturnType<typeof createUseBreadcrumb> = createUseBreadcrumb(Vue)
+export const usePagination: ReturnType<typeof createUsePagination> = createUsePagination(Vue)
+export const useNumberInput: ReturnType<typeof createUseNumberInput> = createUseNumberInput(Vue)
+export const useOtpInput: ReturnType<typeof createUseOtpInput> = createUseOtpInput(Vue)
 export const useSlider: ReturnType<typeof createUseSlider> = createUseSlider(Vue)
 export const useRadioGroup: ReturnType<typeof createUseRadioGroup> = createUseRadioGroup(Vue)
 export const useRadioItem: ReturnType<typeof createUseRadioItem> = createUseRadioItem(Vue)

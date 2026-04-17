@@ -80,13 +80,29 @@
       "types": "./dist/primitives/accordion.d.mts",
       "default": "./dist/primitives/accordion.mjs"
     },
+    "./alert-dialog": {
+      "types": "./dist/primitives/alert-dialog.d.mts",
+      "default": "./dist/primitives/alert-dialog.mjs"
+    },
+    "./aspect-ratio": {
+      "types": "./dist/primitives/aspect-ratio.d.mts",
+      "default": "./dist/primitives/aspect-ratio.mjs"
+    },
     "./avatar": {
       "types": "./dist/primitives/avatar.d.mts",
       "default": "./dist/primitives/avatar.mjs"
     },
+    "./breadcrumb": {
+      "types": "./dist/primitives/breadcrumb.d.mts",
+      "default": "./dist/primitives/breadcrumb.mjs"
+    },
     "./checkbox": {
       "types": "./dist/primitives/checkbox.d.mts",
       "default": "./dist/primitives/checkbox.mjs"
+    },
+    "./collapsible": {
+      "types": "./dist/primitives/collapsible.d.mts",
+      "default": "./dist/primitives/collapsible.mjs"
     },
     "./combobox": {
       "types": "./dist/primitives/combobox.d.mts",
@@ -104,9 +120,29 @@
       "types": "./dist/primitives/disclosure.d.mts",
       "default": "./dist/primitives/disclosure.mjs"
     },
+    "./hover-card": {
+      "types": "./dist/primitives/hover-card.d.mts",
+      "default": "./dist/primitives/hover-card.mjs"
+    },
+    "./label": {
+      "types": "./dist/primitives/label.d.mts",
+      "default": "./dist/primitives/label.mjs"
+    },
     "./menu": {
       "types": "./dist/primitives/menu.d.mts",
       "default": "./dist/primitives/menu.mjs"
+    },
+    "./number-input": {
+      "types": "./dist/primitives/number-input.d.mts",
+      "default": "./dist/primitives/number-input.mjs"
+    },
+    "./otp-input": {
+      "types": "./dist/primitives/otp-input.d.mts",
+      "default": "./dist/primitives/otp-input.mjs"
+    },
+    "./pagination": {
+      "types": "./dist/primitives/pagination.d.mts",
+      "default": "./dist/primitives/pagination.mjs"
     },
     "./popover": {
       "types": "./dist/primitives/popover.d.mts",

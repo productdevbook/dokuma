@@ -18,6 +18,8 @@ export interface DialogOptions {
   initialFocus?: () => HTMLElement | null
   /** Default `true`. Returns focus to the previously focused element on close. */
   restoreFocus?: boolean
+  /** Default `"dialog"`. Set to `"alertdialog"` for AlertDialog semantics. */
+  role?: "dialog" | "alertdialog"
 }
 
 export interface DialogTriggerProps {
@@ -30,7 +32,7 @@ export interface DialogTriggerProps {
 }
 
 export interface DialogContentProps {
-  role: "dialog"
+  role: "dialog" | "alertdialog"
   id: string
   "aria-modal"?: "true"
   "aria-labelledby"?: string
@@ -93,6 +95,7 @@ export function createDialog(options: DialogOptions = {}): Dialog {
   const closeOnEscape = options.closeOnEscape ?? true
   const closeOnOutsideClick = options.closeOnOutsideClick ?? true
   const restoreFocus = options.restoreFocus ?? true
+  const role: "dialog" | "alertdialog" = options.role ?? "dialog"
   const isControlled = typeof options.open === "function"
 
   const internal = createSignal(options.defaultOpen ?? false)
@@ -163,7 +166,7 @@ export function createDialog(options: DialogOptions = {}): Dialog {
   const getContentProps = (): DialogContentProps => {
     const isOpen = readOpen()
     const props: DialogContentProps = {
-      role: "dialog",
+      role,
       id: contentId,
       "data-state": isOpen ? "open" : "closed",
       tabIndex: -1,
@@ -203,7 +206,7 @@ export function createDialog(options: DialogOptions = {}): Dialog {
         trigger.setAttribute("aria-controls", contentId)
         trigger.setAttribute("data-state", isOpen ? "open" : "closed")
       }
-      content.setAttribute("role", "dialog")
+      content.setAttribute("role", role)
       content.id = contentId
       content.setAttribute("data-state", isOpen ? "open" : "closed")
       content.tabIndex = -1
