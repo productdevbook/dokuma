@@ -1,3 +1,5 @@
+import { createPresence, type PresenceStatus } from "../_presence.ts"
+import type { Signal } from "../_signal.ts"
 import {
   createAccordion,
   type Accordion,
@@ -114,6 +116,47 @@ interface VueLike {
   ref: <T>(value: T) => Ref<T>
   computed: <T>(getter: () => T) => Ref<T>
   onScopeDispose: (fn: () => void) => void
+}
+
+export interface VuePresence {
+  isMounted: Ref<boolean>
+  status: Ref<PresenceStatus>
+}
+
+/**
+ * Wrap an open `Signal<boolean>` (e.g. `dialog.open`) into Vue refs that
+ * defer unmount until any CSS exit animation finishes. Pass an `elementRef`
+ * (template ref) the primitive's content gets bound to.
+ *
+ *     const dialog = useDialog({ ... })
+ *     const contentRef = ref<HTMLElement | null>(null)
+ *     const presence = usePresence(dialog.open, contentRef)
+ *     // <div v-if="presence.isMounted" ref="contentRef" v-bind="dialog.contentProps">
+ */
+export function createUsePresence(Vue: VueLike) {
+  return function usePresence(
+    openSignal: Signal<boolean>,
+    elementRef: Ref<HTMLElement | null>,
+  ): VuePresence {
+    const tick = Vue.ref(0)
+    const presence = createPresence(openSignal, () => elementRef.value)
+    const unsub = presence.isMounted.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(() => {
+      unsub()
+      presence.destroy()
+    })
+    const isMounted = Vue.computed(() => {
+      void tick.value
+      return presence.isMounted.get()
+    })
+    const status = Vue.computed(() => {
+      void tick.value
+      return presence.status.get()
+    })
+    return { isMounted, status }
+  }
 }
 
 /**

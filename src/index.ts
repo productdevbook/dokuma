@@ -1,6 +1,8 @@
 export { DokumaError } from "./errors.ts"
 export { createSignal } from "./_signal.ts"
 export type { Signal, Subscriber, Unsubscribe } from "./_signal.ts"
+export { createPresence } from "./_presence.ts"
+export type { Presence, PresenceStatus } from "./_presence.ts"
 
 export { createDisclosure } from "./primitives/disclosure.ts"
 export type {

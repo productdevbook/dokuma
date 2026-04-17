@@ -17,6 +17,7 @@ import {
   createUseMenu,
   createUseMenuItem,
   createUsePopover,
+  createUsePresence,
   createUseProgress,
   createUseRadioGroup,
   createUseRadioItem,
@@ -52,3 +53,4 @@ export const useSlider: ReturnType<typeof createUseSlider> = createUseSlider(Vue
 export const useRadioGroup: ReturnType<typeof createUseRadioGroup> = createUseRadioGroup(Vue)
 export const useRadioItem: ReturnType<typeof createUseRadioItem> = createUseRadioItem(Vue)
 export const useCheckbox: ReturnType<typeof createUseCheckbox> = createUseCheckbox(Vue)
+export const usePresence: ReturnType<typeof createUsePresence> = createUsePresence(Vue)

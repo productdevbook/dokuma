@@ -1,9 +1,10 @@
 import * as React from "react"
 import { createRoot } from "react-dom/client"
-import { createUseDialog } from "/dist/adapters/react.mjs"
+import { createUseDialog, createUsePresence } from "/dist/adapters/react.mjs"
 
 const { createElement: h, useEffect, useRef, useState } = React
 const useDialog = createUseDialog(React)
+const usePresence = createUsePresence(React)
 
 function Demo({ onState }) {
   const [open, setOpen] = useState(false)
@@ -19,8 +20,10 @@ function Demo({ onState }) {
     },
   })
 
+  const presence = usePresence(dialog.open, contentRef)
+
   useEffect(() => {
-    if (!open) return
+    if (!presence.isMounted) return
     if (!contentRef.current) return
     const destroy = dialog.mount({
       trigger: triggerRef.current,
@@ -28,7 +31,7 @@ function Demo({ onState }) {
       overlay: overlayRef.current,
     })
     return destroy
-  }, [open, dialog])
+  }, [presence.isMounted, dialog])
 
   return h(
     "div",
@@ -38,7 +41,7 @@ function Demo({ onState }) {
       { ref: triggerRef, ...dialog.getTriggerProps(), className: "demo-trigger" },
       "Open dialog",
     ),
-    open
+    presence.isMounted
       ? h(
           "div",
           null,

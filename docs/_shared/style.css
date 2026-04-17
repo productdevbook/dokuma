@@ -599,11 +599,11 @@ ul.tabs li a.active {
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
   z-index: 50;
-  animation: dokuma-fade-in 120ms ease;
+  animation: dokuma-fade-in 160ms ease both;
 }
 
 .dialog-overlay[data-state="closed"] {
-  display: none;
+  animation: dokuma-fade-out 160ms ease both;
 }
 
 .dialog-content {
@@ -618,11 +618,31 @@ ul.tabs li a.active {
   width: min(420px, calc(100vw - 32px));
   z-index: 60;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-  animation: dokuma-pop-in 120ms ease;
+  animation: dokuma-pop-in 160ms ease both;
 }
 
 .dialog-content[data-state="closed"] {
-  display: none;
+  animation: dokuma-pop-out 160ms ease both;
+}
+
+@keyframes dokuma-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes dokuma-pop-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
 }
 
 .dialog-content:focus {

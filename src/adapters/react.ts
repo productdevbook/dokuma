@@ -1,3 +1,5 @@
+import { createPresence, type PresenceStatus } from "../_presence.ts"
+import type { Signal } from "../_signal.ts"
 import {
   createAccordion,
   type Accordion,
@@ -56,10 +58,52 @@ import {
 
 type SetState<T> = (next: T | ((prev: T) => T)) => void
 
+interface ReactRef<T> {
+  current: T
+}
+
 interface ReactLike {
   useState: <T>(init: T | (() => T)) => [T, SetState<T>]
   useMemo: <T>(factory: () => T, deps: ReadonlyArray<unknown>) => T
   useEffect: (effect: () => void | (() => void), deps?: ReadonlyArray<unknown>) => void
+  useRef?: <T>(init: T) => ReactRef<T>
+}
+
+export interface UsePresenceResult {
+  isMounted: boolean
+  status: PresenceStatus
+}
+
+/**
+ * Wrap an open `Signal<boolean>` (e.g. `dialog.open`) into a React-friendly
+ * presence state that defers unmount until any CSS exit animation finishes.
+ *
+ *     const dialog = useDialog({ open, onOpenChange })
+ *     const ref = React.useRef<HTMLDivElement>(null)
+ *     const presence = usePresence(dialog.open, ref)
+ *     return presence.isMounted
+ *       ? <div ref={ref} {...dialog.getContentProps()}>...</div>
+ *       : null
+ */
+export function createUsePresence(React: ReactLike) {
+  return function usePresence(
+    openSignal: Signal<boolean>,
+    elementRef: ReactRef<HTMLElement | null>,
+  ): UsePresenceResult {
+    const [, setTick] = React.useState(0)
+    const presence = React.useMemo(
+      () => createPresence(openSignal, () => elementRef.current),
+      [openSignal, elementRef],
+    )
+    React.useEffect(() => {
+      const unsub = presence.isMounted.subscribe(() => setTick((n) => n + 1))
+      return () => {
+        unsub()
+        presence.destroy()
+      }
+    }, [presence])
+    return { isMounted: presence.isMounted.get(), status: presence.status.get() }
+  }
 }
 
 export interface UseAccordionOptions extends Omit<AccordionOptions, "value"> {
