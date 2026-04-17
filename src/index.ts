@@ -174,6 +174,17 @@ export type {
   RegisterComboboxItemOptions,
 } from "./primitives/combobox.ts"
 
+export { createSeparator } from "./primitives/separator.ts"
+export type {
+  Orientation as SeparatorOrientation,
+  Separator,
+  SeparatorOptions,
+  SeparatorProps,
+} from "./primitives/separator.ts"
+
+export { createVisuallyHidden } from "./primitives/visually-hidden.ts"
+export type { VisuallyHidden, VisuallyHiddenProps } from "./primitives/visually-hidden.ts"
+
 export { createToaster } from "./primitives/toaster.ts"
 export type {
   Toaster,

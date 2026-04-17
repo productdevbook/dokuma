@@ -24,6 +24,7 @@ import {
   createUseProgress,
   createUseRadioGroup,
   createUseRadioItem,
+  createUseSeparator,
   createUseSlider,
   createUseSwitch,
   createUseTab,
@@ -33,6 +34,7 @@ import {
   createUseToggleGroup,
   createUseToggleGroupItem,
   createUseTooltip,
+  createUseVisuallyHidden,
 } from "./react.ts"
 
 export const useDisclosure: ReturnType<typeof createUseDisclosure> = createUseDisclosure(React)
@@ -54,6 +56,9 @@ export const useProgress: ReturnType<typeof createUseProgress> = createUseProgre
 export const useMenu: ReturnType<typeof createUseMenu> = createUseMenu(React)
 export const useMenuItem: ReturnType<typeof createUseMenuItem> = createUseMenuItem(React)
 export const useContextMenu: ReturnType<typeof createUseContextMenu> = createUseContextMenu(React)
+export const useSeparator: ReturnType<typeof createUseSeparator> = createUseSeparator(React)
+export const useVisuallyHidden: ReturnType<typeof createUseVisuallyHidden> =
+  createUseVisuallyHidden(React)
 export const useSlider: ReturnType<typeof createUseSlider> = createUseSlider(React)
 export const useRadioGroup: ReturnType<typeof createUseRadioGroup> = createUseRadioGroup(React)
 export const useRadioItem: ReturnType<typeof createUseRadioItem> = createUseRadioItem(React)

@@ -107,6 +107,18 @@
       "title": "Context Menu",
       "summary": "Right-click menu anchored to the cursor. Composes Menu's keyboard/typeahead/ARIA wiring; adds long-press on touch and close-on-scroll.",
       "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "separator",
+      "title": "Separator",
+      "summary": "A divider between sections. role=separator + aria-orientation when semantic, role=none when decorative. Stateless.",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "visually-hidden",
+      "title": "Visually Hidden",
+      "summary": "Screen-reader-only content. Standard .sr-only style block — invisible visually but still in the accessibility tree.",
+      "adapters": ["vanilla", "react", "vue"]
     }
   ]
 }

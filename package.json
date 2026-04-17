@@ -120,6 +120,10 @@
       "types": "./dist/primitives/radio-group.d.mts",
       "default": "./dist/primitives/radio-group.mjs"
     },
+    "./separator": {
+      "types": "./dist/primitives/separator.d.mts",
+      "default": "./dist/primitives/separator.mjs"
+    },
     "./slider": {
       "types": "./dist/primitives/slider.d.mts",
       "default": "./dist/primitives/slider.mjs"
@@ -147,6 +151,10 @@
     "./tooltip": {
       "types": "./dist/primitives/tooltip.d.mts",
       "default": "./dist/primitives/tooltip.mjs"
+    },
+    "./visually-hidden": {
+      "types": "./dist/primitives/visually-hidden.d.mts",
+      "default": "./dist/primitives/visually-hidden.mjs"
     }
   },
   "scripts": {

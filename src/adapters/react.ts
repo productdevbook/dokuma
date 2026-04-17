@@ -43,6 +43,8 @@ import {
   type ContextMenu,
   type ContextMenuOptions,
 } from "../primitives/context-menu.ts"
+import { createSeparator, type Separator, type SeparatorOptions } from "../primitives/separator.ts"
+import { createVisuallyHidden, type VisuallyHidden } from "../primitives/visually-hidden.ts"
 import { createPopover, type Popover, type PopoverOptions } from "../primitives/popover.ts"
 import { createProgress, type Progress, type ProgressOptions } from "../primitives/progress.ts"
 import { createTooltip, type Tooltip, type TooltipOptions } from "../primitives/tooltip.ts"
@@ -1000,5 +1002,17 @@ export function createUseComboboxItem(React: ReactLike) {
       isHighlighted: cb.highlighted.get() === value,
       isDisabled: cb.isItemDisabled(value),
     }
+  }
+}
+
+export function createUseSeparator(_React: ReactLike) {
+  return function useSeparator(opts: SeparatorOptions = {}): Separator {
+    return createSeparator(opts)
+  }
+}
+
+export function createUseVisuallyHidden(_React: ReactLike) {
+  return function useVisuallyHidden(): VisuallyHidden {
+    return createVisuallyHidden()
   }
 }

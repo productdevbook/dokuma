@@ -11,6 +11,8 @@ import {
   type ContextMenu,
   type ContextMenuOptions,
 } from "../primitives/context-menu.ts"
+import { createSeparator, type Separator, type SeparatorOptions } from "../primitives/separator.ts"
+import { createVisuallyHidden, type VisuallyHidden } from "../primitives/visually-hidden.ts"
 import {
   createRadioGroup,
   type RadioGroup,
@@ -438,4 +440,57 @@ export function mountCombobox(opts: MountComboboxOptions): MountedCombobox {
   const combobox = createCombobox(opts)
   const destroy = combobox.mount({ input, listbox, trigger })
   return { combobox, destroy }
+}
+
+export interface MountSeparatorOptions extends SeparatorOptions {
+  root: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedSeparator {
+  separator: Separator
+  destroy: () => void
+}
+
+export function mountSeparator(opts: MountSeparatorOptions): MountedSeparator {
+  const parent = opts.parent ?? document
+  const root = resolve(opts.root, parent)
+  const separator = createSeparator(opts)
+  const props = separator.getRootProps()
+  root.setAttribute("role", props.role)
+  if (props["aria-orientation"]) root.setAttribute("aria-orientation", props["aria-orientation"])
+  root.setAttribute("data-orientation", props["data-orientation"])
+  return {
+    separator,
+    destroy: () => {
+      root.removeAttribute("role")
+      root.removeAttribute("aria-orientation")
+      root.removeAttribute("data-orientation")
+    },
+  }
+}
+
+export interface MountVisuallyHiddenOptions {
+  root: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedVisuallyHidden {
+  visuallyHidden: VisuallyHidden
+  destroy: () => void
+}
+
+export function mountVisuallyHidden(opts: MountVisuallyHiddenOptions): MountedVisuallyHidden {
+  const parent = opts.parent ?? document
+  const root = resolve(opts.root, parent)
+  const visuallyHidden = createVisuallyHidden()
+  const style = visuallyHidden.getRootProps().style
+  const previous = root.getAttribute("style") ?? ""
+  Object.assign(root.style, style)
+  return {
+    visuallyHidden,
+    destroy: () => {
+      root.setAttribute("style", previous)
+    },
+  }
 }

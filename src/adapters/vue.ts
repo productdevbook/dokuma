@@ -61,6 +61,8 @@ import {
   type ContextMenu,
   type ContextMenuOptions,
 } from "../primitives/context-menu.ts"
+import { createSeparator, type Separator, type SeparatorOptions } from "../primitives/separator.ts"
+import { createVisuallyHidden, type VisuallyHidden } from "../primitives/visually-hidden.ts"
 import {
   createPopover,
   type Popover,
@@ -990,5 +992,17 @@ export function createUseComboboxItem(Vue: VueLike) {
     })
 
     return { optionProps, isSelected, isHighlighted, isDisabled }
+  }
+}
+
+export function createUseSeparator(_Vue: VueLike) {
+  return function useSeparator(opts: SeparatorOptions = {}): Separator {
+    return createSeparator(opts)
+  }
+}
+
+export function createUseVisuallyHidden(_Vue: VueLike) {
+  return function useVisuallyHidden(): VisuallyHidden {
+    return createVisuallyHidden()
   }
 }

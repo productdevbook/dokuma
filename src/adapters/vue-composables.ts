@@ -24,6 +24,7 @@ import {
   createUseProgress,
   createUseRadioGroup,
   createUseRadioItem,
+  createUseSeparator,
   createUseSlider,
   createUseSwitch,
   createUseTab,
@@ -33,6 +34,7 @@ import {
   createUseToggleGroup,
   createUseToggleGroupItem,
   createUseTooltip,
+  createUseVisuallyHidden,
 } from "./vue.ts"
 
 export const useDisclosure: ReturnType<typeof createUseDisclosure> = createUseDisclosure(Vue)
@@ -54,6 +56,9 @@ export const useProgress: ReturnType<typeof createUseProgress> = createUseProgre
 export const useMenu: ReturnType<typeof createUseMenu> = createUseMenu(Vue)
 export const useMenuItem: ReturnType<typeof createUseMenuItem> = createUseMenuItem(Vue)
 export const useContextMenu: ReturnType<typeof createUseContextMenu> = createUseContextMenu(Vue)
+export const useSeparator: ReturnType<typeof createUseSeparator> = createUseSeparator(Vue)
+export const useVisuallyHidden: ReturnType<typeof createUseVisuallyHidden> =
+  createUseVisuallyHidden(Vue)
 export const useSlider: ReturnType<typeof createUseSlider> = createUseSlider(Vue)
 export const useRadioGroup: ReturnType<typeof createUseRadioGroup> = createUseRadioGroup(Vue)
 export const useRadioItem: ReturnType<typeof createUseRadioItem> = createUseRadioItem(Vue)

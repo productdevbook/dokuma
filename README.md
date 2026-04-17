@@ -10,9 +10,9 @@
 - **SSR-safe.** No top-level DOM access.
 - **Accessibility-first.** WAI-ARIA, keyboard, focus management baked in.
 - **Tree-shakeable.** Each primitive is a separate sub-path export.
-- **Tiny.** Whole package under 75 KB raw, gzip ≈ 1/3 of that.
+- **Tiny.** Whole package under 80 KB raw, gzip ≈ 1/3 of that.
 
-> **Status:** very early. APIs may change. Fifteen primitives shipped: `Disclosure`, `Accordion`, `Tabs`, `Switch`, `Toggle`, `Toggle Group`, `Dialog`, `Tooltip`, `Popover`, `Avatar`, `Progress`, `Menu`, `Slider`, `Radio Group`, `Checkbox`.
+> **Status:** v0.1 — 20 primitives shipped. APIs are settling but may still change before 1.0.
 
 ## Install
 
@@ -56,10 +56,7 @@ Or use it directly from a CDN — no build step:
 ### React
 
 ```tsx
-import * as React from "react"
-import { createUseDisclosure } from "dokuma/react"
-
-const useDisclosure = createUseDisclosure(React)
+import { useDisclosure } from "dokuma/react-hooks"
 
 function Demo() {
   const d = useDisclosure({ defaultOpen: false })
@@ -72,14 +69,19 @@ function Demo() {
 }
 ```
 
+For Preact compat or an isolated React copy, use the factory entry instead:
+
+```tsx
+import * as React from "react"
+import { createUseDisclosure } from "dokuma/react"
+const useDisclosure = createUseDisclosure(React)
+```
+
 ### Vue
 
 ```vue
 <script setup>
-import * as Vue from "vue"
-import { createUseDisclosure } from "dokuma/vue"
-
-const useDisclosure = createUseDisclosure(Vue)
+import { useDisclosure } from "dokuma/vue-composables"
 const d = useDisclosure({ defaultOpen: false })
 </script>
 
@@ -91,33 +93,42 @@ const d = useDisclosure({ defaultOpen: false })
 
 ## Primitives
 
-| Primitive    | Path                  | What it does                                                             |
-| ------------ | --------------------- | ------------------------------------------------------------------------ |
-| Disclosure   | `dokuma/disclosure`   | Show/hide a panel via a button. The foundation primitive.                |
-| Accordion    | `dokuma/accordion`    | Stack of collapsible items. Single or multiple open. Arrow-key nav.      |
-| Tabs         | `dokuma/tabs`         | Tablist with roving focus, automatic or manual activation.               |
-| Switch       | `dokuma/switch`       | On/off control. `role="switch"`, optional hidden checkbox for forms.     |
-| Toggle       | `dokuma/toggle`       | Single pressed-state button (`aria-pressed`).                            |
-| Toggle Group | `dokuma/toggle-group` | Coordinated set of Toggles. Single (alignment) or multiple (formatting). |
-| Dialog       | `dokuma/dialog`       | Modal/non-modal dialog. Focus trap, scroll lock, escape, click-outside.  |
-| Tooltip      | `dokuma/tooltip`      | Hover/focus floating label. Viewport-aware positioning.                  |
-| Popover      | `dokuma/popover`      | Click-triggered floating panel. Focus trap, escape, click-outside.       |
-| Avatar       | `dokuma/avatar`       | Image with fallback. Status state machine, eager preload.                |
-| Progress     | `dokuma/progress`     | ARIA progressbar with indeterminate, loading, complete states.           |
-| Menu         | `dokuma/menu`         | Click-triggered actions menu. Typeahead, focus-based navigation.         |
-| Slider       | `dokuma/slider`       | Range input. Single value or two-thumb range. Pointer + full keyboard.   |
-| Radio Group  | `dokuma/radio-group`  | Single-selection radio group. Roving tabindex, arrows navigate + select. |
-| Checkbox     | `dokuma/checkbox`     | Three-state: true / false / indeterminate. ARIA mixed.                   |
+| Primitive       | Path                     | What it does                                                             |
+| --------------- | ------------------------ | ------------------------------------------------------------------------ |
+| Disclosure      | `dokuma/disclosure`      | Show/hide a panel via a button. The foundation primitive.                |
+| Accordion       | `dokuma/accordion`       | Stack of collapsible items. Single or multiple open. Arrow-key nav.      |
+| Tabs            | `dokuma/tabs`            | Tablist with roving focus, automatic or manual activation.               |
+| Switch          | `dokuma/switch`          | On/off control. `role="switch"`, optional hidden checkbox for forms.     |
+| Toggle          | `dokuma/toggle`          | Single pressed-state button (`aria-pressed`).                            |
+| Toggle Group    | `dokuma/toggle-group`    | Coordinated set of Toggles. Single (alignment) or multiple (formatting). |
+| Dialog          | `dokuma/dialog`          | Modal/non-modal dialog. Focus trap, scroll lock, escape, click-outside.  |
+| Tooltip         | `dokuma/tooltip`         | Hover/focus floating label. Viewport-aware positioning.                  |
+| Popover         | `dokuma/popover`         | Click-triggered floating panel. Focus trap, escape, click-outside.       |
+| Avatar          | `dokuma/avatar`          | Image with fallback. Status state machine, eager preload.                |
+| Progress        | `dokuma/progress`        | ARIA progressbar with indeterminate, loading, complete states.           |
+| Menu            | `dokuma/menu`            | Click-triggered actions menu. Typeahead, focus-based navigation.         |
+| Context Menu    | `dokuma/context-menu`    | Right-click + long-press menu anchored to cursor. Composes Menu.         |
+| Slider          | `dokuma/slider`          | Range input. Single value or two-thumb range. Pointer + full keyboard.   |
+| Radio Group     | `dokuma/radio-group`     | Single-selection radio group. Roving tabindex, arrows navigate + select. |
+| Checkbox        | `dokuma/checkbox`        | Three-state: true / false / indeterminate. ARIA mixed.                   |
+| Combobox        | `dokuma/combobox`        | Searchable single-select. WAI-ARIA 1.2 with `aria-activedescendant`.     |
+| Toaster         | `dokuma/toaster`         | Notification queue, auto-dismiss, hover/focus pause, ARIA live region.   |
+| Separator       | `dokuma/separator`       | Section divider. `role="separator"` or `role="none"` when decorative.    |
+| Visually Hidden | `dokuma/visually-hidden` | Screen-reader-only content via the standard `.sr-only` style block.      |
+
+Cross-cutting helpers exported from the package root: `createPresence` (animate-out), `getDefaultPortalTarget` / `resolvePortalTarget` (portal helpers), `DokumaError`, `createSignal`. Internal layer stacks (`FocusScope`, `DismissibleLayer`) are handled automatically by every dismissible primitive — no setup needed for nested modals.
 
 ## Adapters
 
-| Adapter | Path             | Use                                                     |
-| ------- | ---------------- | ------------------------------------------------------- |
-| Vanilla | `dokuma/vanilla` | `mount*` helpers for every primitive.                   |
-| React   | `dokuma/react`   | `createUse*(React)` factories per primitive.            |
-| Vue     | `dokuma/vue`     | `createUse*(Vue)` composables, mirror of the React API. |
+| Adapter           | Path                     | Use                                                            |
+| ----------------- | ------------------------ | -------------------------------------------------------------- |
+| Vanilla           | `dokuma/vanilla`         | `mount*` helpers for every primitive.                          |
+| React (factory)   | `dokuma/react`           | `createUse*(React)` factories — pass your own React instance.  |
+| React (pre-bound) | `dokuma/react-hooks`     | Pre-bound `useDisclosure`, `useDialog`, etc. Skip the factory. |
+| Vue (factory)     | `dokuma/vue`             | `createUse*(Vue)` composables, mirror of the React API.        |
+| Vue (pre-bound)   | `dokuma/vue-composables` | Pre-bound composables. Skip the factory.                       |
 
-Svelte, Solid, Angular, Lit adapters: planned.
+Svelte / Solid / Angular / Lit adapters are out of scope for this maintainer — the framework-agnostic `create*` functions in `dokuma` (root entry) make a thin wrapper for any reactive runtime a small project. Community contributions welcome.
 
 ## Why "dokuma"?
 
