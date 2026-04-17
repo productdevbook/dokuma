@@ -25,6 +25,7 @@ import {
   createUseSwitch,
   createUseTab,
   createUseTabs,
+  createUseToaster,
   createUseToggle,
   createUseToggleGroup,
   createUseToggleGroupItem,
@@ -54,3 +55,4 @@ export const useRadioGroup: ReturnType<typeof createUseRadioGroup> = createUseRa
 export const useRadioItem: ReturnType<typeof createUseRadioItem> = createUseRadioItem(Vue)
 export const useCheckbox: ReturnType<typeof createUseCheckbox> = createUseCheckbox(Vue)
 export const usePresence: ReturnType<typeof createUsePresence> = createUsePresence(Vue)
+export const useToaster: ReturnType<typeof createUseToaster> = createUseToaster(Vue)

@@ -89,6 +89,12 @@
       "title": "Checkbox",
       "summary": "Three-state control: true / false / indeterminate. aria-checked=mixed for indeterminate. Optional hidden checkbox for form submit.",
       "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "toaster",
+      "title": "Toaster",
+      "summary": "Notification queue with auto-dismiss timer, hover/focus pause, ARIA live region, and per-toast actions. Each toast animates out via Presence.",
+      "adapters": ["vanilla", "react", "vue"]
     }
   ]
 }

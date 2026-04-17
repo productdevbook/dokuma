@@ -1,6 +1,12 @@
 import { createPresence, type PresenceStatus } from "../_presence.ts"
 import type { Signal } from "../_signal.ts"
 import {
+  createToaster,
+  type Toaster,
+  type ToasterOptions,
+  type ToastItem,
+} from "../primitives/toaster.ts"
+import {
   createAccordion,
   type Accordion,
   type AccordionItemProps,
@@ -788,5 +794,30 @@ export function createUseCheckbox(Vue: VueLike) {
       return cb.getIndicatorProps()
     })
     return { ...cb, rootProps, indicatorProps }
+  }
+}
+
+export interface VueToaster extends Toaster {
+  items: Ref<ToastItem[]>
+  viewportProps: Ref<Record<string, unknown>>
+}
+
+export function createUseToaster(Vue: VueLike) {
+  return function useToaster(opts: ToasterOptions = {}): VueToaster {
+    const tick = Vue.ref(0)
+    const toaster = createToaster(opts)
+    const unsub = toaster.toasts.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const items = Vue.computed(() => {
+      void tick.value
+      return toaster.toasts.get()
+    })
+    const viewportProps = Vue.computed(() => {
+      void tick.value
+      return toaster.getViewportProps() as unknown as Record<string, unknown>
+    })
+    return { ...toaster, items, viewportProps }
   }
 }

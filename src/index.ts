@@ -153,3 +153,18 @@ export type {
   CheckboxRootProps,
   CheckedState,
 } from "./primitives/checkbox.ts"
+
+export { createToaster } from "./primitives/toaster.ts"
+export type {
+  Toaster,
+  ToasterOptions,
+  ToastAction,
+  ToastActionProps,
+  ToastCloseProps,
+  ToastItem,
+  ToastOptions,
+  ToastPosition,
+  ToastProps,
+  ToastType,
+  ViewportProps,
+} from "./primitives/toaster.ts"

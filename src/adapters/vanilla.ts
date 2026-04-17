@@ -1,5 +1,10 @@
 import { resolvePortalTarget, type PortalTarget } from "../_portal.ts"
 import { createAccordion, type Accordion, type AccordionOptions } from "../primitives/accordion.ts"
+import {
+  createToaster,
+  type Toaster,
+  type ToasterOptions,
+} from "../primitives/toaster.ts"
 import { createAvatar, type Avatar, type AvatarOptions } from "../primitives/avatar.ts"
 import { createCheckbox, type Checkbox, type CheckboxOptions } from "../primitives/checkbox.ts"
 import { createDialog, type Dialog, type DialogOptions } from "../primitives/dialog.ts"
@@ -365,4 +370,28 @@ export function mountPortal(opts: MountPortalOptions): (() => void) | null {
       opts.content.remove()
     }
   }
+}
+
+export interface MountToasterOptions extends ToasterOptions {
+  viewport: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedToaster {
+  toaster: Toaster
+  destroy: () => void
+}
+
+/**
+ * Wire a Toaster to a viewport `<ol>` (or any element). Returns the toaster
+ * for `add()` / `dismiss()` calls plus a cleanup. Rendering each toast inside
+ * the viewport is the consumer's job — subscribe to `toaster.toasts` and
+ * mirror the array into the DOM.
+ */
+export function mountToaster(opts: MountToasterOptions): MountedToaster {
+  const parent = opts.parent ?? document
+  const viewport = resolve(opts.viewport, parent)
+  const toaster = createToaster(opts)
+  const destroy = toaster.mount(viewport)
+  return { toaster, destroy }
 }

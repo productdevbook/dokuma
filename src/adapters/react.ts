@@ -1,5 +1,6 @@
 import { createPresence, type PresenceStatus } from "../_presence.ts"
 import type { Signal } from "../_signal.ts"
+import { createToaster, type Toaster, type ToasterOptions } from "../primitives/toaster.ts"
 import {
   createAccordion,
   type Accordion,
@@ -834,5 +835,17 @@ export function createUseCheckbox(React: ReactLike) {
     }, [isControlled, opts.checked])
 
     return checkbox
+  }
+}
+
+export function createUseToaster(React: ReactLike) {
+  return function useToaster(opts: ToasterOptions = {}): Toaster {
+    const [, setTick] = React.useState(0)
+    const toaster = React.useMemo(() => createToaster(opts), [])
+    React.useEffect(() => {
+      const unsub = toaster.toasts.subscribe(() => setTick((n) => n + 1))
+      return unsub
+    }, [toaster])
+    return toaster
   }
 }

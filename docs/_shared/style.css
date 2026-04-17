@@ -1024,3 +1024,123 @@ ul.tabs li a.active {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* --- Toaster ---------------------------------------------------- */
+
+.toaster {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  z-index: 70;
+  width: min(360px, calc(100vw - 48px));
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+  outline: none;
+  animation: dokuma-toast-in 200ms ease both;
+}
+
+.toast[data-state="closed"] {
+  animation: dokuma-toast-out 160ms ease both;
+}
+
+.toast:focus-visible {
+  border-color: var(--accent);
+}
+
+.toast[data-type="success"] {
+  border-left: 3px solid #34c759;
+}
+
+.toast[data-type="error"] {
+  border-left: 3px solid #ff453a;
+}
+
+.toast[data-type="warning"] {
+  border-left: 3px solid #ffd60a;
+}
+
+.toast[data-type="info"] {
+  border-left: 3px solid #64d2ff;
+}
+
+.toast-message {
+  flex: 1 1 auto;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.toast-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.toast-action {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.toast-action:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.toast-close {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.toast-close:hover {
+  color: var(--fg);
+}
+
+@keyframes dokuma-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dokuma-toast-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}

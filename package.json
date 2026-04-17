@@ -124,6 +124,10 @@
       "types": "./dist/primitives/tabs.d.mts",
       "default": "./dist/primitives/tabs.mjs"
     },
+    "./toaster": {
+      "types": "./dist/primitives/toaster.d.mts",
+      "default": "./dist/primitives/toaster.mjs"
+    },
     "./toggle": {
       "types": "./dist/primitives/toggle.d.mts",
       "default": "./dist/primitives/toggle.mjs"
