@@ -4,7 +4,7 @@
  * from the file list in `src/primitives/`. Run `pnpm sync-exports` after
  * adding a new primitive; CI runs `--check` to fail on drift.
  *
- * Manual entries (".", "./vanilla", "./react", "./vue") are preserved.
+ * Manual entries (".", adapter entries) are preserved.
  */
 import { readFileSync, readdirSync, writeFileSync } from "node:fs"
 import { basename, join } from "node:path"
@@ -30,12 +30,8 @@ const primitiveExports = Object.fromEntries(
 )
 
 const pkg = JSON.parse(readFileSync(PKG_PATH, "utf8"))
-const manual = {
-  ".": pkg.exports["."],
-  "./vanilla": pkg.exports["./vanilla"],
-  "./react": pkg.exports["./react"],
-  "./vue": pkg.exports["./vue"],
-}
+const MANUAL_KEYS = [".", "./vanilla", "./react", "./react-hooks", "./vue", "./vue-composables"]
+const manual = Object.fromEntries(MANUAL_KEYS.map((k) => [k, pkg.exports[k]]))
 const next = { ...manual, ...primitiveExports }
 
 const before = JSON.stringify(pkg.exports)

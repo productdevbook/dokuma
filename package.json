@@ -64,9 +64,17 @@
       "types": "./dist/adapters/react.d.mts",
       "default": "./dist/adapters/react.mjs"
     },
+    "./react-hooks": {
+      "types": "./dist/adapters/react-hooks.d.mts",
+      "default": "./dist/adapters/react-hooks.mjs"
+    },
     "./vue": {
       "types": "./dist/adapters/vue.d.mts",
       "default": "./dist/adapters/vue.mjs"
+    },
+    "./vue-composables": {
+      "types": "./dist/adapters/vue-composables.d.mts",
+      "default": "./dist/adapters/vue-composables.mjs"
     },
     "./accordion": {
       "types": "./dist/primitives/accordion.d.mts",
@@ -145,6 +153,7 @@
     "prepack": "pnpm build"
   },
   "devDependencies": {
+    "@types/react": "^19.2.14",
     "@typescript/native-preview": "7.0.0-dev.20260316.1",
     "@vitest/coverage-v8": "^4.1.2",
     "bumpp": "^11.0.1",
@@ -152,7 +161,21 @@
     "obuild": "^0.4.32",
     "oxfmt": "^0.42.0",
     "oxlint": "^1.57.0",
+    "react": "^19.0.0",
     "typescript": "^6.0.2",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.2",
+    "vue": "^3.5.0"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "vue": ">=3"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
   }
 }
