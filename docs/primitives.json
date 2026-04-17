@@ -17,6 +17,12 @@
       "title": "Tabs",
       "summary": "A tablist with roving focus, automatic or manual activation, orientation-aware arrow keys, Home/End. Selected tab stays in tab order; the rest exit it.",
       "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "switch",
+      "title": "Switch",
+      "summary": "A two-state on/off control. role=\"switch\", aria-checked, optional hidden checkbox companion for form submission. Space and Enter toggle natively.",
+      "adapters": ["vanilla", "react", "vue"]
     }
   ]
 }

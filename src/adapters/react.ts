@@ -12,6 +12,7 @@ import {
   type Disclosure,
   type DisclosureOptions,
 } from "../primitives/disclosure.ts"
+import { createSwitch, type Switch, type SwitchOptions } from "../primitives/switch.ts"
 import {
   createTabs,
   type RegisterTabOptions,
@@ -228,5 +229,44 @@ export function createUseTab(React: ReactLike) {
       isSelected: tabs.isSelected(value),
       isDisabled: tabs.isTabDisabled(value),
     }
+  }
+}
+
+export interface UseSwitchOptions extends Omit<SwitchOptions, "checked"> {
+  checked?: boolean
+}
+
+export function createUseSwitch(React: ReactLike) {
+  return function useSwitch(opts: UseSwitchOptions = {}): Switch {
+    const isControlled = opts.checked !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    const sw = React.useMemo(
+      () =>
+        createSwitch({
+          ...opts,
+          checked: isControlled ? () => optsRef.current.checked as boolean : undefined,
+          onCheckedChange: (next) => {
+            optsRef.current.onCheckedChange?.(next)
+          },
+        }),
+      [isControlled],
+    )
+
+    React.useEffect(() => {
+      const unsub = sw.checked.subscribe(() => setTick((n) => n + 1))
+      return unsub
+    }, [sw])
+
+    React.useEffect(() => {
+      if (isControlled) {
+        setTick((n) => n + 1)
+        sw.notify()
+      }
+    }, [isControlled, opts.checked])
+
+    return sw
   }
 }

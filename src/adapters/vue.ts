@@ -15,6 +15,14 @@ import {
   type DisclosureTriggerProps,
 } from "../primitives/disclosure.ts"
 import {
+  createSwitch,
+  type Switch,
+  type SwitchHiddenInputProps,
+  type SwitchOptions,
+  type SwitchRootProps,
+  type SwitchThumbProps,
+} from "../primitives/switch.ts"
+import {
   createTabs,
   type RegisterTabOptions,
   type TabPanelProps,
@@ -192,5 +200,42 @@ export function createUseTab(Vue: VueLike) {
     })
 
     return { tabProps, panelProps, isSelected, isDisabled }
+  }
+}
+
+export interface VueSwitch extends Switch {
+  rootProps: Ref<SwitchRootProps>
+  thumbProps: Ref<SwitchThumbProps>
+  hiddenInputProps: Ref<SwitchHiddenInputProps | null>
+  isChecked: Ref<boolean>
+}
+
+export function createUseSwitch(Vue: VueLike) {
+  return function useSwitch(opts: SwitchOptions = {}): VueSwitch {
+    const tick = Vue.ref(0)
+    const sw = createSwitch(opts)
+    const unsub = sw.checked.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return sw.getRootProps()
+    })
+    const thumbProps = Vue.computed(() => {
+      void tick.value
+      return sw.getThumbProps()
+    })
+    const hiddenInputProps = Vue.computed(() => {
+      void tick.value
+      return sw.getHiddenInputProps()
+    })
+    const isChecked = Vue.computed(() => {
+      void tick.value
+      return sw.checked.get()
+    })
+
+    return { ...sw, rootProps, thumbProps, hiddenInputProps, isChecked }
   }
 }

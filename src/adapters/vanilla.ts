@@ -4,6 +4,7 @@ import {
   type Disclosure,
   type DisclosureOptions,
 } from "../primitives/disclosure.ts"
+import { createSwitch, type Switch, type SwitchOptions } from "../primitives/switch.ts"
 import { createTabs, type Tabs, type TabsOptions } from "../primitives/tabs.ts"
 
 export interface MountDisclosureOptions extends DisclosureOptions {
@@ -67,4 +68,26 @@ export function mountTabs(opts: MountTabsOptions): MountedTabs {
   const tabs = createTabs(opts)
   const destroy = tabs.mount(root)
   return { tabs, destroy }
+}
+
+export interface MountSwitchOptions extends SwitchOptions {
+  root: HTMLElement | string
+  hiddenInput?: HTMLInputElement | string
+  parent?: ParentNode
+}
+
+export interface MountedSwitch {
+  switch: Switch
+  destroy: () => void
+}
+
+export function mountSwitch(opts: MountSwitchOptions): MountedSwitch {
+  const parent = opts.parent ?? document
+  const root = resolve(opts.root, parent)
+  const hiddenInput = opts.hiddenInput
+    ? (resolve(opts.hiddenInput as HTMLElement | string, parent) as HTMLInputElement)
+    : undefined
+  const sw = createSwitch(opts)
+  const destroy = sw.mount({ root, hiddenInput })
+  return { switch: sw, destroy }
 }

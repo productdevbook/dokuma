@@ -68,6 +68,10 @@
       "types": "./dist/primitives/tabs.d.mts",
       "default": "./dist/primitives/tabs.mjs"
     },
+    "./switch": {
+      "types": "./dist/primitives/switch.d.mts",
+      "default": "./dist/primitives/switch.mjs"
+    },
     "./vanilla": {
       "types": "./dist/adapters/vanilla.d.mts",
       "default": "./dist/adapters/vanilla.mjs"
