@@ -1,7 +1,8 @@
 import * as Vue from "vue"
-import { createUseDialog } from "/dist/adapters/vue.mjs"
+import { createUseDialog, createUsePresence } from "/dist/adapters/vue.mjs"
 
 const useDialog = createUseDialog(Vue)
+const usePresence = createUsePresence(Vue)
 
 export function mount(root, ctx) {
   const app = Vue.createApp({
@@ -14,8 +15,10 @@ export function mount(root, ctx) {
       const contentRef = Vue.ref(null)
       const overlayRef = Vue.ref(null)
 
+      const presence = usePresence(dialog.open, contentRef)
+
       Vue.watchEffect((onCleanup) => {
-        if (!dialog.isOpen.value || !contentRef.value) return
+        if (!presence.isMounted.value || !contentRef.value) return
         const destroy = dialog.mount({
           trigger: triggerRef.value ?? undefined,
           content: contentRef.value,
@@ -32,7 +35,7 @@ export function mount(root, ctx) {
         titleProps: dialog.getTitleProps(),
         descProps: dialog.getDescriptionProps(),
         closeProps: dialog.getCloseProps("Cancel"),
-        isOpen: dialog.isOpen,
+        isMounted: presence.isMounted,
         triggerRef,
         contentRef,
         overlayRef,
@@ -46,19 +49,21 @@ export function mount(root, ctx) {
           v-bind="triggerProps"
           class="demo-trigger"
         >Open dialog</button>
-        <template v-if="isOpen">
-          <div ref="overlayRef" v-bind="overlayProps" class="dialog-overlay"></div>
-          <div ref="contentRef" v-bind="contentProps" class="dialog-content">
-            <h2 v-bind="titleProps" class="dialog-title">Confirm</h2>
-            <p v-bind="descProps" class="dialog-desc">
-              Press Escape, click outside, or use Cancel to dismiss.
-            </p>
-            <div class="dialog-actions">
-              <button v-bind="closeProps" class="dialog-button">Cancel</button>
-              <button @click="hide" class="dialog-button dialog-primary">Confirm</button>
+        <Teleport to="body">
+          <template v-if="isMounted">
+            <div ref="overlayRef" v-bind="overlayProps" class="dialog-overlay"></div>
+            <div ref="contentRef" v-bind="contentProps" class="dialog-content">
+              <h2 v-bind="titleProps" class="dialog-title">Confirm</h2>
+              <p v-bind="descProps" class="dialog-desc">
+                Press Escape, click outside, or use Cancel to dismiss.
+              </p>
+              <div class="dialog-actions">
+                <button v-bind="closeProps" class="dialog-button">Cancel</button>
+                <button @click="hide" class="dialog-button dialog-primary">Confirm</button>
+              </div>
             </div>
-          </div>
-        </template>
+          </template>
+        </Teleport>
       </div>
     `,
   })

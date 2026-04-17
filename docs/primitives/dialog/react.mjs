@@ -1,6 +1,8 @@
 import * as React from "react"
+import { createPortal } from "react-dom"
 import { createRoot } from "react-dom/client"
 import { createUseDialog, createUsePresence } from "/dist/adapters/react.mjs"
+import { getDefaultPortalTarget } from "/dist/index.mjs"
 
 const { createElement: h, useEffect, useRef, useState } = React
 const useDialog = createUseDialog(React)
@@ -33,6 +35,44 @@ function Demo({ onState }) {
     return destroy
   }, [presence.isMounted, dialog])
 
+  const portalTarget = getDefaultPortalTarget()
+
+  const overlay = presence.isMounted
+    ? h(
+        "div",
+        null,
+        h("div", {
+          ref: overlayRef,
+          ...dialog.getOverlayProps(),
+          className: "dialog-overlay",
+        }),
+        h(
+          "div",
+          { ref: contentRef, ...dialog.getContentProps(), className: "dialog-content" },
+          h("h2", { ...dialog.getTitleProps(), className: "dialog-title" }, "Confirm"),
+          h(
+            "p",
+            { ...dialog.getDescriptionProps(), className: "dialog-desc" },
+            "Press Escape, click outside, or use Cancel to dismiss.",
+          ),
+          h(
+            "div",
+            { className: "dialog-actions" },
+            h(
+              "button",
+              { ...dialog.getCloseProps("Cancel"), className: "dialog-button" },
+              "Cancel",
+            ),
+            h(
+              "button",
+              { className: "dialog-button dialog-primary", onClick: () => dialog.hide() },
+              "Confirm",
+            ),
+          ),
+        ),
+      )
+    : null
+
   return h(
     "div",
     null,
@@ -41,41 +81,7 @@ function Demo({ onState }) {
       { ref: triggerRef, ...dialog.getTriggerProps(), className: "demo-trigger" },
       "Open dialog",
     ),
-    presence.isMounted
-      ? h(
-          "div",
-          null,
-          h("div", {
-            ref: overlayRef,
-            ...dialog.getOverlayProps(),
-            className: "dialog-overlay",
-          }),
-          h(
-            "div",
-            { ref: contentRef, ...dialog.getContentProps(), className: "dialog-content" },
-            h("h2", { ...dialog.getTitleProps(), className: "dialog-title" }, "Confirm"),
-            h(
-              "p",
-              { ...dialog.getDescriptionProps(), className: "dialog-desc" },
-              "Press Escape, click outside, or use Cancel to dismiss.",
-            ),
-            h(
-              "div",
-              { className: "dialog-actions" },
-              h(
-                "button",
-                { ...dialog.getCloseProps("Cancel"), className: "dialog-button" },
-                "Cancel",
-              ),
-              h(
-                "button",
-                { className: "dialog-button dialog-primary", onClick: () => dialog.hide() },
-                "Confirm",
-              ),
-            ),
-          ),
-        )
-      : null,
+    overlay && portalTarget ? createPortal(overlay, portalTarget) : overlay,
   )
 }
 

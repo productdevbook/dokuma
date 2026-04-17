@@ -1,3 +1,4 @@
+import { resolvePortalTarget, type PortalTarget } from "../_portal.ts"
 import { createAccordion, type Accordion, type AccordionOptions } from "../primitives/accordion.ts"
 import { createAvatar, type Avatar, type AvatarOptions } from "../primitives/avatar.ts"
 import { createCheckbox, type Checkbox, type CheckboxOptions } from "../primitives/checkbox.ts"
@@ -332,4 +333,36 @@ export function mountCheckbox(opts: MountCheckboxOptions): MountedCheckbox {
   const checkbox = createCheckbox(opts)
   const destroy = checkbox.mount({ root, hiddenInput })
   return { checkbox, destroy }
+}
+
+/**
+ * Move `content` into the portal `target` (defaults to document.body) for
+ * the lifetime of the returned cleanup. The original parent and next-
+ * sibling are restored on cleanup. Useful when a Dialog/Popover content
+ * lives inside an `overflow: hidden` parent that would otherwise clip it.
+ *
+ * Pure DOM — no framework involved. Returns null in SSR or when the
+ * target selector doesn't match.
+ */
+export interface MountPortalOptions {
+  content: HTMLElement
+  target?: PortalTarget
+}
+
+export function mountPortal(opts: MountPortalOptions): (() => void) | null {
+  const dest = resolvePortalTarget(opts.target)
+  if (!dest) return null
+  const originalParent = opts.content.parentNode
+  const originalNextSibling = opts.content.nextSibling
+  dest.append(opts.content)
+  let released = false
+  return () => {
+    if (released) return
+    released = true
+    if (originalParent) {
+      originalParent.insertBefore(opts.content, originalNextSibling)
+    } else {
+      opts.content.remove()
+    }
+  }
 }
