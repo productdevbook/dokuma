@@ -1,0 +1,22 @@
+{
+  "primitives": [
+    {
+      "id": "disclosure",
+      "title": "Disclosure",
+      "summary": "A button that shows or hides an associated panel. The foundation primitive — Accordion, Collapsible, Tabs, and Dialog all build on it.",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "accordion",
+      "title": "Accordion",
+      "summary": "A vertically stacked set of collapsible items with a single-open or multi-open coordinator. Arrow-key navigation, ARIA region wiring, per-item disable.",
+      "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "tabs",
+      "title": "Tabs",
+      "summary": "A tablist with roving focus, automatic or manual activation, orientation-aware arrow keys, Home/End. Selected tab stays in tab order; the rest exit it.",
+      "adapters": ["vanilla", "react", "vue"]
+    }
+  ]
+}
