@@ -802,3 +802,45 @@ ul.tabs li a.active {
     transform: translateX(300%);
   }
 }
+
+.menu {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+  min-width: 200px;
+  z-index: 65;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.menu:focus {
+  outline: none;
+}
+
+.menu-item {
+  background: transparent;
+  border: 0;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--fg);
+  cursor: pointer;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+.menu-item[data-highlighted] {
+  background: rgba(124, 240, 192, 0.1);
+  color: var(--accent);
+}
+
+.menu-item[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.menu-item:focus {
+  outline: none;
+}

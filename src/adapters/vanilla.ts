@@ -1,6 +1,7 @@
 import { createAccordion, type Accordion, type AccordionOptions } from "../primitives/accordion.ts"
 import { createAvatar, type Avatar, type AvatarOptions } from "../primitives/avatar.ts"
 import { createDialog, type Dialog, type DialogOptions } from "../primitives/dialog.ts"
+import { createMenu, type Menu, type MenuOptions } from "../primitives/menu.ts"
 import { createPopover, type Popover, type PopoverOptions } from "../primitives/popover.ts"
 import { createProgress, type Progress, type ProgressOptions } from "../primitives/progress.ts"
 import { createTooltip, type Tooltip, type TooltipOptions } from "../primitives/tooltip.ts"
@@ -239,4 +240,24 @@ export function mountProgress(opts: MountProgressOptions): MountedProgress {
   const progress = createProgress(opts)
   const destroy = progress.mount({ root, indicator })
   return { progress, destroy }
+}
+
+export interface MountMenuOptions extends MenuOptions {
+  trigger: HTMLElement | string
+  content: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedMenu {
+  menu: Menu
+  destroy: () => void
+}
+
+export function mountMenu(opts: MountMenuOptions): MountedMenu {
+  const parent = opts.parent ?? document
+  const trigger = resolve(opts.trigger, parent)
+  const content = resolve(opts.content, parent)
+  const menu = createMenu(opts)
+  const destroy = menu.mount({ trigger, content })
+  return { menu, destroy }
 }

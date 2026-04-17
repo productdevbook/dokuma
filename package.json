@@ -1,6 +1,6 @@
 {
   "name": "dokuma",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Framework-agnostic, zero-dependency headless UI primitives — works in vanilla HTML/CDN, React, Vue, Svelte, Solid, Angular, and native mobile shells. Pure TypeScript, tree-shakeable, SSR-safe, accessibility-first.",
   "keywords": [
     "a11y",
@@ -99,6 +99,10 @@
     "./progress": {
       "types": "./dist/primitives/progress.d.mts",
       "default": "./dist/primitives/progress.mjs"
+    },
+    "./menu": {
+      "types": "./dist/primitives/menu.d.mts",
+      "default": "./dist/primitives/menu.mjs"
     },
     "./vanilla": {
       "types": "./dist/adapters/vanilla.d.mts",

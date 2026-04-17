@@ -9,6 +9,12 @@ import {
 } from "../primitives/accordion.ts"
 import { createAvatar, type Avatar, type AvatarOptions } from "../primitives/avatar.ts"
 import { createDialog, type Dialog, type DialogOptions } from "../primitives/dialog.ts"
+import {
+  createMenu,
+  type Menu,
+  type MenuOptions,
+  type RegisterMenuItemOptions,
+} from "../primitives/menu.ts"
 import { createPopover, type Popover, type PopoverOptions } from "../primitives/popover.ts"
 import { createProgress, type Progress, type ProgressOptions } from "../primitives/progress.ts"
 import { createTooltip, type Tooltip, type TooltipOptions } from "../primitives/tooltip.ts"
@@ -573,5 +579,85 @@ export function createUseProgress(React: ReactLike) {
     }, [isControlled, opts.value])
 
     return progress
+  }
+}
+
+export interface UseMenuOptions extends Omit<MenuOptions, "open"> {
+  open?: boolean
+}
+
+export function createUseMenu(React: ReactLike) {
+  return function useMenu(opts: UseMenuOptions = {}): Menu {
+    const isControlled = opts.open !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    const menu = React.useMemo(
+      () =>
+        createMenu({
+          ...opts,
+          open: isControlled ? () => optsRef.current.open as boolean : undefined,
+          onOpenChange: (next) => {
+            optsRef.current.onOpenChange?.(next)
+          },
+        }),
+      [isControlled],
+    )
+
+    React.useEffect(() => {
+      const unsubOpen = menu.open.subscribe(() => setTick((n) => n + 1))
+      const unsubHi = menu.highlighted.subscribe(() => setTick((n) => n + 1))
+      return () => {
+        unsubOpen()
+        unsubHi()
+      }
+    }, [menu])
+
+    React.useEffect(() => {
+      if (isControlled) {
+        setTick((n) => n + 1)
+        menu.notify()
+      }
+    }, [isControlled, opts.open])
+
+    return menu
+  }
+}
+
+export function createUseMenuItem(React: ReactLike) {
+  return function useMenuItem(
+    menu: Menu,
+    value: string,
+    opts: RegisterMenuItemOptions = {},
+  ): { itemProps: ReturnType<Menu["getItemProps"]>; isHighlighted: boolean; isDisabled: boolean } {
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    React.useEffect(() => {
+      const handle = menu.registerItem(value, {
+        disabled: optsRef.current.disabled
+          ? () => optsRef.current.disabled?.() ?? false
+          : undefined,
+        onSelect: () => optsRef.current.onSelect?.(),
+        label: optsRef.current.label,
+      })
+      const unsub = menu.highlighted.subscribe(() => setTick((n) => n + 1))
+      return () => {
+        unsub()
+        handle.unregister()
+      }
+    }, [menu, value])
+
+    if (!menu.hasItem(value)) {
+      menu.registerItem(value, optsRef.current)
+    }
+
+    return {
+      itemProps: menu.getItemProps(value),
+      isHighlighted: menu.highlighted.get() === value,
+      isDisabled: menu.isItemDisabled(value),
+    }
   }
 }

@@ -16,6 +16,15 @@ import {
   type DialogTriggerProps,
 } from "../primitives/dialog.ts"
 import {
+  createMenu,
+  type Menu,
+  type MenuContentProps,
+  type MenuItemProps,
+  type MenuOptions,
+  type MenuTriggerProps,
+  type RegisterMenuItemOptions,
+} from "../primitives/menu.ts"
+import {
   createPopover,
   type Popover,
   type PopoverContentProps,
@@ -528,5 +537,90 @@ export function createUseProgress(Vue: VueLike) {
     })
 
     return { ...progress, rootProps, indicatorProps }
+  }
+}
+
+export type VueMenuTriggerProps = Omit<MenuTriggerProps, "onKeyDown"> & {
+  onKeydown: MenuTriggerProps["onKeyDown"]
+}
+
+export type VueMenuContentProps = Omit<MenuContentProps, "onKeyDown"> & {
+  onKeydown: MenuContentProps["onKeyDown"]
+}
+
+export type VueMenuItemProps = Omit<MenuItemProps, "onMouseEnter"> & {
+  onMouseenter: MenuItemProps["onMouseEnter"]
+}
+
+export interface VueMenu extends Menu {
+  triggerProps: Ref<VueMenuTriggerProps>
+  contentProps: Ref<VueMenuContentProps>
+  isOpen: Ref<boolean>
+  tick: Ref<number>
+}
+
+export function createUseMenu(Vue: VueLike) {
+  return function useMenu(opts: MenuOptions = {}): VueMenu {
+    const tick = Vue.ref(0)
+    const menu = createMenu(opts)
+    const offOpen = menu.open.subscribe(() => {
+      tick.value++
+    })
+    const offHi = menu.highlighted.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(() => {
+      offOpen()
+      offHi()
+    })
+
+    const triggerProps = Vue.computed(() => {
+      void tick.value
+      const { onClick, onKeyDown, ...rest } = menu.getTriggerProps()
+      return { ...rest, onClick, onKeydown: onKeyDown }
+    })
+    const contentProps = Vue.computed(() => {
+      void tick.value
+      const { onKeyDown, ...rest } = menu.getContentProps()
+      return { ...rest, onKeydown: onKeyDown }
+    })
+    const isOpen = Vue.computed(() => {
+      void tick.value
+      return menu.open.get()
+    })
+
+    return { ...menu, triggerProps, contentProps, isOpen, tick }
+  }
+}
+
+export interface VueMenuItem {
+  itemProps: Ref<VueMenuItemProps>
+  isHighlighted: Ref<boolean>
+  isDisabled: Ref<boolean>
+}
+
+export function createUseMenuItem(Vue: VueLike) {
+  return function useMenuItem(
+    menu: VueMenu,
+    value: string,
+    opts: RegisterMenuItemOptions = {},
+  ): VueMenuItem {
+    menu.registerItem(value, opts)
+
+    const itemProps = Vue.computed(() => {
+      void menu.tick.value
+      const { onClick, onMouseEnter, ...rest } = menu.getItemProps(value)
+      return { ...rest, onClick, onMouseenter: onMouseEnter }
+    })
+    const isHighlighted = Vue.computed(() => {
+      void menu.tick.value
+      return menu.highlighted.get() === value
+    })
+    const isDisabled = Vue.computed(() => {
+      void menu.tick.value
+      return menu.isItemDisabled(value)
+    })
+
+    return { itemProps, isHighlighted, isDisabled }
   }
 }

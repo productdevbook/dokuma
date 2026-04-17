@@ -65,6 +65,12 @@
       "title": "Progress",
       "summary": "ARIA progressbar with indeterminate, loading, and complete states. value:number|null. Indicator gets a CSS-friendly width style.",
       "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "menu",
+      "title": "Menu",
+      "summary": "Click-triggered menu of actions. role=menu, menuitems with focus-based navigation, typeahead, Home/End, Tab to exit, Escape returns focus to trigger.",
+      "adapters": ["vanilla", "react", "vue"]
     }
   ]
 }
