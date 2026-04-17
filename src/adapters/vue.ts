@@ -4,7 +4,6 @@ import {
   type AccordionItemProps,
   type AccordionOptions,
   type AccordionPanelProps,
-  type AccordionTriggerProps,
   type RegisterItemOptions,
 } from "../primitives/accordion.ts"
 import {
@@ -27,7 +26,6 @@ import {
   type RadioGroup,
   type RadioGroupOptions,
   type RadioGroupRootProps,
-  type RadioItemProps,
   type RegisterRadioOptions,
 } from "../primitives/radio-group.ts"
 import {
@@ -36,16 +34,12 @@ import {
   type SliderOptions,
   type SliderRangeProps,
   type SliderRootProps,
-  type SliderThumbProps,
   type SliderTrackProps,
 } from "../primitives/slider.ts"
 import {
   createMenu,
   type Menu,
-  type MenuContentProps,
-  type MenuItemProps,
   type MenuOptions,
-  type MenuTriggerProps,
   type RegisterMenuItemOptions,
 } from "../primitives/menu.ts"
 import {
@@ -95,7 +89,6 @@ import {
   createToggleGroup,
   type RegisterItemOptions as ToggleGroupRegisterItemOptions,
   type ToggleGroup,
-  type ToggleGroupItemProps,
   type ToggleGroupOptions,
   type ToggleGroupRootProps,
 } from "../primitives/toggle-group.ts"
@@ -109,7 +102,6 @@ import {
   createTabs,
   type RegisterTabOptions,
   type TabPanelProps,
-  type TabProps,
   type Tabs,
   type TabsOptions,
 } from "../primitives/tabs.ts"
@@ -122,6 +114,31 @@ interface VueLike {
   ref: <T>(value: T) => Ref<T>
   computed: <T>(getter: () => T) => Ref<T>
   onScopeDispose: (fn: () => void) => void
+}
+
+/**
+ * Vue 3 only recognizes prop keys matching `/^on[A-Z]/` as listeners and
+ * derives the event name by lowercasing the first letter only. So `onClick`
+ * → `click` works, but `onKeyDown` → `keyDown` (a non-existent event; the
+ * real one is `keydown`). Convert `onPascalCase` keys to `onCamelCase`
+ * (lowercase everything after the second letter) so all camelCase prop
+ * names map to real DOM events. `onClick`, `onFocus` etc. pass through.
+ */
+function normalizeVueProps<T extends Record<string, unknown>>(props: T): Record<string, unknown> {
+  const out: Record<string, unknown> = {}
+  for (const key in props) {
+    if (
+      key.length > 3 &&
+      key.startsWith("on") &&
+      key[2] === key[2]?.toUpperCase() &&
+      key.slice(3) !== key.slice(3).toLowerCase()
+    ) {
+      out[`on${key[2]}${key.slice(3).toLowerCase()}`] = props[key]
+    } else {
+      out[key] = props[key]
+    }
+  }
+  return out
 }
 
 export interface VueDisclosure extends Disclosure {
@@ -167,13 +184,9 @@ export interface VueAccordion extends Accordion {
   tick: Ref<number>
 }
 
-export type VueAccordionTriggerProps = Omit<AccordionTriggerProps, "onKeyDown"> & {
-  onKeydown: AccordionTriggerProps["onKeyDown"]
-}
-
 export interface VueAccordionItem {
   itemProps: Ref<AccordionItemProps>
-  triggerProps: Ref<VueAccordionTriggerProps>
+  triggerProps: Ref<Record<string, unknown>>
   panelProps: Ref<AccordionPanelProps>
   isOpen: Ref<boolean>
   isDisabled: Ref<boolean>
@@ -213,8 +226,9 @@ export function createUseAccordionItem(Vue: VueLike) {
     })
     const triggerProps = Vue.computed(() => {
       void accordion.tick.value
-      const { onClick, onKeyDown, ...rest } = accordion.getTriggerProps(value)
-      return { ...rest, onClick, onKeydown: onKeyDown }
+      return normalizeVueProps(
+        accordion.getTriggerProps(value) as unknown as Record<string, unknown>,
+      )
     })
     const panelProps = Vue.computed(() => {
       void accordion.tick.value
@@ -237,12 +251,8 @@ export interface VueTabs extends Tabs {
   tick: Ref<number>
 }
 
-export type VueTabProps = Omit<TabProps, "onKeyDown"> & {
-  onKeydown: TabProps["onKeyDown"]
-}
-
 export interface VueTab {
-  tabProps: Ref<VueTabProps>
+  tabProps: Ref<Record<string, unknown>>
   panelProps: Ref<TabPanelProps>
   isSelected: Ref<boolean>
   isDisabled: Ref<boolean>
@@ -266,8 +276,7 @@ export function createUseTab(Vue: VueLike) {
 
     const tabProps = Vue.computed(() => {
       void tabs.tick.value
-      const { onClick, onKeyDown, ...rest } = tabs.getTabProps(value)
-      return { ...rest, onClick, onKeydown: onKeyDown }
+      return normalizeVueProps(tabs.getTabProps(value) as unknown as Record<string, unknown>)
     })
     const panelProps = Vue.computed(() => {
       void tabs.tick.value
@@ -355,12 +364,8 @@ export interface VueToggleGroup extends ToggleGroup {
   tick: Ref<number>
 }
 
-export type VueToggleGroupItemProps = Omit<ToggleGroupItemProps, "onKeyDown"> & {
-  onKeydown: ToggleGroupItemProps["onKeyDown"]
-}
-
 export interface VueToggleGroupItem {
-  itemProps: Ref<VueToggleGroupItemProps>
+  itemProps: Ref<Record<string, unknown>>
   isPressed: Ref<boolean>
   isDisabled: Ref<boolean>
 }
@@ -393,8 +398,7 @@ export function createUseToggleGroupItem(Vue: VueLike) {
 
     const itemProps = Vue.computed(() => {
       void group.tick.value
-      const { onClick, onKeyDown, ...rest } = group.getItemProps(value)
-      return { ...rest, onClick, onKeydown: onKeyDown }
+      return normalizeVueProps(group.getItemProps(value) as unknown as Record<string, unknown>)
     })
     const isPressed = Vue.computed(() => {
       void group.tick.value
@@ -564,21 +568,9 @@ export function createUseProgress(Vue: VueLike) {
   }
 }
 
-export type VueMenuTriggerProps = Omit<MenuTriggerProps, "onKeyDown"> & {
-  onKeydown: MenuTriggerProps["onKeyDown"]
-}
-
-export type VueMenuContentProps = Omit<MenuContentProps, "onKeyDown"> & {
-  onKeydown: MenuContentProps["onKeyDown"]
-}
-
-export type VueMenuItemProps = Omit<MenuItemProps, "onMouseEnter"> & {
-  onMouseenter: MenuItemProps["onMouseEnter"]
-}
-
 export interface VueMenu extends Menu {
-  triggerProps: Ref<VueMenuTriggerProps>
-  contentProps: Ref<VueMenuContentProps>
+  triggerProps: Ref<Record<string, unknown>>
+  contentProps: Ref<Record<string, unknown>>
   isOpen: Ref<boolean>
   tick: Ref<number>
 }
@@ -600,13 +592,11 @@ export function createUseMenu(Vue: VueLike) {
 
     const triggerProps = Vue.computed(() => {
       void tick.value
-      const { onClick, onKeyDown, ...rest } = menu.getTriggerProps()
-      return { ...rest, onClick, onKeydown: onKeyDown }
+      return normalizeVueProps(menu.getTriggerProps() as unknown as Record<string, unknown>)
     })
     const contentProps = Vue.computed(() => {
       void tick.value
-      const { onKeyDown, ...rest } = menu.getContentProps()
-      return { ...rest, onKeydown: onKeyDown }
+      return normalizeVueProps(menu.getContentProps() as unknown as Record<string, unknown>)
     })
     const isOpen = Vue.computed(() => {
       void tick.value
@@ -618,7 +608,7 @@ export function createUseMenu(Vue: VueLike) {
 }
 
 export interface VueMenuItem {
-  itemProps: Ref<VueMenuItemProps>
+  itemProps: Ref<Record<string, unknown>>
   isHighlighted: Ref<boolean>
   isDisabled: Ref<boolean>
 }
@@ -633,8 +623,7 @@ export function createUseMenuItem(Vue: VueLike) {
 
     const itemProps = Vue.computed(() => {
       void menu.tick.value
-      const { onClick, onMouseEnter, ...rest } = menu.getItemProps(value)
-      return { ...rest, onClick, onMouseenter: onMouseEnter }
+      return normalizeVueProps(menu.getItemProps(value) as unknown as Record<string, unknown>)
     })
     const isHighlighted = Vue.computed(() => {
       void menu.tick.value
@@ -649,14 +638,12 @@ export function createUseMenuItem(Vue: VueLike) {
   }
 }
 
-export type VueSliderThumbProps = Omit<SliderThumbProps, "onKeyDown"> & {
-  onKeydown: SliderThumbProps["onKeyDown"]
-}
-
 export interface VueSlider extends Slider {
   rootProps: Ref<SliderRootProps>
   trackProps: Ref<SliderTrackProps>
   rangeProps: Ref<SliderRangeProps>
+  /** Use as `getThumbProps(idx)` factory for range mode; for single thumb the no-arg form works. */
+  thumbProps: (idx?: 0 | 1) => Record<string, unknown>
   tick: Ref<number>
 }
 
@@ -680,12 +667,10 @@ export function createUseSlider(Vue: VueLike) {
       void tick.value
       return slider.getRangeProps()
     })
-    return { ...slider, rootProps, trackProps, rangeProps, tick }
+    const thumbProps = (idx?: 0 | 1): Record<string, unknown> =>
+      normalizeVueProps(slider.getThumbProps(idx) as unknown as Record<string, unknown>)
+    return { ...slider, rootProps, trackProps, rangeProps, thumbProps, tick }
   }
-}
-
-export type VueRadioItemProps = Omit<RadioItemProps, "onKeyDown"> & {
-  onKeydown: RadioItemProps["onKeyDown"]
 }
 
 export interface VueRadioGroup extends RadioGroup {
@@ -694,7 +679,7 @@ export interface VueRadioGroup extends RadioGroup {
 }
 
 export interface VueRadioItem {
-  itemProps: Ref<VueRadioItemProps>
+  itemProps: Ref<Record<string, unknown>>
   isChecked: Ref<boolean>
   isDisabled: Ref<boolean>
 }
@@ -724,8 +709,7 @@ export function createUseRadioItem(Vue: VueLike) {
     group.registerItem(value, opts)
     const itemProps = Vue.computed(() => {
       void group.tick.value
-      const { onClick, onKeyDown, ...rest } = group.getItemProps(value)
-      return { ...rest, onClick, onKeydown: onKeyDown }
+      return normalizeVueProps(group.getItemProps(value) as unknown as Record<string, unknown>)
     })
     const isChecked = Vue.computed(() => {
       void group.tick.value
