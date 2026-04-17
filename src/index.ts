@@ -121,6 +121,13 @@ export type {
   RegisterMenuItemOptions,
 } from "./primitives/menu.ts"
 
+export { createContextMenu } from "./primitives/context-menu.ts"
+export type {
+  ContextMenu,
+  ContextMenuAnchorProps,
+  ContextMenuOptions,
+} from "./primitives/context-menu.ts"
+
 export { createSlider } from "./primitives/slider.ts"
 export type {
   Slider,

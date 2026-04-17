@@ -25,6 +25,15 @@ export interface PositionResult {
   align: Align
 }
 
+/**
+ * Anything that can produce a `DOMRect`. `HTMLElement` already satisfies this,
+ * so callers can pass either a real element or a virtual anchor (e.g. a cursor
+ * position for context menus).
+ */
+export interface VirtualElement {
+  getBoundingClientRect: () => DOMRect
+}
+
 const FLIP: Record<Side, Side> = {
   top: "bottom",
   bottom: "top",
@@ -95,7 +104,7 @@ function overflows(
  * least laid out — visibility:hidden is fine; display:none returns 0×0).
  */
 export function computePosition(
-  anchor: HTMLElement,
+  anchor: HTMLElement | VirtualElement,
   content: HTMLElement,
   options: PositionOptions = {},
 ): PositionResult {
@@ -164,7 +173,7 @@ export function computePosition(
  * and content/anchor mutations. RAF-throttled. Returns release.
  */
 export function autoPosition(
-  anchor: HTMLElement,
+  anchor: HTMLElement | VirtualElement,
   content: HTMLElement,
   apply: (result: PositionResult) => void,
   options: PositionOptions = {},
@@ -194,7 +203,7 @@ export function autoPosition(
   let resizeObs: ResizeObserver | null = null
   if (typeof ResizeObserver !== "undefined") {
     resizeObs = new ResizeObserver(update)
-    resizeObs.observe(anchor)
+    if (anchor instanceof HTMLElement) resizeObs.observe(anchor)
     resizeObs.observe(content)
   }
 

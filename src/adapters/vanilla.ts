@@ -7,6 +7,11 @@ import { createCheckbox, type Checkbox, type CheckboxOptions } from "../primitiv
 import { createDialog, type Dialog, type DialogOptions } from "../primitives/dialog.ts"
 import { createMenu, type Menu, type MenuOptions } from "../primitives/menu.ts"
 import {
+  createContextMenu,
+  type ContextMenu,
+  type ContextMenuOptions,
+} from "../primitives/context-menu.ts"
+import {
   createRadioGroup,
   type RadioGroup,
   type RadioGroupOptions,
@@ -270,6 +275,26 @@ export function mountMenu(opts: MountMenuOptions): MountedMenu {
   const menu = createMenu(opts)
   const destroy = menu.mount({ trigger, content })
   return { menu, destroy }
+}
+
+export interface MountContextMenuOptions extends ContextMenuOptions {
+  anchor: HTMLElement | string
+  content: HTMLElement | string
+  parent?: ParentNode
+}
+
+export interface MountedContextMenu {
+  contextMenu: ContextMenu
+  destroy: () => void
+}
+
+export function mountContextMenu(opts: MountContextMenuOptions): MountedContextMenu {
+  const parent = opts.parent ?? document
+  const anchor = resolve(opts.anchor, parent)
+  const content = resolve(opts.content, parent)
+  const contextMenu = createContextMenu(opts)
+  const destroy = contextMenu.mount({ anchor, content })
+  return { contextMenu, destroy }
 }
 
 export interface MountSliderOptions extends SliderOptions {

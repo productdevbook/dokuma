@@ -92,6 +92,10 @@
       "types": "./dist/primitives/combobox.d.mts",
       "default": "./dist/primitives/combobox.mjs"
     },
+    "./context-menu": {
+      "types": "./dist/primitives/context-menu.d.mts",
+      "default": "./dist/primitives/context-menu.mjs"
+    },
     "./dialog": {
       "types": "./dist/primitives/dialog.d.mts",
       "default": "./dist/primitives/dialog.mjs"

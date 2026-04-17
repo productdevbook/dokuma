@@ -57,6 +57,11 @@ import {
   type RegisterMenuItemOptions,
 } from "../primitives/menu.ts"
 import {
+  createContextMenu,
+  type ContextMenu,
+  type ContextMenuOptions,
+} from "../primitives/context-menu.ts"
+import {
   createPopover,
   type Popover,
   type PopoverContentProps,
@@ -670,7 +675,7 @@ export interface VueMenuItem {
 
 export function createUseMenuItem(Vue: VueLike) {
   return function useMenuItem(
-    menu: VueMenu,
+    menu: VueMenu | VueContextMenu,
     value: string,
     opts: RegisterMenuItemOptions = {},
   ): VueMenuItem {
@@ -690,6 +695,45 @@ export function createUseMenuItem(Vue: VueLike) {
     })
 
     return { itemProps, isHighlighted, isDisabled }
+  }
+}
+
+export interface VueContextMenu extends ContextMenu {
+  anchorProps: Ref<Record<string, unknown>>
+  contentProps: Ref<Record<string, unknown>>
+  isOpen: Ref<boolean>
+  tick: Ref<number>
+}
+
+export function createUseContextMenu(Vue: VueLike) {
+  return function useContextMenu(opts: ContextMenuOptions = {}): VueContextMenu {
+    const tick = Vue.ref(0)
+    const cm = createContextMenu(opts)
+    const offOpen = cm.open.subscribe(() => {
+      tick.value++
+    })
+    const offHi = cm.highlighted.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(() => {
+      offOpen()
+      offHi()
+    })
+
+    const anchorProps = Vue.computed(() => {
+      void tick.value
+      return normalizeVueProps(cm.getAnchorProps() as unknown as Record<string, unknown>)
+    })
+    const contentProps = Vue.computed(() => {
+      void tick.value
+      return normalizeVueProps(cm.getContentProps() as unknown as Record<string, unknown>)
+    })
+    const isOpen = Vue.computed(() => {
+      void tick.value
+      return cm.open.get()
+    })
+
+    return { ...cm, anchorProps, contentProps, isOpen, tick }
   }
 }
 

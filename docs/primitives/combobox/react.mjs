@@ -115,9 +115,7 @@ function Demo({ onState }) {
       FRUITS.map(([value, label]) =>
         h(Option, { key: value, cb, value, label, hidden: !filtered.includes(value) }),
       ),
-      isOpen && filtered.length === 0
-        ? h("li", { className: "combo-empty" }, "No matches")
-        : null,
+      isOpen && filtered.length === 0 ? h("li", { className: "combo-empty" }, "No matches") : null,
     ),
   )
 }

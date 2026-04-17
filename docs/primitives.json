@@ -101,6 +101,12 @@
       "title": "Combobox",
       "summary": "Searchable single-select. WAI-ARIA 1.2 combobox pattern with aria-activedescendant. Type-to-filter, full keyboard nav, optional allowCustomValue.",
       "adapters": ["vanilla", "react", "vue"]
+    },
+    {
+      "id": "context-menu",
+      "title": "Context Menu",
+      "summary": "Right-click menu anchored to the cursor. Composes Menu's keyboard/typeahead/ARIA wiring; adds long-press on touch and close-on-scroll.",
+      "adapters": ["vanilla", "react", "vue"]
     }
   ]
 }

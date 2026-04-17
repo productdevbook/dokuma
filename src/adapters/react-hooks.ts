@@ -14,6 +14,7 @@ import {
   createUseCheckbox,
   createUseCombobox,
   createUseComboboxItem,
+  createUseContextMenu,
   createUseDialog,
   createUseDisclosure,
   createUseMenu,
@@ -52,6 +53,7 @@ export const useAvatar: ReturnType<typeof createUseAvatar> = createUseAvatar(Rea
 export const useProgress: ReturnType<typeof createUseProgress> = createUseProgress(React)
 export const useMenu: ReturnType<typeof createUseMenu> = createUseMenu(React)
 export const useMenuItem: ReturnType<typeof createUseMenuItem> = createUseMenuItem(React)
+export const useContextMenu: ReturnType<typeof createUseContextMenu> = createUseContextMenu(React)
 export const useSlider: ReturnType<typeof createUseSlider> = createUseSlider(React)
 export const useRadioGroup: ReturnType<typeof createUseRadioGroup> = createUseRadioGroup(React)
 export const useRadioItem: ReturnType<typeof createUseRadioItem> = createUseRadioItem(React)

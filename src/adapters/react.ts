@@ -38,6 +38,11 @@ import {
   type MenuOptions,
   type RegisterMenuItemOptions,
 } from "../primitives/menu.ts"
+import {
+  createContextMenu,
+  type ContextMenu,
+  type ContextMenuOptions,
+} from "../primitives/context-menu.ts"
 import { createPopover, type Popover, type PopoverOptions } from "../primitives/popover.ts"
 import { createProgress, type Progress, type ProgressOptions } from "../primitives/progress.ts"
 import { createTooltip, type Tooltip, type TooltipOptions } from "../primitives/tooltip.ts"
@@ -662,10 +667,14 @@ export function createUseMenu(React: ReactLike) {
 
 export function createUseMenuItem(React: ReactLike) {
   return function useMenuItem(
-    menu: Menu,
+    menu: Menu | ContextMenu,
     value: string,
     opts: RegisterMenuItemOptions = {},
-  ): { itemProps: ReturnType<Menu["getItemProps"]>; isHighlighted: boolean; isDisabled: boolean } {
+  ): {
+    itemProps: ReturnType<Menu["getItemProps"]>
+    isHighlighted: boolean
+    isDisabled: boolean
+  } {
     const [, setTick] = React.useState(0)
     const optsRef = React.useMemo(() => ({ current: opts }), [])
     optsRef.current = opts
@@ -694,6 +703,46 @@ export function createUseMenuItem(React: ReactLike) {
       isHighlighted: menu.highlighted.get() === value,
       isDisabled: menu.isItemDisabled(value),
     }
+  }
+}
+
+export interface UseContextMenuOptions extends Omit<ContextMenuOptions, "open"> {
+  open?: boolean
+}
+
+export function createUseContextMenu(React: ReactLike) {
+  return function useContextMenu(opts: UseContextMenuOptions = {}): ContextMenu {
+    const isControlled = opts.open !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+
+    const cm = React.useMemo(
+      () =>
+        createContextMenu({
+          ...opts,
+          open: isControlled ? () => optsRef.current.open as boolean : undefined,
+          onOpenChange: (next) => {
+            optsRef.current.onOpenChange?.(next)
+          },
+        }),
+      [isControlled],
+    )
+
+    React.useEffect(() => {
+      const unsubOpen = cm.open.subscribe(() => setTick((n) => n + 1))
+      const unsubHi = cm.highlighted.subscribe(() => setTick((n) => n + 1))
+      return () => {
+        unsubOpen()
+        unsubHi()
+      }
+    }, [cm])
+
+    React.useEffect(() => {
+      if (isControlled) setTick((n) => n + 1)
+    }, [isControlled, opts.open])
+
+    return cm
   }
 }
 

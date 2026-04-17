@@ -14,6 +14,7 @@ import {
   createUseCheckbox,
   createUseCombobox,
   createUseComboboxItem,
+  createUseContextMenu,
   createUseDialog,
   createUseDisclosure,
   createUseMenu,
@@ -52,6 +53,7 @@ export const useAvatar: ReturnType<typeof createUseAvatar> = createUseAvatar(Vue
 export const useProgress: ReturnType<typeof createUseProgress> = createUseProgress(Vue)
 export const useMenu: ReturnType<typeof createUseMenu> = createUseMenu(Vue)
 export const useMenuItem: ReturnType<typeof createUseMenuItem> = createUseMenuItem(Vue)
+export const useContextMenu: ReturnType<typeof createUseContextMenu> = createUseContextMenu(Vue)
 export const useSlider: ReturnType<typeof createUseSlider> = createUseSlider(Vue)
 export const useRadioGroup: ReturnType<typeof createUseRadioGroup> = createUseRadioGroup(Vue)
 export const useRadioItem: ReturnType<typeof createUseRadioItem> = createUseRadioItem(Vue)
