@@ -156,6 +156,64 @@ import {
   type Tabs,
   type TabsOptions,
 } from "../primitives/tabs.ts"
+import {
+  createAutocomplete,
+  type Autocomplete,
+  type AutocompleteOptions,
+  type AutocompleteRegisterItemOptions,
+} from "../primitives/autocomplete.ts"
+import { createButton, type Button, type ButtonOptions } from "../primitives/button.ts"
+import {
+  createCheckboxGroup,
+  type CheckboxGroup,
+  type CheckboxGroupOptions,
+} from "../primitives/checkbox-group.ts"
+import {
+  createDirectionProvider,
+  type DirectionProvider,
+  type DirectionProviderOptions,
+} from "../primitives/direction-provider.ts"
+import { createDrawer, type Drawer, type DrawerOptions } from "../primitives/drawer.ts"
+import { createField, type Field, type FieldOptions } from "../primitives/field.ts"
+import { createFieldset, type Fieldset, type FieldsetOptions } from "../primitives/fieldset.ts"
+import { createForm, type Form, type FormOptions } from "../primitives/form.ts"
+import { createInput, type Input, type InputOptions } from "../primitives/input.ts"
+import {
+  createMenubar,
+  type Menubar,
+  type MenubarOptions,
+  type MenubarRegisterMenuOptions,
+} from "../primitives/menubar.ts"
+import { createMeter, type Meter, type MeterOptions } from "../primitives/meter.ts"
+import {
+  createNavigationMenu,
+  type NavigationMenu,
+  type NavigationMenuItemOptions,
+  type NavigationMenuOptions,
+} from "../primitives/navigation-menu.ts"
+import {
+  createPreviewCard,
+  type PreviewCard,
+  type PreviewCardOptions,
+} from "../primitives/preview-card.ts"
+import { createRadio, type Radio, type RadioOptions } from "../primitives/radio.ts"
+import {
+  createScrollArea,
+  type ScrollArea,
+  type ScrollAreaOptions,
+} from "../primitives/scroll-area.ts"
+import {
+  createSelect,
+  type Select,
+  type SelectOptions,
+  type SelectRegisterItemOptions,
+} from "../primitives/select.ts"
+import {
+  createToolbar,
+  type Toolbar,
+  type ToolbarItemRegisterOptions,
+  type ToolbarOptions,
+} from "../primitives/toolbar.ts"
 
 interface Ref<T> {
   value: T
@@ -1272,5 +1330,540 @@ export function createUseSeparator(_Vue: VueLike) {
 export function createUseVisuallyHidden(_Vue: VueLike) {
   return function useVisuallyHidden(): VisuallyHidden {
     return createVisuallyHidden()
+  }
+}
+
+// --- v0.3 primitives -------------------------------------------------------
+
+export function createUseMeter(Vue: VueLike) {
+  return function useMeter(
+    opts: MeterOptions,
+  ): Meter & { rootProps: Ref<ReturnType<Meter["getRootProps"]>> } {
+    const tick = Vue.ref(0)
+    const m = createMeter(opts)
+    const unsub = m.value.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return m.getRootProps()
+    })
+    return { ...m, rootProps }
+  }
+}
+
+export function createUseDirectionProvider(Vue: VueLike) {
+  return function useDirectionProvider(
+    opts: DirectionProviderOptions = {},
+  ): DirectionProvider & { directionRef: Ref<"ltr" | "rtl"> } {
+    const tick = Vue.ref(0)
+    const d = createDirectionProvider(opts)
+    const unsub = d.direction.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const directionRef = Vue.computed(() => {
+      void tick.value
+      return d.get()
+    })
+    return { ...d, directionRef }
+  }
+}
+
+export function createUseToolbar(Vue: VueLike) {
+  return function useToolbar(
+    opts: ToolbarOptions = {},
+  ): Toolbar & { rootProps: Ref<ReturnType<Toolbar["getRootProps"]>> } {
+    const tick = Vue.ref(0)
+    const t = createToolbar(opts)
+    const unsub = t.activeIndex.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return t.getRootProps()
+    })
+    return { ...t, rootProps }
+  }
+}
+
+export function createUseToolbarItem(Vue: VueLike) {
+  return function useToolbarItem(
+    toolbar: Toolbar,
+    el: Ref<HTMLElement | null>,
+    opts: ToolbarItemRegisterOptions = {},
+  ): void {
+    let handle: ReturnType<Toolbar["registerItem"]> | null = null
+    Vue.onScopeDispose(() => {
+      handle?.unregister()
+      handle = null
+    })
+    // Register once el is non-null (simple strategy; consumer may call into
+    // watch() to re-register on el changes).
+    Vue.computed(() => {
+      const current = el.value
+      handle?.unregister()
+      handle = null
+      if (current) handle = toolbar.registerItem(current, opts)
+      return current
+    })
+  }
+}
+
+export function createUseButton(Vue: VueLike) {
+  return function useButton(
+    opts: ButtonOptions = {},
+  ): Button & { rootProps: Ref<ReturnType<Button["getRootProps"]>> } {
+    const tick = Vue.ref(0)
+    const b = createButton(opts)
+    const unsub = b.disabled.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return b.getRootProps()
+    })
+    return { ...b, rootProps }
+  }
+}
+
+export function createUseInput(Vue: VueLike) {
+  return function useInput(opts: InputOptions = {}): Input & {
+    rootProps: Ref<ReturnType<Input["getRootProps"]>>
+    valueRef: Ref<string>
+  } {
+    const tick = Vue.ref(0)
+    const input = createInput(opts)
+    const unsub = input.value.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return input.getRootProps()
+    })
+    const valueRef = Vue.computed(() => {
+      void tick.value
+      return input.value.get()
+    })
+    return { ...input, rootProps, valueRef }
+  }
+}
+
+export function createUseField(Vue: VueLike) {
+  return function useField(opts: FieldOptions = {}): Field & {
+    rootProps: Ref<ReturnType<Field["getRootProps"]>>
+    controlProps: Ref<ReturnType<Field["getControlProps"]>>
+    labelProps: Ref<ReturnType<Field["getLabelProps"]>>
+    descriptionProps: Ref<ReturnType<Field["getDescriptionProps"]>>
+    errorProps: Ref<ReturnType<Field["getErrorProps"]>>
+  } {
+    const tick = Vue.ref(0)
+    const f = createField(opts)
+    const bump = (): void => {
+      tick.value++
+    }
+    const unsubs = [
+      f.invalid.subscribe(bump),
+      f.touched.subscribe(bump),
+      f.dirty.subscribe(bump),
+      f.focused.subscribe(bump),
+      f.filled.subscribe(bump),
+      f.errorMessage.subscribe(bump),
+    ]
+    Vue.onScopeDispose(() => unsubs.forEach((u) => u()))
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return f.getRootProps()
+    })
+    const controlProps = Vue.computed(() => {
+      void tick.value
+      return f.getControlProps()
+    })
+    const labelProps = Vue.computed(() => {
+      void tick.value
+      return f.getLabelProps()
+    })
+    const descriptionProps = Vue.computed(() => {
+      void tick.value
+      return f.getDescriptionProps()
+    })
+    const errorProps = Vue.computed(() => {
+      void tick.value
+      return f.getErrorProps()
+    })
+    return { ...f, rootProps, controlProps, labelProps, descriptionProps, errorProps }
+  }
+}
+
+export function createUseFieldset(Vue: VueLike) {
+  return function useFieldset(
+    opts: FieldsetOptions = {},
+  ): Fieldset & { rootProps: Ref<ReturnType<Fieldset["getRootProps"]>> } {
+    const tick = Vue.ref(0)
+    const fs = createFieldset(opts)
+    const unsub = fs.disabled.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return fs.getRootProps()
+    })
+    return { ...fs, rootProps }
+  }
+}
+
+export function createUseForm(Vue: VueLike) {
+  return function useForm(
+    opts: FormOptions = {},
+  ): Form & { submittingRef: Ref<boolean>; submitAttemptedRef: Ref<boolean> } {
+    const tick = Vue.ref(0)
+    const form = createForm(opts)
+    const bump = (): void => {
+      tick.value++
+    }
+    const unsubs = [form.submitting.subscribe(bump), form.submitAttempted.subscribe(bump)]
+    Vue.onScopeDispose(() => unsubs.forEach((u) => u()))
+    const submittingRef = Vue.computed(() => {
+      void tick.value
+      return form.submitting.get()
+    })
+    const submitAttemptedRef = Vue.computed(() => {
+      void tick.value
+      return form.submitAttempted.get()
+    })
+    return { ...form, submittingRef, submitAttemptedRef }
+  }
+}
+
+export function createUseCheckboxGroup(Vue: VueLike) {
+  return function useCheckboxGroup(opts: CheckboxGroupOptions = {}): CheckboxGroup & {
+    rootProps: Ref<ReturnType<CheckboxGroup["getRootProps"]>>
+    valueRef: Ref<string[]>
+  } {
+    const tick = Vue.ref(0)
+    const g = createCheckboxGroup(opts)
+    const unsub = g.value.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return g.getRootProps()
+    })
+    const valueRef = Vue.computed(() => {
+      void tick.value
+      return g.value.get()
+    })
+    return { ...g, rootProps, valueRef }
+  }
+}
+
+export function createUseMenubar(Vue: VueLike) {
+  return function useMenubar(opts: MenubarOptions = {}): Menubar & {
+    rootProps: Ref<ReturnType<Menubar["getRootProps"]>>
+    openMenuIdRef: Ref<string | null>
+  } {
+    const tick = Vue.ref(0)
+    const m = createMenubar(opts)
+    const unsubs = [
+      m.openMenuId.subscribe(() => {
+        tick.value++
+      }),
+      m.activeIndex.subscribe(() => {
+        tick.value++
+      }),
+    ]
+    Vue.onScopeDispose(() => unsubs.forEach((u) => u()))
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return m.getRootProps()
+    })
+    const openMenuIdRef = Vue.computed(() => {
+      void tick.value
+      return m.openMenuId.get()
+    })
+    return { ...m, rootProps, openMenuIdRef }
+  }
+}
+
+export function createUseMenubarMenu(Vue: VueLike) {
+  return function useMenubarMenu(
+    menubar: Menubar,
+    opts: MenubarRegisterMenuOptions = {},
+  ): ReturnType<Menubar["registerMenu"]> {
+    const handle = menubar.registerMenu(opts)
+    Vue.onScopeDispose(() => handle.unregister())
+    return handle
+  }
+}
+
+export function createUseSelect(Vue: VueLike) {
+  return function useSelect(opts: SelectOptions = {}): Select & {
+    triggerProps: Ref<ReturnType<Select["getTriggerProps"]>>
+    popupProps: Ref<ReturnType<Select["getPopupProps"]>>
+    openRef: Ref<boolean>
+    valueRef: Ref<string | null>
+    displayValueRef: Ref<string>
+  } {
+    const tick = Vue.ref(0)
+    const s = createSelect(opts)
+    const bump = (): void => {
+      tick.value++
+    }
+    const unsubs = [s.open.subscribe(bump), s.value.subscribe(bump), s.highlighted.subscribe(bump)]
+    Vue.onScopeDispose(() => unsubs.forEach((u) => u()))
+    const triggerProps = Vue.computed(() => {
+      void tick.value
+      return s.getTriggerProps()
+    })
+    const popupProps = Vue.computed(() => {
+      void tick.value
+      return s.getPopupProps()
+    })
+    const openRef = Vue.computed(() => {
+      void tick.value
+      return s.open.get()
+    })
+    const valueRef = Vue.computed(() => {
+      void tick.value
+      return s.value.get()
+    })
+    const displayValueRef = Vue.computed(() => {
+      void tick.value
+      return s.displayValue()
+    })
+    return { ...s, triggerProps, popupProps, openRef, valueRef, displayValueRef }
+  }
+}
+
+export function createUseSelectItem(Vue: VueLike) {
+  return function useSelectItem(
+    select: Select,
+    value: string,
+    opts: SelectRegisterItemOptions = {},
+  ): ReturnType<Select["registerItem"]> {
+    const handle = select.registerItem(value, opts)
+    Vue.onScopeDispose(() => handle.unregister())
+    return handle
+  }
+}
+
+export function createUsePreviewCard(Vue: VueLike) {
+  return function usePreviewCard(opts: PreviewCardOptions = {}): PreviewCard & {
+    triggerProps: Ref<ReturnType<PreviewCard["getTriggerProps"]>>
+    contentProps: Ref<ReturnType<PreviewCard["getContentProps"]>>
+    openRef: Ref<boolean>
+  } {
+    const tick = Vue.ref(0)
+    const pc = createPreviewCard(opts)
+    const unsub = pc.open.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const triggerProps = Vue.computed(() => {
+      void tick.value
+      return pc.getTriggerProps()
+    })
+    const contentProps = Vue.computed(() => {
+      void tick.value
+      return pc.getContentProps()
+    })
+    const openRef = Vue.computed(() => {
+      void tick.value
+      return pc.open.get()
+    })
+    return { ...pc, triggerProps, contentProps, openRef }
+  }
+}
+
+export function createUseRadio(Vue: VueLike) {
+  return function useRadio(opts: RadioOptions): Radio & {
+    rootProps: Ref<ReturnType<Radio["getRootProps"]>>
+    indicatorProps: Ref<ReturnType<Radio["getIndicatorProps"]>>
+    checkedRef: Ref<boolean>
+  } {
+    const tick = Vue.ref(0)
+    const r = createRadio(opts)
+    const unsub = r.checked.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return r.getRootProps()
+    })
+    const indicatorProps = Vue.computed(() => {
+      void tick.value
+      return r.getIndicatorProps()
+    })
+    const checkedRef = Vue.computed(() => {
+      void tick.value
+      return r.checked.get()
+    })
+    return { ...r, rootProps, indicatorProps, checkedRef }
+  }
+}
+
+export function createUseNavigationMenu(Vue: VueLike) {
+  return function useNavigationMenu(opts: NavigationMenuOptions = {}): NavigationMenu & {
+    rootProps: Ref<ReturnType<NavigationMenu["getRootProps"]>>
+    listProps: Ref<ReturnType<NavigationMenu["getListProps"]>>
+    valueRef: Ref<string | null>
+  } {
+    const tick = Vue.ref(0)
+    const nm = createNavigationMenu(opts)
+    const unsub = nm.value.subscribe(() => {
+      tick.value++
+    })
+    Vue.onScopeDispose(unsub)
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return nm.getRootProps()
+    })
+    const listProps = Vue.computed(() => {
+      void tick.value
+      return nm.getListProps()
+    })
+    const valueRef = Vue.computed(() => {
+      void tick.value
+      return nm.value.get()
+    })
+    return { ...nm, rootProps, listProps, valueRef }
+  }
+}
+
+export function createUseNavigationMenuItem(Vue: VueLike) {
+  return function useNavigationMenuItem(
+    nav: NavigationMenu,
+    opts: NavigationMenuItemOptions,
+  ): ReturnType<NavigationMenu["registerItem"]> {
+    const handle = nav.registerItem(opts)
+    Vue.onScopeDispose(() => handle.unregister())
+    return handle
+  }
+}
+
+export function createUseAutocomplete(Vue: VueLike) {
+  return function useAutocomplete(opts: AutocompleteOptions = {}): Autocomplete & {
+    inputProps: Ref<ReturnType<Autocomplete["getInputProps"]>>
+    listboxProps: Ref<ReturnType<Autocomplete["getListboxProps"]>>
+    openRef: Ref<boolean>
+    valueRef: Ref<string>
+    queryRef: Ref<string>
+    filteredRef: Ref<string[]>
+  } {
+    const tick = Vue.ref(0)
+    const a = createAutocomplete(opts)
+    const bump = (): void => {
+      tick.value++
+    }
+    const unsubs = [
+      a.open.subscribe(bump),
+      a.value.subscribe(bump),
+      a.query.subscribe(bump),
+      a.highlighted.subscribe(bump),
+      a.filteredItems.subscribe(bump),
+    ]
+    Vue.onScopeDispose(() => unsubs.forEach((u) => u()))
+    const inputProps = Vue.computed(() => {
+      void tick.value
+      return a.getInputProps()
+    })
+    const listboxProps = Vue.computed(() => {
+      void tick.value
+      return a.getListboxProps()
+    })
+    const openRef = Vue.computed(() => {
+      void tick.value
+      return a.open.get()
+    })
+    const valueRef = Vue.computed(() => {
+      void tick.value
+      return a.value.get()
+    })
+    const queryRef = Vue.computed(() => {
+      void tick.value
+      return a.query.get()
+    })
+    const filteredRef = Vue.computed(() => {
+      void tick.value
+      return a.filteredItems.get()
+    })
+    return { ...a, inputProps, listboxProps, openRef, valueRef, queryRef, filteredRef }
+  }
+}
+
+export function createUseAutocompleteItem(Vue: VueLike) {
+  return function useAutocompleteItem(
+    autocomplete: Autocomplete,
+    value: string,
+    opts: AutocompleteRegisterItemOptions = {},
+  ): ReturnType<Autocomplete["registerItem"]> {
+    const handle = autocomplete.registerItem(value, opts)
+    Vue.onScopeDispose(() => handle.unregister())
+    return handle
+  }
+}
+
+export function createUseScrollArea(Vue: VueLike) {
+  return function useScrollArea(opts: ScrollAreaOptions = {}): ScrollArea & {
+    rootProps: Ref<ReturnType<ScrollArea["getRootProps"]>>
+    viewportProps: Ref<ReturnType<ScrollArea["getViewportProps"]>>
+  } {
+    const tick = Vue.ref(0)
+    const sa = createScrollArea(opts)
+    const bump = (): void => {
+      tick.value++
+    }
+    const unsubs = [sa.x.subscribe(bump), sa.y.subscribe(bump)]
+    Vue.onScopeDispose(() => unsubs.forEach((u) => u()))
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return sa.getRootProps()
+    })
+    const viewportProps = Vue.computed(() => {
+      void tick.value
+      return sa.getViewportProps()
+    })
+    return { ...sa, rootProps, viewportProps }
+  }
+}
+
+export function createUseDrawer(Vue: VueLike) {
+  return function useDrawer(opts: DrawerOptions = {}): Drawer & {
+    rootProps: Ref<ReturnType<Drawer["getRootProps"]>>
+    contentProps: Ref<ReturnType<Drawer["getContentProps"]>>
+    overlayProps: Ref<ReturnType<Drawer["getOverlayProps"]>>
+    openRef: Ref<boolean>
+  } {
+    const tick = Vue.ref(0)
+    const d = createDrawer(opts)
+    const bump = (): void => {
+      tick.value++
+    }
+    const unsubs = [d.open.subscribe(bump), d.snap.subscribe(bump)]
+    Vue.onScopeDispose(() => unsubs.forEach((u) => u()))
+    const rootProps = Vue.computed(() => {
+      void tick.value
+      return d.getRootProps()
+    })
+    const contentProps = Vue.computed(() => {
+      void tick.value
+      return d.getContentProps()
+    })
+    const overlayProps = Vue.computed(() => {
+      void tick.value
+      return d.getOverlayProps()
+    })
+    const openRef = Vue.computed(() => {
+      void tick.value
+      return d.open.get()
+    })
+    return { ...d, rootProps, contentProps, overlayProps, openRef }
   }
 }

@@ -12,27 +12,47 @@ import {
   createUseAccordionItem,
   createUseAlertDialog,
   createUseAspectRatio,
+  createUseAutocomplete,
+  createUseAutocompleteItem,
   createUseAvatar,
   createUseBreadcrumb,
+  createUseButton,
   createUseCheckbox,
+  createUseCheckboxGroup,
   createUseCollapsible,
   createUseCombobox,
   createUseComboboxItem,
   createUseContextMenu,
   createUseDialog,
+  createUseDirectionProvider,
   createUseDisclosure,
+  createUseDrawer,
+  createUseField,
+  createUseFieldset,
+  createUseForm,
   createUseHoverCard,
+  createUseInput,
   createUseLabel,
   createUseMenu,
+  createUseMenubar,
+  createUseMenubarMenu,
   createUseMenuItem,
+  createUseMeter,
+  createUseNavigationMenu,
+  createUseNavigationMenuItem,
   createUseNumberInput,
   createUseOtpInput,
   createUsePagination,
   createUsePopover,
   createUsePresence,
+  createUsePreviewCard,
   createUseProgress,
+  createUseRadio,
   createUseRadioGroup,
   createUseRadioItem,
+  createUseScrollArea,
+  createUseSelect,
+  createUseSelectItem,
   createUseSeparator,
   createUseSlider,
   createUseSwitch,
@@ -42,6 +62,8 @@ import {
   createUseToggle,
   createUseToggleGroup,
   createUseToggleGroupItem,
+  createUseToolbar,
+  createUseToolbarItem,
   createUseTooltip,
   createUseVisuallyHidden,
 } from "./react.ts"
@@ -86,3 +108,33 @@ export const useToaster: ReturnType<typeof createUseToaster> = createUseToaster(
 export const useCombobox: ReturnType<typeof createUseCombobox> = createUseCombobox(React)
 export const useComboboxItem: ReturnType<typeof createUseComboboxItem> =
   createUseComboboxItem(React)
+
+// v0.3 primitives
+export const useMeter: ReturnType<typeof createUseMeter> = createUseMeter(React)
+export const useDirectionProvider: ReturnType<typeof createUseDirectionProvider> =
+  createUseDirectionProvider(React)
+export const useToolbar: ReturnType<typeof createUseToolbar> = createUseToolbar(React)
+export const useToolbarItem: ReturnType<typeof createUseToolbarItem> = createUseToolbarItem(React)
+export const useButton: ReturnType<typeof createUseButton> = createUseButton(React)
+export const useInput: ReturnType<typeof createUseInput> = createUseInput(React)
+export const useField: ReturnType<typeof createUseField> = createUseField(React)
+export const useFieldset: ReturnType<typeof createUseFieldset> = createUseFieldset(React)
+export const useForm: ReturnType<typeof createUseForm> = createUseForm(React)
+export const useCheckboxGroup: ReturnType<typeof createUseCheckboxGroup> =
+  createUseCheckboxGroup(React)
+export const useMenubar: ReturnType<typeof createUseMenubar> = createUseMenubar(React)
+export const useMenubarMenu: ReturnType<typeof createUseMenubarMenu> = createUseMenubarMenu(React)
+export const useSelect: ReturnType<typeof createUseSelect> = createUseSelect(React)
+export const useSelectItem: ReturnType<typeof createUseSelectItem> = createUseSelectItem(React)
+export const usePreviewCard: ReturnType<typeof createUsePreviewCard> = createUsePreviewCard(React)
+export const useRadio: ReturnType<typeof createUseRadio> = createUseRadio(React)
+export const useNavigationMenu: ReturnType<typeof createUseNavigationMenu> =
+  createUseNavigationMenu(React)
+export const useNavigationMenuItem: ReturnType<typeof createUseNavigationMenuItem> =
+  createUseNavigationMenuItem(React)
+export const useAutocomplete: ReturnType<typeof createUseAutocomplete> =
+  createUseAutocomplete(React)
+export const useAutocompleteItem: ReturnType<typeof createUseAutocompleteItem> =
+  createUseAutocompleteItem(React)
+export const useScrollArea: ReturnType<typeof createUseScrollArea> = createUseScrollArea(React)
+export const useDrawer: ReturnType<typeof createUseDrawer> = createUseDrawer(React)

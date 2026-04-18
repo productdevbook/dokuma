@@ -225,7 +225,6 @@ export function createDrawer(options: DrawerOptions = {}): Drawer {
     let startCoord = 0
     let startTime = 0
     let lastCoord = 0
-    let lastTime = 0
     let contentSize = 0
 
     const coordOf = (e: PointerEvent): number => (axis === "y" ? e.clientY : e.clientX)
@@ -237,7 +236,6 @@ export function createDrawer(options: DrawerOptions = {}): Drawer {
       startCoord = coordOf(e)
       lastCoord = startCoord
       startTime = performance.now()
-      lastTime = startTime
       contentSize = axis === "y" ? content.offsetHeight : content.offsetWidth
       content.style.transition = "none"
     }
@@ -250,7 +248,6 @@ export function createDrawer(options: DrawerOptions = {}): Drawer {
       const offset = Math.max(0, delta)
       applyTransform(offset)
       lastCoord = c
-      lastTime = performance.now()
     }
 
     const onPointerUp = (e: PointerEvent): void => {

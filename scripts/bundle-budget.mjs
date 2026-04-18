@@ -26,8 +26,8 @@ const BUDGETS = {
   "primitives/scroll-area.mjs": 9 * 1024,
   "primitives/drawer.mjs": 9 * 1024,
   // adapters bundle every primitive's hooks; budget grows with primitive count
-  "adapters/react.mjs": 28 * 1024,
-  "adapters/vue.mjs": 28 * 1024,
+  "adapters/react.mjs": 48 * 1024,
+  "adapters/vue.mjs": 40 * 1024,
   "adapters/vanilla.mjs": 20 * 1024,
 }
 

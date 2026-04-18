@@ -69,6 +69,50 @@ import {
 } from "../primitives/toggle-group.ts"
 import { createToggle, type Toggle, type ToggleOptions } from "../primitives/toggle.ts"
 
+// v0.3 primitives — re-exported for CDN use. They expose their own `.mount()`
+// methods, so a vanilla consumer can go straight from import to DOM wiring.
+export {
+  createAutocomplete,
+  type Autocomplete,
+  type AutocompleteOptions,
+} from "../primitives/autocomplete.ts"
+export { createButton, type Button, type ButtonOptions } from "../primitives/button.ts"
+export {
+  createCheckboxGroup,
+  type CheckboxGroup,
+  type CheckboxGroupOptions,
+} from "../primitives/checkbox-group.ts"
+export {
+  createDirectionProvider,
+  type DirectionProvider,
+  type DirectionProviderOptions,
+} from "../primitives/direction-provider.ts"
+export { createDrawer, type Drawer, type DrawerOptions } from "../primitives/drawer.ts"
+export { createField, type Field, type FieldOptions } from "../primitives/field.ts"
+export { createFieldset, type Fieldset, type FieldsetOptions } from "../primitives/fieldset.ts"
+export { createForm, type Form, type FormOptions } from "../primitives/form.ts"
+export { createInput, type Input, type InputOptions } from "../primitives/input.ts"
+export { createMenubar, type Menubar, type MenubarOptions } from "../primitives/menubar.ts"
+export { createMeter, type Meter, type MeterOptions } from "../primitives/meter.ts"
+export {
+  createNavigationMenu,
+  type NavigationMenu,
+  type NavigationMenuOptions,
+} from "../primitives/navigation-menu.ts"
+export {
+  createPreviewCard,
+  type PreviewCard,
+  type PreviewCardOptions,
+} from "../primitives/preview-card.ts"
+export { createRadio, type Radio, type RadioOptions } from "../primitives/radio.ts"
+export {
+  createScrollArea,
+  type ScrollArea,
+  type ScrollAreaOptions,
+} from "../primitives/scroll-area.ts"
+export { createSelect, type Select, type SelectOptions } from "../primitives/select.ts"
+export { createToolbar, type Toolbar, type ToolbarOptions } from "../primitives/toolbar.ts"
+
 export interface MountDisclosureOptions extends DisclosureOptions {
   trigger: HTMLElement | string
   panel: HTMLElement | string

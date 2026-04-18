@@ -228,7 +228,6 @@ export function createScrollArea(options: ScrollAreaOptions = {}): ScrollArea {
             : viewport.scrollHeight - viewport.clientHeight
         if (contentExtra <= 0 || trackSize <= 0) return
         const delta = (axis === "x" ? event.clientX : event.clientY) - startClient
-        const viewportSize = axis === "x" ? viewport.clientWidth : viewport.clientHeight
         const thumbSize = axis === "x" ? thumb.clientWidth : thumb.clientHeight
         const maxThumbTravel = Math.max(0, trackSize - thumbSize)
         if (maxThumbTravel <= 0) return

@@ -12,27 +12,47 @@ import {
   createUseAccordionItem,
   createUseAlertDialog,
   createUseAspectRatio,
+  createUseAutocomplete,
+  createUseAutocompleteItem,
   createUseAvatar,
   createUseBreadcrumb,
+  createUseButton,
   createUseCheckbox,
+  createUseCheckboxGroup,
   createUseCollapsible,
   createUseCombobox,
   createUseComboboxItem,
   createUseContextMenu,
   createUseDialog,
+  createUseDirectionProvider,
   createUseDisclosure,
+  createUseDrawer,
+  createUseField,
+  createUseFieldset,
+  createUseForm,
   createUseHoverCard,
+  createUseInput,
   createUseLabel,
   createUseMenu,
+  createUseMenubar,
+  createUseMenubarMenu,
   createUseMenuItem,
+  createUseMeter,
+  createUseNavigationMenu,
+  createUseNavigationMenuItem,
   createUseNumberInput,
   createUseOtpInput,
   createUsePagination,
   createUsePopover,
   createUsePresence,
+  createUsePreviewCard,
   createUseProgress,
+  createUseRadio,
   createUseRadioGroup,
   createUseRadioItem,
+  createUseScrollArea,
+  createUseSelect,
+  createUseSelectItem,
   createUseSeparator,
   createUseSlider,
   createUseSwitch,
@@ -42,6 +62,8 @@ import {
   createUseToggle,
   createUseToggleGroup,
   createUseToggleGroupItem,
+  createUseToolbar,
+  createUseToolbarItem,
   createUseTooltip,
   createUseVisuallyHidden,
 } from "./vue.ts"
@@ -85,3 +107,32 @@ export const usePresence: ReturnType<typeof createUsePresence> = createUsePresen
 export const useToaster: ReturnType<typeof createUseToaster> = createUseToaster(Vue)
 export const useCombobox: ReturnType<typeof createUseCombobox> = createUseCombobox(Vue)
 export const useComboboxItem: ReturnType<typeof createUseComboboxItem> = createUseComboboxItem(Vue)
+
+// v0.3 primitives
+export const useMeter: ReturnType<typeof createUseMeter> = createUseMeter(Vue)
+export const useDirectionProvider: ReturnType<typeof createUseDirectionProvider> =
+  createUseDirectionProvider(Vue)
+export const useToolbar: ReturnType<typeof createUseToolbar> = createUseToolbar(Vue)
+export const useToolbarItem: ReturnType<typeof createUseToolbarItem> = createUseToolbarItem(Vue)
+export const useButton: ReturnType<typeof createUseButton> = createUseButton(Vue)
+export const useInput: ReturnType<typeof createUseInput> = createUseInput(Vue)
+export const useField: ReturnType<typeof createUseField> = createUseField(Vue)
+export const useFieldset: ReturnType<typeof createUseFieldset> = createUseFieldset(Vue)
+export const useForm: ReturnType<typeof createUseForm> = createUseForm(Vue)
+export const useCheckboxGroup: ReturnType<typeof createUseCheckboxGroup> =
+  createUseCheckboxGroup(Vue)
+export const useMenubar: ReturnType<typeof createUseMenubar> = createUseMenubar(Vue)
+export const useMenubarMenu: ReturnType<typeof createUseMenubarMenu> = createUseMenubarMenu(Vue)
+export const useSelect: ReturnType<typeof createUseSelect> = createUseSelect(Vue)
+export const useSelectItem: ReturnType<typeof createUseSelectItem> = createUseSelectItem(Vue)
+export const usePreviewCard: ReturnType<typeof createUsePreviewCard> = createUsePreviewCard(Vue)
+export const useRadio: ReturnType<typeof createUseRadio> = createUseRadio(Vue)
+export const useNavigationMenu: ReturnType<typeof createUseNavigationMenu> =
+  createUseNavigationMenu(Vue)
+export const useNavigationMenuItem: ReturnType<typeof createUseNavigationMenuItem> =
+  createUseNavigationMenuItem(Vue)
+export const useAutocomplete: ReturnType<typeof createUseAutocomplete> = createUseAutocomplete(Vue)
+export const useAutocompleteItem: ReturnType<typeof createUseAutocompleteItem> =
+  createUseAutocompleteItem(Vue)
+export const useScrollArea: ReturnType<typeof createUseScrollArea> = createUseScrollArea(Vue)
+export const useDrawer: ReturnType<typeof createUseDrawer> = createUseDrawer(Vue)

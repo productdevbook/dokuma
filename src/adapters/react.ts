@@ -99,6 +99,64 @@ import {
   type Tabs,
   type TabsOptions,
 } from "../primitives/tabs.ts"
+import {
+  createAutocomplete,
+  type Autocomplete,
+  type AutocompleteOptions,
+  type AutocompleteRegisterItemOptions,
+} from "../primitives/autocomplete.ts"
+import { createButton, type Button, type ButtonOptions } from "../primitives/button.ts"
+import {
+  createCheckboxGroup,
+  type CheckboxGroup,
+  type CheckboxGroupOptions,
+} from "../primitives/checkbox-group.ts"
+import {
+  createDirectionProvider,
+  type DirectionProvider,
+  type DirectionProviderOptions,
+} from "../primitives/direction-provider.ts"
+import { createDrawer, type Drawer, type DrawerOptions } from "../primitives/drawer.ts"
+import { createField, type Field, type FieldOptions } from "../primitives/field.ts"
+import { createFieldset, type Fieldset, type FieldsetOptions } from "../primitives/fieldset.ts"
+import { createForm, type Form, type FormOptions } from "../primitives/form.ts"
+import { createInput, type Input, type InputOptions } from "../primitives/input.ts"
+import {
+  createMenubar,
+  type Menubar,
+  type MenubarOptions,
+  type MenubarRegisterMenuOptions,
+} from "../primitives/menubar.ts"
+import { createMeter, type Meter, type MeterOptions } from "../primitives/meter.ts"
+import {
+  createNavigationMenu,
+  type NavigationMenu,
+  type NavigationMenuItemOptions,
+  type NavigationMenuOptions,
+} from "../primitives/navigation-menu.ts"
+import {
+  createPreviewCard,
+  type PreviewCard,
+  type PreviewCardOptions,
+} from "../primitives/preview-card.ts"
+import { createRadio, type Radio, type RadioOptions } from "../primitives/radio.ts"
+import {
+  createScrollArea,
+  type ScrollArea,
+  type ScrollAreaOptions,
+} from "../primitives/scroll-area.ts"
+import {
+  createSelect,
+  type Select,
+  type SelectOptions,
+  type SelectRegisterItemOptions,
+} from "../primitives/select.ts"
+import {
+  createToolbar,
+  type Toolbar,
+  type ToolbarItemRegisterOptions,
+  type ToolbarOptions,
+} from "../primitives/toolbar.ts"
 
 type SetState<T> = (next: T | ((prev: T) => T)) => void
 
@@ -1235,5 +1293,562 @@ export function createUseSeparator(_React: ReactLike) {
 export function createUseVisuallyHidden(_React: ReactLike) {
   return function useVisuallyHidden(): VisuallyHidden {
     return createVisuallyHidden()
+  }
+}
+
+// --- v0.3 primitives -------------------------------------------------------
+
+export interface UseMeterOptions extends MeterOptions {}
+
+export function createUseMeter(React: ReactLike) {
+  return function useMeter(opts: UseMeterOptions): Meter {
+    const [, setTick] = React.useState(0)
+    const m = React.useMemo(() => createMeter(opts), [])
+    React.useEffect(() => m.value.subscribe(() => setTick((n) => n + 1)), [m])
+    React.useEffect(() => {
+      if (opts.value !== m.value.get()) m.value.set(opts.value)
+    }, [m, opts.value])
+    return m
+  }
+}
+
+export interface UseDirectionProviderOptions extends DirectionProviderOptions {}
+
+export function createUseDirectionProvider(React: ReactLike) {
+  return function useDirectionProvider(opts: UseDirectionProviderOptions = {}): DirectionProvider {
+    const [, setTick] = React.useState(0)
+    const d = React.useMemo(() => createDirectionProvider(opts), [])
+    React.useEffect(() => d.direction.subscribe(() => setTick((n) => n + 1)), [d])
+    React.useEffect(() => {
+      if (opts.direction && opts.direction !== d.direction.get()) d.set(opts.direction)
+    }, [d, opts.direction])
+    return d
+  }
+}
+
+export interface UseToolbarOptions extends ToolbarOptions {}
+
+export function createUseToolbar(React: ReactLike) {
+  return function useToolbar(opts: UseToolbarOptions = {}): Toolbar {
+    const [, setTick] = React.useState(0)
+    const t = React.useMemo(() => createToolbar(opts), [])
+    React.useEffect(() => t.activeIndex.subscribe(() => setTick((n) => n + 1)), [t])
+    return t
+  }
+}
+
+export interface UseToolbarItemResult {
+  register: (el: HTMLElement | null) => void
+}
+
+export function createUseToolbarItem(React: ReactLike) {
+  return function useToolbarItem(
+    toolbar: Toolbar,
+    opts: ToolbarItemRegisterOptions = {},
+  ): UseToolbarItemResult {
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const handleRef = React.useMemo<{ current: ReturnType<Toolbar["registerItem"]> | null }>(
+      () => ({ current: null }),
+      [],
+    )
+    const register = React.useMemo(
+      () => (el: HTMLElement | null) => {
+        handleRef.current?.unregister()
+        handleRef.current = null
+        if (el) {
+          handleRef.current = toolbar.registerItem(el, {
+            disabled: optsRef.current.disabled,
+            focusableWhenDisabled: optsRef.current.focusableWhenDisabled,
+          })
+        }
+      },
+      [toolbar],
+    )
+    React.useEffect(
+      () => () => {
+        handleRef.current?.unregister()
+        handleRef.current = null
+      },
+      [toolbar],
+    )
+    return { register }
+  }
+}
+
+export interface UseButtonOptions extends Omit<ButtonOptions, "disabled"> {
+  disabled?: boolean
+}
+
+export function createUseButton(React: ReactLike) {
+  return function useButton(opts: UseButtonOptions = {}): Button {
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const b = React.useMemo(
+      () =>
+        createButton({
+          ...opts,
+          disabled: () => optsRef.current.disabled ?? false,
+        }),
+      [],
+    )
+    React.useEffect(() => {
+      setTick((n) => n + 1)
+    }, [opts.disabled])
+    return b
+  }
+}
+
+export interface UseInputOptions extends Omit<InputOptions, "value" | "disabled" | "readOnly"> {
+  value?: string
+  disabled?: boolean
+  readOnly?: boolean
+}
+
+export function createUseInput(React: ReactLike) {
+  return function useInput(opts: UseInputOptions = {}): Input {
+    const isControlled = opts.value !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const input = React.useMemo(
+      () =>
+        createInput({
+          ...opts,
+          value: isControlled ? () => optsRef.current.value as string : undefined,
+          disabled: () => optsRef.current.disabled ?? false,
+          readOnly: () => optsRef.current.readOnly ?? false,
+          onValueChange: (v) => optsRef.current.onValueChange?.(v),
+        }),
+      [isControlled],
+    )
+    React.useEffect(() => input.value.subscribe(() => setTick((n) => n + 1)), [input])
+    React.useEffect(() => {
+      if (isControlled) setTick((n) => n + 1)
+    }, [isControlled, opts.value, opts.disabled, opts.readOnly])
+    return input
+  }
+}
+
+export interface UseFieldOptions extends FieldOptions {}
+
+export function createUseField(React: ReactLike) {
+  return function useField(opts: UseFieldOptions = {}): Field {
+    const [, setTick] = React.useState(0)
+    const f = React.useMemo(() => createField(opts), [])
+    React.useEffect(() => {
+      const unsubs = [
+        f.invalid.subscribe(() => setTick((n) => n + 1)),
+        f.touched.subscribe(() => setTick((n) => n + 1)),
+        f.dirty.subscribe(() => setTick((n) => n + 1)),
+        f.focused.subscribe(() => setTick((n) => n + 1)),
+        f.errorMessage.subscribe(() => setTick((n) => n + 1)),
+      ]
+      return () => unsubs.forEach((u) => u())
+    }, [f])
+    return f
+  }
+}
+
+export interface UseFieldsetOptions extends FieldsetOptions {}
+
+export function createUseFieldset(React: ReactLike) {
+  return function useFieldset(opts: UseFieldsetOptions = {}): Fieldset {
+    const [, setTick] = React.useState(0)
+    const fs = React.useMemo(() => createFieldset(opts), [])
+    React.useEffect(() => fs.disabled.subscribe(() => setTick((n) => n + 1)), [fs])
+    return fs
+  }
+}
+
+export interface UseFormOptions extends FormOptions {}
+
+export function createUseForm(React: ReactLike) {
+  return function useForm(opts: UseFormOptions = {}): Form {
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const form = React.useMemo(
+      () =>
+        createForm({
+          ...opts,
+          errors: () =>
+            optsRef.current.errors
+              ? typeof optsRef.current.errors === "function"
+                ? optsRef.current.errors()
+                : optsRef.current.errors
+              : {},
+          onSubmit: (args) => optsRef.current.onSubmit?.(args),
+        }),
+      [],
+    )
+    React.useEffect(() => {
+      const unsubs = [
+        form.submitting.subscribe(() => setTick((n) => n + 1)),
+        form.submitAttempted.subscribe(() => setTick((n) => n + 1)),
+      ]
+      return () => unsubs.forEach((u) => u())
+    }, [form])
+    return form
+  }
+}
+
+export interface UseCheckboxGroupOptions extends Omit<CheckboxGroupOptions, "value"> {
+  value?: string[]
+}
+
+export function createUseCheckboxGroup(React: ReactLike) {
+  return function useCheckboxGroup(opts: UseCheckboxGroupOptions = {}): CheckboxGroup {
+    const isControlled = opts.value !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const g = React.useMemo(
+      () =>
+        createCheckboxGroup({
+          ...opts,
+          value: isControlled ? () => optsRef.current.value as string[] : undefined,
+          onValueChange: (v) => optsRef.current.onValueChange?.(v),
+        }),
+      [isControlled],
+    )
+    React.useEffect(() => g.value.subscribe(() => setTick((n) => n + 1)), [g])
+    React.useEffect(() => {
+      if (isControlled) setTick((n) => n + 1)
+    }, [isControlled, opts.value])
+    return g
+  }
+}
+
+export interface UseMenubarOptions extends MenubarOptions {}
+
+export function createUseMenubar(React: ReactLike) {
+  return function useMenubar(opts: UseMenubarOptions = {}): Menubar {
+    const [, setTick] = React.useState(0)
+    const m = React.useMemo(() => createMenubar(opts), [])
+    React.useEffect(() => {
+      const unsubs = [
+        m.openMenuId.subscribe(() => setTick((n) => n + 1)),
+        m.activeIndex.subscribe(() => setTick((n) => n + 1)),
+      ]
+      return () => unsubs.forEach((u) => u())
+    }, [m])
+    return m
+  }
+}
+
+export interface UseSelectOptions extends Omit<SelectOptions, "value" | "open"> {
+  value?: string | null
+  open?: boolean
+}
+
+export function createUseSelect(React: ReactLike) {
+  return function useSelect(opts: UseSelectOptions = {}): Select {
+    const isValueControlled = opts.value !== undefined
+    const isOpenControlled = opts.open !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const s = React.useMemo(
+      () =>
+        createSelect({
+          ...opts,
+          value: isValueControlled ? () => optsRef.current.value as string | null : undefined,
+          open: isOpenControlled ? () => optsRef.current.open as boolean : undefined,
+          onValueChange: (v) => optsRef.current.onValueChange?.(v),
+          onOpenChange: (v) => optsRef.current.onOpenChange?.(v),
+        }),
+      [isValueControlled, isOpenControlled],
+    )
+    React.useEffect(() => {
+      const unsubs = [
+        s.open.subscribe(() => setTick((n) => n + 1)),
+        s.value.subscribe(() => setTick((n) => n + 1)),
+        s.highlighted.subscribe(() => setTick((n) => n + 1)),
+      ]
+      return () => unsubs.forEach((u) => u())
+    }, [s])
+    React.useEffect(() => {
+      if (isValueControlled || isOpenControlled) setTick((n) => n + 1)
+    }, [isValueControlled, isOpenControlled, opts.value, opts.open])
+    return s
+  }
+}
+
+export interface UseSelectItemResult {
+  handle: ReturnType<Select["registerItem"]>
+}
+
+export function createUseSelectItem(React: ReactLike) {
+  return function useSelectItem(
+    select: Select,
+    value: string,
+    opts: SelectRegisterItemOptions = {},
+  ): UseSelectItemResult {
+    const handleRef = React.useMemo<{ current: ReturnType<Select["registerItem"]> | null }>(
+      () => ({ current: null }),
+      [],
+    )
+    if (!handleRef.current) handleRef.current = select.registerItem(value, opts)
+    React.useEffect(
+      () => () => {
+        handleRef.current?.unregister()
+        handleRef.current = null
+      },
+      [select, value],
+    )
+    return { handle: handleRef.current }
+  }
+}
+
+export interface UsePreviewCardOptions extends Omit<PreviewCardOptions, "open"> {
+  open?: boolean
+}
+
+export function createUsePreviewCard(React: ReactLike) {
+  return function usePreviewCard(opts: UsePreviewCardOptions = {}): PreviewCard {
+    const isControlled = opts.open !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const pc = React.useMemo(
+      () =>
+        createPreviewCard({
+          ...opts,
+          open: isControlled ? () => optsRef.current.open as boolean : undefined,
+          onOpenChange: (v) => optsRef.current.onOpenChange?.(v),
+        }),
+      [isControlled],
+    )
+    React.useEffect(() => pc.open.subscribe(() => setTick((n) => n + 1)), [pc])
+    React.useEffect(() => {
+      if (isControlled) setTick((n) => n + 1)
+    }, [isControlled, opts.open])
+    return pc
+  }
+}
+
+export interface UseRadioOptions extends Omit<RadioOptions, "checked" | "disabled"> {
+  checked?: boolean
+  disabled?: boolean
+}
+
+export function createUseRadio(React: ReactLike) {
+  return function useRadio(opts: UseRadioOptions): Radio {
+    const isControlled = opts.checked !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const r = React.useMemo(
+      () =>
+        createRadio({
+          value: opts.value,
+          id: opts.id,
+          name: opts.name,
+          required: opts.required,
+          checked: isControlled ? () => optsRef.current.checked as boolean : undefined,
+          disabled: () => optsRef.current.disabled ?? false,
+          onCheckedChange: (v) => optsRef.current.onCheckedChange?.(v),
+        }),
+      [isControlled],
+    )
+    React.useEffect(() => r.checked.subscribe(() => setTick((n) => n + 1)), [r])
+    React.useEffect(() => {
+      if (isControlled) setTick((n) => n + 1)
+    }, [isControlled, opts.checked, opts.disabled])
+    return r
+  }
+}
+
+export interface UseNavigationMenuOptions extends Omit<NavigationMenuOptions, "value"> {
+  value?: string | null
+}
+
+export function createUseNavigationMenu(React: ReactLike) {
+  return function useNavigationMenu(opts: UseNavigationMenuOptions = {}): NavigationMenu {
+    const isControlled = opts.value !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const nm = React.useMemo(
+      () =>
+        createNavigationMenu({
+          ...opts,
+          value: isControlled ? () => optsRef.current.value as string | null : undefined,
+          onValueChange: (v) => optsRef.current.onValueChange?.(v),
+        }),
+      [isControlled],
+    )
+    React.useEffect(() => nm.value.subscribe(() => setTick((n) => n + 1)), [nm])
+    React.useEffect(() => {
+      if (isControlled) setTick((n) => n + 1)
+    }, [isControlled, opts.value])
+    return nm
+  }
+}
+
+export interface UseAutocompleteOptions extends Omit<
+  AutocompleteOptions,
+  "value" | "query" | "open"
+> {
+  value?: string
+  query?: string
+  open?: boolean
+}
+
+export function createUseAutocomplete(React: ReactLike) {
+  return function useAutocomplete(opts: UseAutocompleteOptions = {}): Autocomplete {
+    const isValueControlled = opts.value !== undefined
+    const isQueryControlled = opts.query !== undefined
+    const isOpenControlled = opts.open !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const a = React.useMemo(
+      () =>
+        createAutocomplete({
+          ...opts,
+          value: isValueControlled ? () => optsRef.current.value as string : undefined,
+          query: isQueryControlled ? () => optsRef.current.query as string : undefined,
+          open: isOpenControlled ? () => optsRef.current.open as boolean : undefined,
+          onValueChange: (v) => optsRef.current.onValueChange?.(v),
+          onQueryChange: (v) => optsRef.current.onQueryChange?.(v),
+          onOpenChange: (v) => optsRef.current.onOpenChange?.(v),
+        }),
+      [isValueControlled, isQueryControlled, isOpenControlled],
+    )
+    React.useEffect(() => {
+      const unsubs = [
+        a.open.subscribe(() => setTick((n) => n + 1)),
+        a.value.subscribe(() => setTick((n) => n + 1)),
+        a.query.subscribe(() => setTick((n) => n + 1)),
+        a.highlighted.subscribe(() => setTick((n) => n + 1)),
+        a.filteredItems.subscribe(() => setTick((n) => n + 1)),
+      ]
+      return () => unsubs.forEach((u) => u())
+    }, [a])
+    React.useEffect(() => {
+      if (isValueControlled || isQueryControlled || isOpenControlled) setTick((n) => n + 1)
+    }, [isValueControlled, isQueryControlled, isOpenControlled, opts.value, opts.query, opts.open])
+    return a
+  }
+}
+
+export interface UseAutocompleteItemResult {
+  handle: ReturnType<Autocomplete["registerItem"]>
+}
+
+export function createUseAutocompleteItem(React: ReactLike) {
+  return function useAutocompleteItem(
+    autocomplete: Autocomplete,
+    value: string,
+    opts: AutocompleteRegisterItemOptions = {},
+  ): UseAutocompleteItemResult {
+    const handleRef = React.useMemo<{ current: ReturnType<Autocomplete["registerItem"]> | null }>(
+      () => ({ current: null }),
+      [],
+    )
+    if (!handleRef.current) handleRef.current = autocomplete.registerItem(value, opts)
+    React.useEffect(
+      () => () => {
+        handleRef.current?.unregister()
+        handleRef.current = null
+      },
+      [autocomplete, value],
+    )
+    return { handle: handleRef.current }
+  }
+}
+
+export interface UseScrollAreaOptions extends ScrollAreaOptions {}
+
+export function createUseScrollArea(React: ReactLike) {
+  return function useScrollArea(opts: UseScrollAreaOptions = {}): ScrollArea {
+    const [, setTick] = React.useState(0)
+    const sa = React.useMemo(() => createScrollArea(opts), [])
+    React.useEffect(() => {
+      const unsubs = [
+        sa.x.subscribe(() => setTick((n) => n + 1)),
+        sa.y.subscribe(() => setTick((n) => n + 1)),
+      ]
+      return () => unsubs.forEach((u) => u())
+    }, [sa])
+    return sa
+  }
+}
+
+export interface UseDrawerOptions extends Omit<DrawerOptions, "open"> {
+  open?: boolean
+}
+
+export function createUseDrawer(React: ReactLike) {
+  return function useDrawer(opts: UseDrawerOptions = {}): Drawer {
+    const isControlled = opts.open !== undefined
+    const [, setTick] = React.useState(0)
+    const optsRef = React.useMemo(() => ({ current: opts }), [])
+    optsRef.current = opts
+    const d = React.useMemo(
+      () =>
+        createDrawer({
+          ...opts,
+          open: isControlled ? () => optsRef.current.open as boolean : undefined,
+          onOpenChange: (v) => optsRef.current.onOpenChange?.(v),
+        }),
+      [isControlled],
+    )
+    React.useEffect(() => {
+      const unsubs = [
+        d.open.subscribe(() => setTick((n) => n + 1)),
+        d.snap.subscribe(() => setTick((n) => n + 1)),
+      ]
+      return () => unsubs.forEach((u) => u())
+    }, [d])
+    React.useEffect(() => {
+      if (isControlled) setTick((n) => n + 1)
+    }, [isControlled, opts.open])
+    return d
+  }
+}
+
+export function createUseMenubarMenu(React: ReactLike) {
+  return function useMenubarMenu(
+    menubar: Menubar,
+    opts: MenubarRegisterMenuOptions = {},
+  ): { handle: ReturnType<Menubar["registerMenu"]> } {
+    const handleRef = React.useMemo<{ current: ReturnType<Menubar["registerMenu"]> | null }>(
+      () => ({ current: null }),
+      [],
+    )
+    if (!handleRef.current) handleRef.current = menubar.registerMenu(opts)
+    React.useEffect(
+      () => () => {
+        handleRef.current?.unregister()
+        handleRef.current = null
+      },
+      [menubar],
+    )
+    return { handle: handleRef.current }
+  }
+}
+
+export function createUseNavigationMenuItem(React: ReactLike) {
+  return function useNavigationMenuItem(
+    nav: NavigationMenu,
+    opts: NavigationMenuItemOptions,
+  ): { handle: ReturnType<NavigationMenu["registerItem"]> } {
+    const handleRef = React.useMemo<{ current: ReturnType<NavigationMenu["registerItem"]> | null }>(
+      () => ({ current: null }),
+      [],
+    )
+    if (!handleRef.current) handleRef.current = nav.registerItem(opts)
+    React.useEffect(
+      () => () => {
+        handleRef.current?.unregister()
+        handleRef.current = null
+      },
+      [nav, opts.value],
+    )
+    return { handle: handleRef.current }
   }
 }
