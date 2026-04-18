@@ -38,10 +38,10 @@ export const placements: Placement[] = sides.reduce(
   [],
 )
 
-export const min = Math.min
-export const max = Math.max
-export const round = Math.round
-export const floor = Math.floor
+export const min: (...values: number[]) => number = Math.min
+export const max: (...values: number[]) => number = Math.max
+export const round: (x: number) => number = Math.round
+export const floor: (x: number) => number = Math.floor
 export const createCoords = (v: number): Coords => ({ x: v, y: v })
 
 const oppositeSideMap: Record<Side, Side> = {
