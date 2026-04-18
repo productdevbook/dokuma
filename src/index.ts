@@ -6,6 +6,76 @@ export type { Presence, PresenceStatus } from "./_presence.ts"
 export { getDefaultPortalTarget, resolvePortalTarget } from "./_portal.ts"
 export type { PortalTarget } from "./_portal.ts"
 
+export {
+  arrow,
+  autoPlacement,
+  autoUpdate,
+  computePosition,
+  createFloating,
+  detectOverflow,
+  flip,
+  getOverflowAncestors,
+  hide,
+  inline,
+  limitShift,
+  offset,
+  platform as floatingPlatform,
+  rectToClientRect,
+  shift,
+  size,
+} from "./_floating/index.ts"
+export type {
+  AlignedPlacement,
+  Alignment,
+  ArrowOptions,
+  AutoPlacementOptions,
+  AutoUpdateOptions,
+  Axis,
+  Boundary,
+  ClientRectObject,
+  ComputePosition,
+  ComputePositionConfig,
+  ComputePositionReturn,
+  Coords,
+  CreateFloatingOptions,
+  Derivable,
+  DetectOverflowOptions,
+  Dimensions,
+  DomBoundary,
+  DomFloatingElement,
+  DomReferenceElement,
+  DomVirtualElement,
+  ElementContext,
+  ElementRects,
+  Elements,
+  FlipOptions,
+  Floating,
+  FloatingElement,
+  HideOptions,
+  InlineOptions,
+  Length,
+  LimitShiftOptions,
+  Middleware,
+  MiddlewareArguments,
+  MiddlewareData,
+  MiddlewareReturn,
+  MiddlewareState,
+  NodeScroll,
+  OffsetOptions,
+  Padding,
+  Placement,
+  Platform,
+  Rect,
+  ReferenceElement,
+  RootBoundary,
+  ShiftOptions,
+  Side,
+  SideObject,
+  SizeOptions,
+  Strategy,
+  VirtualElement,
+} from "./_floating/index.ts"
+
 export { createDisclosure } from "./primitives/disclosure.ts"
 export type {
   Disclosure,
@@ -242,6 +312,158 @@ export type {
 
 export { createVisuallyHidden } from "./primitives/visually-hidden.ts"
 export type { VisuallyHidden, VisuallyHiddenProps } from "./primitives/visually-hidden.ts"
+
+export { createMeter } from "./primitives/meter.ts"
+export type {
+  Meter,
+  MeterIndicatorProps,
+  MeterOptions,
+  MeterRootProps,
+  MeterValueProps,
+} from "./primitives/meter.ts"
+
+export { createDirectionProvider } from "./primitives/direction-provider.ts"
+export type {
+  DirectionProvider,
+  DirectionProviderOptions,
+  TextDirection,
+} from "./primitives/direction-provider.ts"
+
+export { createToolbar } from "./primitives/toolbar.ts"
+export type {
+  Toolbar,
+  ToolbarItemHandle,
+  ToolbarItemRegisterOptions,
+  ToolbarOptions,
+  ToolbarRootProps,
+} from "./primitives/toolbar.ts"
+
+export { createButton } from "./primitives/button.ts"
+export type { Button, ButtonOptions, ButtonRootProps } from "./primitives/button.ts"
+
+export { createInput } from "./primitives/input.ts"
+export type { Input, InputOptions, InputProps } from "./primitives/input.ts"
+
+export { createField } from "./primitives/field.ts"
+export type {
+  Field,
+  FieldControlProps,
+  FieldDescriptionProps,
+  FieldErrorProps,
+  FieldLabelProps,
+  FieldOptions,
+  FieldRootProps,
+  FieldValidityData,
+  FieldValidityState,
+  ValidationMode,
+} from "./primitives/field.ts"
+
+export { createFieldset } from "./primitives/fieldset.ts"
+export type {
+  Fieldset,
+  FieldsetLegendProps,
+  FieldsetOptions,
+  FieldsetRootProps,
+} from "./primitives/fieldset.ts"
+
+export { createForm } from "./primitives/form.ts"
+export type { Form, FormErrors, FormOptions, FormValues } from "./primitives/form.ts"
+
+export { createCheckboxGroup } from "./primitives/checkbox-group.ts"
+export type {
+  CheckboxGroup,
+  CheckboxGroupItem,
+  CheckboxGroupOptions,
+  CheckboxGroupRootProps,
+} from "./primitives/checkbox-group.ts"
+
+export { createMenubar } from "./primitives/menubar.ts"
+export type {
+  Menubar,
+  MenubarMenuHandle,
+  MenubarOptions,
+  MenubarRegisterMenuOptions,
+  MenubarRootProps,
+} from "./primitives/menubar.ts"
+
+export { createSelect } from "./primitives/select.ts"
+export type {
+  Select,
+  SelectHiddenInputProps,
+  SelectItemHandle,
+  SelectItemProps,
+  SelectOptions,
+  SelectPopupProps,
+  SelectRegisterItemOptions,
+  SelectTriggerProps,
+} from "./primitives/select.ts"
+
+export { createPreviewCard } from "./primitives/preview-card.ts"
+export type {
+  PreviewCard,
+  PreviewCardContentProps,
+  PreviewCardOptions,
+  PreviewCardTriggerProps,
+} from "./primitives/preview-card.ts"
+
+export { createRadio } from "./primitives/radio.ts"
+export type {
+  Radio,
+  RadioHiddenInputProps as StandaloneRadioHiddenInputProps,
+  RadioIndicatorProps,
+  RadioOptions,
+  RadioRootProps,
+} from "./primitives/radio.ts"
+
+export { createNavigationMenu } from "./primitives/navigation-menu.ts"
+export type {
+  NavigationMenu,
+  NavigationMenuContentProps,
+  NavigationMenuItemHandle,
+  NavigationMenuItemOptions,
+  NavigationMenuItemRootProps,
+  NavigationMenuListProps,
+  NavigationMenuOptions,
+  NavigationMenuRootProps,
+  NavigationMenuTriggerProps,
+} from "./primitives/navigation-menu.ts"
+
+export { createAutocomplete } from "./primitives/autocomplete.ts"
+export type {
+  Autocomplete,
+  AutocompleteHiddenInputProps,
+  AutocompleteInputProps,
+  AutocompleteItemHandle,
+  AutocompleteListboxProps,
+  AutocompleteOptionProps,
+  AutocompleteOptions,
+  AutocompleteRegisterItemOptions,
+} from "./primitives/autocomplete.ts"
+
+export { createScrollArea } from "./primitives/scroll-area.ts"
+export type {
+  ScrollArea,
+  ScrollAreaOptions,
+  ScrollAreaRootProps,
+  ScrollAreaScrollbarProps,
+  ScrollAreaState,
+  ScrollAreaThumbProps,
+  ScrollAreaType,
+  ScrollAreaViewportProps,
+  ScrollAxis,
+} from "./primitives/scroll-area.ts"
+
+export { createDrawer } from "./primitives/drawer.ts"
+export type {
+  Drawer,
+  DrawerContentProps,
+  DrawerDescriptionProps,
+  DrawerDirection,
+  DrawerOptions,
+  DrawerOverlayProps,
+  DrawerRootProps,
+  DrawerTitleProps,
+} from "./primitives/drawer.ts"
 
 export { createToaster } from "./primitives/toaster.ts"
 export type {

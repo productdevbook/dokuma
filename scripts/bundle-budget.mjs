@@ -18,6 +18,13 @@ const BUDGETS = {
   "primitives/number-input.mjs": 9 * 1024,
   "primitives/otp-input.mjs": 9 * 1024,
   "primitives/pagination.mjs": 9 * 1024,
+  "primitives/field.mjs": 9 * 1024,
+  "primitives/menubar.mjs": 9 * 1024,
+  "primitives/select.mjs": 16 * 1024,
+  "primitives/autocomplete.mjs": 14 * 1024,
+  "primitives/navigation-menu.mjs": 9 * 1024,
+  "primitives/scroll-area.mjs": 9 * 1024,
+  "primitives/drawer.mjs": 9 * 1024,
   // adapters bundle every primitive's hooks; budget grows with primitive count
   "adapters/react.mjs": 28 * 1024,
   "adapters/vue.mjs": 28 * 1024,

@@ -88,6 +88,10 @@
       "types": "./dist/primitives/aspect-ratio.d.mts",
       "default": "./dist/primitives/aspect-ratio.mjs"
     },
+    "./autocomplete": {
+      "types": "./dist/primitives/autocomplete.d.mts",
+      "default": "./dist/primitives/autocomplete.mjs"
+    },
     "./avatar": {
       "types": "./dist/primitives/avatar.d.mts",
       "default": "./dist/primitives/avatar.mjs"
@@ -96,9 +100,17 @@
       "types": "./dist/primitives/breadcrumb.d.mts",
       "default": "./dist/primitives/breadcrumb.mjs"
     },
+    "./button": {
+      "types": "./dist/primitives/button.d.mts",
+      "default": "./dist/primitives/button.mjs"
+    },
     "./checkbox": {
       "types": "./dist/primitives/checkbox.d.mts",
       "default": "./dist/primitives/checkbox.mjs"
+    },
+    "./checkbox-group": {
+      "types": "./dist/primitives/checkbox-group.d.mts",
+      "default": "./dist/primitives/checkbox-group.mjs"
     },
     "./collapsible": {
       "types": "./dist/primitives/collapsible.d.mts",
@@ -116,13 +128,37 @@
       "types": "./dist/primitives/dialog.d.mts",
       "default": "./dist/primitives/dialog.mjs"
     },
+    "./direction-provider": {
+      "types": "./dist/primitives/direction-provider.d.mts",
+      "default": "./dist/primitives/direction-provider.mjs"
+    },
     "./disclosure": {
       "types": "./dist/primitives/disclosure.d.mts",
       "default": "./dist/primitives/disclosure.mjs"
     },
+    "./drawer": {
+      "types": "./dist/primitives/drawer.d.mts",
+      "default": "./dist/primitives/drawer.mjs"
+    },
+    "./field": {
+      "types": "./dist/primitives/field.d.mts",
+      "default": "./dist/primitives/field.mjs"
+    },
+    "./fieldset": {
+      "types": "./dist/primitives/fieldset.d.mts",
+      "default": "./dist/primitives/fieldset.mjs"
+    },
+    "./form": {
+      "types": "./dist/primitives/form.d.mts",
+      "default": "./dist/primitives/form.mjs"
+    },
     "./hover-card": {
       "types": "./dist/primitives/hover-card.d.mts",
       "default": "./dist/primitives/hover-card.mjs"
+    },
+    "./input": {
+      "types": "./dist/primitives/input.d.mts",
+      "default": "./dist/primitives/input.mjs"
     },
     "./label": {
       "types": "./dist/primitives/label.d.mts",
@@ -131,6 +167,18 @@
     "./menu": {
       "types": "./dist/primitives/menu.d.mts",
       "default": "./dist/primitives/menu.mjs"
+    },
+    "./menubar": {
+      "types": "./dist/primitives/menubar.d.mts",
+      "default": "./dist/primitives/menubar.mjs"
+    },
+    "./meter": {
+      "types": "./dist/primitives/meter.d.mts",
+      "default": "./dist/primitives/meter.mjs"
+    },
+    "./navigation-menu": {
+      "types": "./dist/primitives/navigation-menu.d.mts",
+      "default": "./dist/primitives/navigation-menu.mjs"
     },
     "./number-input": {
       "types": "./dist/primitives/number-input.d.mts",
@@ -148,13 +196,29 @@
       "types": "./dist/primitives/popover.d.mts",
       "default": "./dist/primitives/popover.mjs"
     },
+    "./preview-card": {
+      "types": "./dist/primitives/preview-card.d.mts",
+      "default": "./dist/primitives/preview-card.mjs"
+    },
     "./progress": {
       "types": "./dist/primitives/progress.d.mts",
       "default": "./dist/primitives/progress.mjs"
     },
+    "./radio": {
+      "types": "./dist/primitives/radio.d.mts",
+      "default": "./dist/primitives/radio.mjs"
+    },
     "./radio-group": {
       "types": "./dist/primitives/radio-group.d.mts",
       "default": "./dist/primitives/radio-group.mjs"
+    },
+    "./scroll-area": {
+      "types": "./dist/primitives/scroll-area.d.mts",
+      "default": "./dist/primitives/scroll-area.mjs"
+    },
+    "./select": {
+      "types": "./dist/primitives/select.d.mts",
+      "default": "./dist/primitives/select.mjs"
     },
     "./separator": {
       "types": "./dist/primitives/separator.d.mts",
@@ -183,6 +247,10 @@
     "./toggle-group": {
       "types": "./dist/primitives/toggle-group.d.mts",
       "default": "./dist/primitives/toggle-group.mjs"
+    },
+    "./toolbar": {
+      "types": "./dist/primitives/toolbar.d.mts",
+      "default": "./dist/primitives/toolbar.mjs"
     },
     "./tooltip": {
       "types": "./dist/primitives/tooltip.d.mts",
